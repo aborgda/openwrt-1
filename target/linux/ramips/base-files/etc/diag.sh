@@ -47,6 +47,8 @@ get_status_led() {
 	tplink,tl-wr902ac-v3|\
 	tl-wr840n-v4|\
 	tl-wr840n-v5|\
+	tl-wr849n-v4|\
+	tl-wr849n-v5|\
 	tl-wr841n-v13|\
 	vr500|\
 	wnce2001|\
