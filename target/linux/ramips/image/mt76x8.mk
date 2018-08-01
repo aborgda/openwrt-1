@@ -136,10 +136,6 @@ define Device/tl-wr840n-v5
   TPLINK_HWREV := 0x1
   TPLINK_HWREVADD := 0x5
   TPLINK_HVERSION := 3
-  KERNEL := $(KERNEL_DTB)
-  KERNEL_INITRAMFS := $(KERNEL_DTB) | tplink-v2-header -e
-  IMAGE/sysupgrade.bin := tplink-v2-image -s -e | append-metadata | \
-	check-size $$$$(IMAGE_SIZE)
 endef
 TARGET_DEVICES += tl-wr840n-v5
 
