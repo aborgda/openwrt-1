@@ -263,6 +263,8 @@ platform_check_image() {
 	tl-wr840n-v5|\
 	tl-wr849n-v4|\
 	tl-wr849n-v5|\
+	tl-wr840n-v6|\
+        tl-wr849n-v6|\
 	tl-wr841n-v13)
 		[ "$magic" != "03000000" ] && {
 			echo "Invalid image type."
