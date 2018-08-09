@@ -169,6 +169,15 @@ ramips_board_detect() {
 	*"DuZun DM06")
 		name="duzun-dm06"
 		;;
+	*"DWR-116 A1")
+                name="dl-dwr116-a1"
+                ;;
+	*"DWR-116 A2")
+                name="dl-dwr116-a2"
+                ;;
+	*"DWR-116 A3")
+                name="dl-dwr116-a3"
+                ;;
 	*"DWR-512 B")
 		name="dwr-512-b"
 		;;
@@ -508,7 +517,6 @@ ramips_board_detect() {
         *"TL-WR849N v6")
                 name="tl-wr849n-v6"
                 ;;
-
 	*"TL-WR841N v13")
 		name="tl-wr841n-v13"
 		;;
