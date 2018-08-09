@@ -154,7 +154,7 @@ define Device/dir-810l
 endef
 TARGET_DEVICES += dir-810l
 
-define Device/dlink_dwr-116-a1
+define Device/dl-dwr116-a1
   DTS := DWR-116-A1
   DEVICE_TITLE := D-Link DWR-116 A1
   DEVICE_PACKAGES := kmod-usb2 jboot-tools
@@ -166,21 +166,21 @@ define Device/dlink_dwr-116-a1
   IMAGE/sysupgrade.bin := mkdlinkfw | pad-rootfs | append-metadata
   IMAGE/factory.bin := mkdlinkfw | pad-rootfs | mkdlinkfw-factory
 endef
-TARGET_DEVICES += dlink_dwr-116-a1
+TARGET_DEVICES += dl-dwr116-a1
 
-define Device/dlink_dwr-116-a2
-  $(Device/dlink_dwr-116-a1)
+define Device/dl-dwr116-a2
+  $(Device/dl-dwr116-a1)
   DTS := DWR-116-A2
   DEVICE_TITLE := D-Link DWR-116 A2
 endef
-TARGET_DEVICES += dlink_dwr-116-a2
+TARGET_DEVICES += dl-dwr116-a2
 
-define Device/dlink_dwr-116-a3
-  $(Device/dlink_dwr-116-a1)
+define Device/dl-dwr116-a3
+  $(Device/dl-dwr116-a1)
   DTS := DWR-116-A3
   DEVICE_TITLE := D-Link DWR-116 A3
 endef
-TARGET_DEVICES += dlink_dwr-116-a3
+TARGET_DEVICES += dl-dwr116-a3
 
 define Device/dlink_dwr-921-c1
   DTS := DWR-921-C1
