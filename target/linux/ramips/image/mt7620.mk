@@ -156,7 +156,7 @@ TARGET_DEVICES += dir-810l
 
 define Device/dlink_dwr-116-a1
   DTS := DWR-116-A1
-  DEVICE_TITLE := D-Link DWR-116 A1/A2
+  DEVICE_TITLE := D-Link DWR-116 A1
   DEVICE_PACKAGES := kmod-usb2 jboot-tools
   DLINK_ROM_ID := DLK6E3803001
   DLINK_FAMILY_MEMBER := 0x6E38
@@ -167,6 +167,20 @@ define Device/dlink_dwr-116-a1
   IMAGE/factory.bin := mkdlinkfw | pad-rootfs | mkdlinkfw-factory
 endef
 TARGET_DEVICES += dlink_dwr-116-a1
+
+define Device/dlink_dwr-116-a2
+  $(Device/dlink_dwr-116-a1)
+  DTS := DWR-116-A2
+  DEVICE_TITLE := D-Link DWR-116 A2
+endef
+TARGET_DEVICES += dlink_dwr-116-a2
+
+define Device/dlink_dwr-116-a3
+  $(Device/dlink_dwr-116-a1)
+  DTS := DWR-116-A3
+  DEVICE_TITLE := D-Link DWR-116 A3
+endef
+TARGET_DEVICES += dlink_dwr-116-a3
 
 define Device/dlink_dwr-921-c1
   DTS := DWR-921-C1

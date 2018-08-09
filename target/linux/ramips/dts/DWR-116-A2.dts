@@ -6,8 +6,8 @@
 #include <dt-bindings/input/input.h>
 
 / {
-	compatible = "dlink,dwr-116-a1", "ralink,mt7620n-soc";
-	model = "D-Link DWR-116 A1";
+	compatible = "dlink,dwr-116-a2", "ralink,mt7620n-soc";
+	model = "D-Link DWR-116 A2";
 
 	gpio-keys-polled {
 		compatible = "gpio-keys-polled";
@@ -32,12 +32,12 @@
 		compatible = "gpio-leds";
 
 		status {
-			label = "dwr-116-a1:green:status";
+			label = "dwr-116-a2:green:status";
 			gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
 		};
 
 		wifi {
-			label = "dwr-116-a1:green:wifi";
+			label = "dwr-116-a2:green:wifi";
 			gpios = <&gpio3 0 GPIO_ACTIVE_LOW>;
 		};
 	};

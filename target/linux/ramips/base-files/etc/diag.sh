@@ -102,6 +102,8 @@ get_status_led() {
 	dir-620-d1|\
 	dwr-512-b|\
 	dlink,dwr-116-a1|\
+	dlink,dwr-116-a2|\
+	dlink,dwr-116-a3|\
 	gnubee,gb-pc1|\
 	gnubee,gb-pc2|\
 	hpm|\
