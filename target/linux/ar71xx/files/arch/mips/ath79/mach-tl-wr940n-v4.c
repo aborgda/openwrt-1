@@ -180,5 +180,7 @@ static void __init tl_wr940n_v6_setup(void)
 
 MIPS_MACHINE(ATH79_MACH_TL_WR940N_V4, "TL-WR940N-v4", "TP-LINK TL-WR940N v4",
 	     tl_wr940n_v4_setup);
+MIPS_MACHINE(ATH79_MACH_TL_WR940N_V5, "TL-WR940N-v5", "TP-LINK TL-WR940N v5",
+             tl_wr940n_v4_setup);
 MIPS_MACHINE(ATH79_MACH_TL_WR940N_V6, "TL-WR940N-v6", "TP-LINK TL-WR940N v6",
 	     tl_wr940n_v6_setup);

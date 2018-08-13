@@ -622,6 +622,13 @@ define Device/tl-wr940n-v4
 endef
 TARGET_DEVICES += tl-wr940n-v4
 
+define Device/tl-wr940n-v5
+  $(Device/tl-wr940n-v4)
+  DEVICE_TITLE := TP-LINK TL-WR940N v5
+  BOARDNAME := TL-WR940N-v5
+endef
+TARGET_DEVICES += tl-wr940n-v5
+
 define Device/tl-wr940n-v6
   $(Device/tl-wr940n-v4)
   DEVICE_TITLE := TP-LINK TL-WR940N v6
