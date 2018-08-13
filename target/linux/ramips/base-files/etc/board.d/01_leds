@@ -387,8 +387,9 @@ tiny-ac)
 	set_wifi_led "$boardname:orange:wifi"
 	set_usb_led "$boardname:green:usb"
 	;;
+tl-wr849n-v4|\
 tl-wr840n-v4)
-	ucidef_set_led_wlan "wlan2g" "wlan2g" "$boardname:green:wlan" "phy0tpt"
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan" "ra0"
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
 	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
 	;;
