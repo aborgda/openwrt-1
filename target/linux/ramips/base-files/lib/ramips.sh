@@ -520,6 +520,9 @@ ramips_board_detect() {
         *"TL-WR849N v6")
                 name="tl-wr849n-v6"
                 ;;
+	*"TL-WR845N v3")
+		name="tl-wr845n-v3"
+		;;
 	*"TL-WR841N v13")
 		name="tl-wr841n-v13"
 		;;
