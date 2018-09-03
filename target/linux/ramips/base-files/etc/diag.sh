@@ -110,6 +110,7 @@ get_status_led() {
 	gnubee,gb-pc2|\
 	hpm|\
 	hw550-3g|\
+	itlb-ncloud-v1|\
 	mac1200rv2|\
 	miniembwifi|\
 	mofi3500-3gn|\
