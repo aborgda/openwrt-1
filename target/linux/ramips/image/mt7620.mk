@@ -35,6 +35,10 @@ define Build/elx-header
   mv $@.new $@
 endef
 
+define Build/mkuimage_fake_header
+  $(STAGING_DIR_HOST)/bin/mkuimage_fake_header $(1) $(2) $@
+endef
+
 define Device/ai-br100
   DTS := AI-BR100
   IMAGE_SIZE := 7936k
@@ -515,6 +519,16 @@ define Device/mlwg2
   DEVICE_PACKAGES := kmod-mt76x2 kmod-usb2 kmod-usb-ohci
 endef
 TARGET_DEVICES += mlwg2
+
+define Device/itlb-ncloud-v1
+  DTS := ITLB-NCLOUD
+  DEVICE_TITLE := Intelbras NCLOUD 
+  DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-ehci kmod-usb-ledtrig-usbport
+  IMAGES += factory.bin
+  IMAGE/factory.bin := $$(IMAGE/sysupgrade.bin) | mkuimage_fake_header $$$$(IMAGE_SIZE) 4096 | \
+    check-size $$$$(IMAGE_SIZE) 
+endef
+TARGET_DEVICES += itlb-ncloud-v1
 
 define Device/mt7620a
   DTS := MT7620a

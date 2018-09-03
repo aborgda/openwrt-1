@@ -259,6 +259,9 @@ ramips_board_detect() {
 	*"JHR-N926R")
 		name="jhr-n926r"
 		;;
+	"Intelbras NCLOUD V1")
+		name="itlb-ncloud-v1"
+		;;
 	*"K2P")
 		name="k2p"
 		;;

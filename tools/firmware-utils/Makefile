@@ -88,6 +88,7 @@ define Host/Compile
 	$(call cc,mksercommfw, -Wall)
 	$(call cc,nec-enc, -Wall --std=gnu99)
 	$(call cc,tbs)
+	$(call cc,mkuimage_fake_header, -Wall -lz)
 endef
 
 define Host/Install
