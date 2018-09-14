@@ -389,8 +389,8 @@ tiny-ac)
 	;;
 itlb-ncloud-v1)
 	set_wifi_led "$boardname:green:wifi"
-        set_usb_led "$boardname:green:usb"
-        ;;
+	set_usb_led "$boardname:green:usb"
+	;;
 tl-wr849n-v4|\
 tl-wr840n-v4)
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan" "ra0"
@@ -398,11 +398,11 @@ tl-wr840n-v4)
 	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
 	;;
 tl-wr840n-v5|\
-tl-wr840n-v6|\ 
-tl-wr849n-v5|\ 
+tl-wr840n-v6|\
+tl-wr849n-v5|\
 tl-wr849n-v6)
-        ucidef_set_led_netdev "wan" "wan" "$boardname:green:power" "eth0.2"
-        ;;
+	ucidef_set_led_netdev "wan" "wan" "$boardname:green:power" "eth0.2"
+	;;
 tl-wr845n-v3|\
 tl-wr841n-v13)
 	ucidef_set_led_wlan "wlan2g" "wlan2g" "$boardname:green:wlan" "phy0tpt"
@@ -418,8 +418,8 @@ tplink,c20-v1)
 	set_usb_led "$boardname:blue:usb"
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:blue:wlan2g" "wlan0"
 	;;
-archer-c20-v4|\
-tplink,c20-v4)
+tplink,c20-v4|\
+archer-c20-v4)
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
 	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan2g" "ra0"
