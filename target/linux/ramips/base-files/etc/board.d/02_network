@@ -91,7 +91,6 @@ ramips_setup_interfaces()
 	hc5661a|\
 	hc5962|\
 	hlk-rm04|\
-	itlb-ncloud-v1|\
 	k2p|\
 	kn|\
 	kn_rc|\
@@ -173,6 +172,7 @@ ramips_setup_interfaces()
 		;;
 	ar670w|\
 	ar725w|\
+	itlb-ncloud-v1|\
 	rt-ac51u)
 		ucidef_add_switch "switch0" \
 			"0:wan" "1:lan" "2:lan" "3:lan" "4:lan" "6t@eth0"
