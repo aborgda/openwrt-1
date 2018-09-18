@@ -391,6 +391,7 @@ itlb-ncloud-v1)
 	set_wifi_led "$boardname:green:wifi"
 	set_usb_led "$boardname:green:usb"
 	;;
+tl-wr845n-v4|\
 tl-wr849n-v4|\
 tl-wr840n-v4)
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan" "ra0"

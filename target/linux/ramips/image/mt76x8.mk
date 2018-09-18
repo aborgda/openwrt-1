@@ -189,6 +189,17 @@ define Device/tl-wr845n-v3
 endef
 TARGET_DEVICES += tl-wr845n-v3
 
+define Device/tl-wr845n-v4
+  $(Device/tl-wr840n-v6)
+  DTS := TL-WR845NV4
+  DEVICE_TITLE := TP-Link TL-WR845N v4
+  TPLINK_HWID := 0x08450004
+  TPLINK_HWREV := 0x1
+  TPLINK_HWREVADD := 0x4
+  IMAGES = tftp-recovery.bin sysupgrade.bin
+endef
+TARGET_DEVICES += tl-wr845n-v4
+
 define Device/tl-wr841n-v13
   $(Device/tplink)
   DTS := TL-WR841NV13
