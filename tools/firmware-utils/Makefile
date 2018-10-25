@@ -85,6 +85,7 @@ define Host/Compile
 	$(call cc,mkdlinkfw mkdlinkfw-lib, -lz -Wall --std=gnu99)
 	$(call cc,dns313-header, -Wall)
 	$(call cc,mkuimage_fake_header, -Wall -lz)
+	$(call cc,tbs_dlink)
 endef
 
 define Host/Install

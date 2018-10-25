@@ -24,6 +24,10 @@ define Build/mkuimage_fake_header
   $(STAGING_DIR_HOST)/bin/mkuimage_fake_header $(1) $(2) $@
 endef
 
+define Build/tbs_dlink
+  $(STAGING_DIR_HOST)/bin/tbs_dlink $@
+endef
+
 define Device/ai-br100
   DTS := AI-BR100
   IMAGE_SIZE := 7936k
@@ -157,6 +161,18 @@ define Device/dir-810l
   DEVICE_TITLE := D-Link DIR-810L
 endef
 TARGET_DEVICES += dir-810l
+
+define Device/dir-819-a1
+  DTS := DIR-819-A1
+  IMAGE_SIZE := 6720k
+  BLOCKSIZE := 4k
+  KERNEL := $(KERNEL_DTB)
+  DEVICE_TITLE := D-Link DIR-819 A1
+  IMAGES += factory.bin
+  IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
+        append-rootfs | tbs_dlink
+endef
+TARGET_DEVICES += dir-819-a1
 
 define Device/dl-dwr116-a1
   DTS := DWR-116-A1

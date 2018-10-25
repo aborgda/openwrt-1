@@ -163,6 +163,9 @@ ramips_board_detect() {
 	*"DIR-810L")
 		name="dir-810l"
 		;;
+	*"DIR-819 A1")
+                name="dir-819-a1"
+                ;;
 	*"DIR-860L B1")
 		name="dir-860l-b1"
 		;;
