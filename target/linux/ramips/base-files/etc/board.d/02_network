@@ -82,7 +82,6 @@ ramips_setup_interfaces()
 	dir-320-b1|\
 	dir-610-a1|\
 	dir-615-h1|\
-	dir-819-a1|\
 	dl-dwr116-a1|\
 	dl-dwr116-a2|\
 	dl-dwr116-a3|\
@@ -174,6 +173,7 @@ ramips_setup_interfaces()
 	ar670w|\
 	ar725w|\
 	itlb-ncloud-v1|\
+        dir-819-a1|\
 	rt-ac51u)
 		ucidef_add_switch "switch0" \
 			"0:wan" "1:lan" "2:lan" "3:lan" "4:lan" "6t@eth0"

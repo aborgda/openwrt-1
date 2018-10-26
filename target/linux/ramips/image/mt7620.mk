@@ -170,7 +170,9 @@ define Device/dir-819-a1
   DEVICE_TITLE := D-Link DIR-819 A1
   IMAGES += factory.bin
   IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
-        append-rootfs | tbs_dlink
+        append-rootfs | pad-rootfs | tbs_dlink
+  IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | \
+        append-rootfs | pad-rootfs | append-metadata 
 endef
 TARGET_DEVICES += dir-819-a1
 

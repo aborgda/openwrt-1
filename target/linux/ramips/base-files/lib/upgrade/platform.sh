@@ -251,6 +251,13 @@ platform_check_image() {
 		}
 		return 0
 		;;
+	dir-819-a1)
+                [ "$magic" != "6d000020" ] && {
+                        echo "Invalid image type."
+                        return 1
+                }
+                return 0
+                ;;
 	c20i|\
 	c50|\
 	mr200|\
