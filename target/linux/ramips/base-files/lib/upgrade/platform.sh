@@ -252,10 +252,11 @@ platform_check_image() {
 		return 0
 		;;
 	dir-819-a1)
-                [ "$magic" != "6d000020" ] && {
-                        echo "Invalid image type."
-                        return 1
-                }
+                if [ "${magic::2}" != "6d" ] || [ "${magic::2}" != "5d" ] 
+		then
+                   echo "Invalid image type."
+                   return 1
+	   	fi
                 return 0
                 ;;
 	c20i|\
