@@ -20,6 +20,14 @@ define Build/zyimage
 	$(STAGING_DIR_HOST)/bin/zyimage $(1) $@
 endef
 
+define Build/mkuimage_fake_header
+  $(STAGING_DIR_HOST)/bin/mkuimage_fake_header $(1) $(2) $@
+endef
+
+define Build/tbs_dlink
+  $(STAGING_DIR_HOST)/bin/tbs_dlink $@
+endef
+
 define Device/ai-br100
   DTS := AI-BR100
   IMAGE_SIZE := 7936k
@@ -154,9 +162,23 @@ define Device/dir-810l
 endef
 TARGET_DEVICES += dir-810l
 
-define Device/dlink_dwr-116-a1
+define Device/dir-819-a1
+  DTS := DIR-819-A1
+  IMAGE_SIZE := 6720k
+  BLOCKSIZE := 4k
+  KERNEL := $(KERNEL_DTB)
+  DEVICE_TITLE := D-Link DIR-819 A1
+  IMAGES += factory.bin
+  IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
+        append-rootfs | pad-rootfs | tbs_dlink
+  IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | \
+        append-rootfs | pad-rootfs | append-metadata 
+endef
+TARGET_DEVICES += dir-819-a1
+
+define Device/dl-dwr116-a1
   DTS := DWR-116-A1
-  DEVICE_TITLE := D-Link DWR-116 A1/A2
+  DEVICE_TITLE := D-Link DWR-116 A1
   DEVICE_PACKAGES := kmod-usb2 jboot-tools
   DLINK_ROM_ID := DLK6E3803001
   DLINK_FAMILY_MEMBER := 0x6E38
@@ -166,7 +188,21 @@ define Device/dlink_dwr-116-a1
   IMAGE/sysupgrade.bin := mkdlinkfw | pad-rootfs | append-metadata
   IMAGE/factory.bin := mkdlinkfw | pad-rootfs | mkdlinkfw-factory
 endef
-TARGET_DEVICES += dlink_dwr-116-a1
+TARGET_DEVICES += dl-dwr116-a1
+
+define Device/dl-dwr116-a2
+  $(Device/dl-dwr116-a1)
+  DTS := DWR-116-A2
+  DEVICE_TITLE := D-Link DWR-116 A2
+endef
+TARGET_DEVICES += dl-dwr116-a2
+
+define Device/dl-dwr116-a3
+  $(Device/dl-dwr116-a1)
+  DTS := DWR-116-A3
+  DEVICE_TITLE := D-Link DWR-116 A3
+endef
+TARGET_DEVICES += dl-dwr116-a3
 
 define Device/dlink_dwr-921-c1
   DTS := DWR-921-C1
@@ -346,6 +382,16 @@ define Device/mlwg2
   DEVICE_TITLE := Kingston MLWG2
 endef
 TARGET_DEVICES += mlwg2
+
+define Device/itlb-ncloud-v1
+  DTS := ITLB-NCLOUD
+  DEVICE_TITLE := Intelbras NCLOUD 
+  DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-ehci kmod-usb-ledtrig-usbport
+  IMAGES += factory.bin
+  IMAGE/factory.bin := $$(IMAGE/sysupgrade.bin) | mkuimage_fake_header $$$$(IMAGE_SIZE) 4096 | \
+    check-size $$$$(IMAGE_SIZE) 
+endef
+TARGET_DEVICES += itlb-ncloud-v1
 
 define Device/mt7620a
   DTS := MT7620a

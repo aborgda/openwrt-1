@@ -40,6 +40,7 @@ get_status_led() {
 	nbg-419n2|\
 	pwh2004|\
 	r6220|\
+	archer-c20-v4|\
 	tplink,c20-v4|\
 	tplink,c50-v3|\
 	tplink,tl-mr3420-v5|\
@@ -47,6 +48,11 @@ get_status_led() {
 	tplink,tl-wr902ac-v3|\
 	tl-wr840n-v4|\
 	tl-wr840n-v5|\
+	tl-wr849n-v4|\
+	tl-wr849n-v5|\
+	tl-wr840n-v6|\
+        tl-wr849n-v6|\
+	tl-wr845n-v3|\
 	tl-wr841n-v13|\
 	vr500|\
 	wnce2001|\
@@ -97,11 +103,14 @@ get_status_led() {
 	dir-620-a1|\
 	dir-620-d1|\
 	dwr-512-b|\
-	dlink,dwr-116-a1|\
+	dl-dwr116-a1|\
+	dl-dwr116-a2|\
+	dl-dwr116-a3|\
 	gnubee,gb-pc1|\
 	gnubee,gb-pc2|\
 	hpm|\
 	hw550-3g|\
+	itlb-ncloud-v1|\
 	mac1200rv2|\
 	miniembwifi|\
 	mofi3500-3gn|\
