@@ -55,6 +55,9 @@ ramips_board_detect() {
 	*"AR725W")
 		name="ar725w"
 		;;
+	*"ArcherC5 v4")
+		name="archer-c5-v4"
+		;;
 	*"ArcherC20 v4")
 		name="archer-c20-v4"
 		;;

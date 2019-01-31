@@ -262,6 +262,7 @@ platform_check_image() {
 	c20i|\
 	c50|\
 	mr200|\
+	archer-c5-v4|\
 	archer-c20-v4|\
 	tplink,c20-v1|\
 	tplink,c20-v4|\

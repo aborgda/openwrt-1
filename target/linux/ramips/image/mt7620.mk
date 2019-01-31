@@ -53,6 +53,18 @@ define Device/Archer
   IMAGE/sysupgrade.bin := tplink-v2-image -s -e | append-metadata
 endef
 
+define Device/ArcherC5v4
+  $(Device/Archer)
+  DTS := ArcherC5v4
+  SUPPORTED_DEVICES := c5
+  TPLINK_FLASHLAYOUT := 8Mmtk
+  TPLINK_HWID := 0xc5000004
+  TPLINK_HWREV := 60
+  IMAGES += factory.bin
+  DEVICE_TITLE := TP-Link ArcherC5v4
+endef
+TARGET_DEVICES += ArcherC5v4
+
 define Device/ArcherC20i
   $(Device/Archer)
   DTS := ArcherC20i
