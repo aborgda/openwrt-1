@@ -252,13 +252,13 @@ platform_check_image() {
 		return 0
 		;;
 	dir-819-a1)
-                if [ "${magic::2}" = "6d" ] || [ "${magic::2}" = "5d" ] 
+		if [ "${magic::2}" = "6d" ] || [ "${magic::2}" = "5d" ] 
 		then
 		   return 0
-	   	fi
+		fi
 		echo "Invalid image type."
-                return 1
-                ;;
+		return 1
+		;;
 	c20i|\
 	c50|\
 	mr200|\
@@ -275,11 +275,12 @@ platform_check_image() {
 	tl-wr849n-v4|\
 	tl-wr849n-v5|\
 	tl-wr840n-v6|\
-  tl-wr849n-v6|\
+	tl-wr849n-v6|\
 	tl-wr845n-v3|\
 	tl-wr845n-v4|\
 	tl-wr841n-v13)
-		[ "$magic" != "03000000" ] && {
+		[ "$magic" != "03000000" ] && 
+		[ "$magic" != "03000003" ] && {
 			echo "Invalid image type."
 			return 1
 		}

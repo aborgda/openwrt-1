@@ -56,7 +56,7 @@ endef
 define Device/ArcherC5v4
   $(Device/Archer)
   DTS := ArcherC5v4
-  SUPPORTED_DEVICES := c5
+  SUPPORTED_DEVICES := c5v4 archer-c5-v4
   TPLINK_FLASHLAYOUT := 8Mmtk
   TPLINK_HWID := 0xc5000004
   TPLINK_HWREV := 60
