@@ -70,7 +70,7 @@
 	rtkgsw {
 		compatible = "mediatek,rtk-gsw";
 		mediatek,mdio = <&mdio0>;
-		mediatek,reset-pin = <&gpio2 14 0>;
+		mediatek,reset-pin = <&gpio2 20 0>;
 	};
 };
 
@@ -128,7 +128,7 @@
 &pinctrl {
 	state_default: pinctrl0 {
 		gpio {
-			ralink,group = "i2c", "uartf", "nd_sd";
+			ralink,group = "i2c", "uartf", "rgmii2";
 			ralink,function = "gpio";
 		};
 	};
@@ -137,7 +137,7 @@
 &ethernet {
 	pinctrl-names = "default";
 	mtd-mac-address = <&rom 0xf100>;
-	pinctrl-0 = <&rgmii1_pins &rgmii2_pins &mdio_pins>;
+	pinctrl-0 = <&rgmii1_pins &mdio_pins>;
 
 	port@5 {
 		status = "okay";
