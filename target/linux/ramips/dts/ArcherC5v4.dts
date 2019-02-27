@@ -17,32 +17,32 @@
 		compatible = "gpio-leds";
 
 		wps {
-			label = "c5:green:wps";
+			label = "archer-c5-v4:green:wps";
 			gpios = <&gpio0 1 GPIO_ACTIVE_LOW>;
 		};
 
 		usb {
-			label = "c5:green:usb";
+			label = "archer-c5-v4:green:usb";
 			gpios = <&gpio0 7 GPIO_ACTIVE_LOW>;
 		};
 		lan {
-			label = "c5:green:lan";
+			label = "archer-c5-v4:green:lan";
 			gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;
 		};
 		wan_orange {
-			label = "c5:orange:wan";
+			label = "archer-c5-v4:orange:wan";
 			gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
 		};
 		wan {
-			label = "c5:green:wan";
+			label = "archer-c5-v4:green:wan";
 			gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
 		};
 		wlan5g {
-			label = "c5:green:wlan5g";
+			label = "archer-c5-v4:green:wlan5g";
 			gpios = <&gpio0 12 GPIO_ACTIVE_LOW>;
 		};
 		wlan2g {
-			label = "c5:green:wlan2g";
+			label = "archer-c5-v4:green:wlan2g";
 			gpios = <&gpio0 14 GPIO_ACTIVE_LOW>;
 		};
 
