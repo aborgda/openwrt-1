@@ -425,12 +425,17 @@ tplink,c20-v1)
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:blue:wlan2g" "wlan0"
 	;;
 tplink,c20-v4|\
-archer-c20-v4|\
-archer-c5-v4)\
+archer-c20-v4)
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
 	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
-	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan2g" "ra0"
-	ucidef_set_led_netdev "wlan5g" "wlan5g" "$boardname:green:wlan5g" "rai0"
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan2g" "wlan0"
+	;;
+tplink,c5-v4|\
+archer-c5-v4)
+	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch1" "0xf"
+	ucidef_set_led_netdev "wan" "wan" "$boardname:green:wan" "eth0.2"
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan2g" "wlan0"
+	ucidef_set_led_netdev "wlan5g" "wlan5g" "$boardname:green:wlan5g" "wlan1"
 	;;
 tplink,c50-v3)
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
