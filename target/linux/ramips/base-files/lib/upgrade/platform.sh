@@ -276,6 +276,7 @@ platform_check_image() {
 	tl-wr849n-v5|\
 	tl-wr840n-v6|\
 	tl-wr849n-v6|\
+	tl-wr849n-v62|\
 	tl-wr845n-v3|\
 	tl-wr845n-v4|\
 	tl-wr841n-v13)
