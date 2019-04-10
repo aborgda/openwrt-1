@@ -398,7 +398,6 @@ itlb-ncloud-v1)
 	;;
 tl-wr845n-v4|\
 tl-wr849n-v4|\
-tl-wr849n-v62|\
 tl-wr840n-v4)
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan" "ra0"
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
@@ -409,6 +408,12 @@ tl-wr840n-v6|\
 tl-wr849n-v5|\
 tl-wr849n-v6)
 	ucidef_set_led_netdev "wan" "wan" "$boardname:green:power" "eth0.2"
+	;;
+tl-wr849n-v62)
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan" "ra0"
+	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
+	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
+	ucidef_set_led_switch "power" "power" "$boardname:orange:power" "switch0" "0x01"
 	;;
 tl-wr845n-v3|\
 tl-wr841n-v13)
