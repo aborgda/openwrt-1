@@ -1346,10 +1346,14 @@ ar71xx_board_detect() {
 	*"TL-WR940N v4")
 		name="tl-wr940n-v4"
 		;;
-        *"TL-WR940N v5")
-                name="tl-wr940n-v5"
+	*"TL-WR940N v5")
+		name="tl-wr940n-v5"
 		AR71XX_MODEL="TP-Link TL-WR940N v5"
-                ;;
+		;;
+	*"TL-WR949N v6")
+		name="tl-wr949n-v6"
+		AR71XX_MODEL="TP-Link TL-WR949N v6"
+		;;
 	*"TL-WR940N v6")
 		name="tl-wr940n-v6"
 		;;
