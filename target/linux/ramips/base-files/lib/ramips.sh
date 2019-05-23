@@ -514,6 +514,9 @@ ramips_board_detect() {
 	*"TL-WR840N v4")
 		name="tl-wr840n-v4"
 		;;
+	*"TL-WR840N v5PRESET")
+		name="tl-wr840n-v5preset"
+		;;
 	*"TL-WR840N v5")
 		name="tl-wr840n-v5"
 		;;
