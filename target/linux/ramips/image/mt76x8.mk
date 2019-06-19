@@ -134,11 +134,24 @@ define Device/tl-wr840n-v5
   DEVICE_TITLE := TP-Link TL-WR840N v5
   TPLINK_FLASHLAYOUT := 4Mmtk
   TPLINK_HWID := 0x08400005
-  TPLINK_HWREV := 0x1
+  TPLINK_HWREV := 0x4c
   TPLINK_HWREVADD := 0x5
   TPLINK_HVERSION := 3
 endef
 TARGET_DEVICES += tl-wr840n-v5
+
+define Device/tl-wr840n-v5preset
+  $(Device/tplink)
+  DTS := TL-WR840NV5PRESET
+  IMAGE_SIZE := 7808k
+  DEVICE_TITLE := TP-Link TL-WR840N v5PRESET
+  TPLINK_FLASHLAYOUT := 8Mmtk
+  TPLINK_HWID := 0x08400005
+  TPLINK_HWREV := 0x1
+  TPLINK_HWREVADD := 0x5
+  TPLINK_HVERSION := 3
+endef
+TARGET_DEVICES += tl-wr840n-v5preset
 
 define Device/tl-wr840n-v6
   $(Device/tplink)
@@ -177,6 +190,14 @@ define Device/tl-wr849n-v6
   TPLINK_HWID := 0x08490006
 endef
 TARGET_DEVICES += tl-wr849n-v6
+
+define Device/tl-wr849n-v62
+  $(Device/tl-wr840n-v6)
+  DTS := TL-WR849NV62
+  DEVICE_TITLE := TP-Link TL-WR849N v62
+  TPLINK_HWID := 0x08490006
+endef
+TARGET_DEVICES += tl-wr849n-v62
 
 define Device/tl-wr845n-v3
   $(Device/tl-wr840n-v4)

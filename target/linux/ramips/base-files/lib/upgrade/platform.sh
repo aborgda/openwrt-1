@@ -271,11 +271,13 @@ platform_check_image() {
 	tplink,tl-wr842n-v5|\
 	tplink,tl-wr902ac-v3|\
 	tl-wr840n-v4|\
+	tl-wr840n-v5preset|\
 	tl-wr840n-v5|\
 	tl-wr849n-v4|\
 	tl-wr849n-v5|\
 	tl-wr840n-v6|\
 	tl-wr849n-v6|\
+	tl-wr849n-v62|\
 	tl-wr845n-v3|\
 	tl-wr845n-v4|\
 	tl-wr841n-v13)

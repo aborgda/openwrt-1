@@ -1,5 +1,5 @@
 /*
- *  TP-LINK TL-WR940N v4 and v6 board support
+ *  TP-LINK TL-WR940N/TL-WR949N v4 and v6 board support
  *
  *  Copyright (C) 2016 David Lutz <kpanic@ff3l.net>
  *
@@ -32,7 +32,7 @@
 #define TL_WR940N_V4_GPIO_LED_LAN1		8
 #define TL_WR940N_V4_GPIO_LED_WLAN		7
 #define TL_WR940N_V4_GPIO_LED_SYSTEM		5
-/* WR940N v6 specific GPIO*/
+/* WR940N/WR949N v6 specific GPIO*/
 #define TL_WR940N_V6_GPIO_LED_DIAG_ORANGE	15
 #define TL_WR940N_V6_GPIO_LED_WAN_BLUE		14
 
@@ -183,4 +183,6 @@ MIPS_MACHINE(ATH79_MACH_TL_WR940N_V4, "TL-WR940N-v4", "TP-LINK TL-WR940N v4",
 MIPS_MACHINE(ATH79_MACH_TL_WR940N_V5, "TL-WR940N-v5", "TP-LINK TL-WR940N v5",
              tl_wr940n_v4_setup);
 MIPS_MACHINE(ATH79_MACH_TL_WR940N_V6, "TL-WR940N-v6", "TP-LINK TL-WR940N v6",
+	     tl_wr940n_v6_setup);
+MIPS_MACHINE(ATH79_MACH_TL_WR949N_V6, "TL-WR949N-v6", "TP-LINK TL-WR949N v6",
 	     tl_wr940n_v6_setup);

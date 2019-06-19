@@ -483,6 +483,7 @@ get_status_led() {
 	tl-wr841n-v9)
 		status_led="tp-link:green:qss"
 		;;
+	tl-wr949n-v6|\
 	tl-wr940n-v6)
 		status_led="tp-link:orange:diag"
 		;;

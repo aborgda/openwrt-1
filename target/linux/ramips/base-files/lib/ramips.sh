@@ -514,6 +514,9 @@ ramips_board_detect() {
 	*"TL-WR840N v4")
 		name="tl-wr840n-v4"
 		;;
+	*"TL-WR840N v5PRESET")
+		name="tl-wr840n-v5preset"
+		;;
 	*"TL-WR840N v5")
 		name="tl-wr840n-v5"
 		;;
@@ -523,12 +526,15 @@ ramips_board_detect() {
 	*"TL-WR849N v5")
 		name="tl-wr849n-v5"
 		;;
-  *"TL-WR840N v6")
-    name="tl-wr840n-v6"
-    ;;
-  *"TL-WR849N v6")
-    name="tl-wr849n-v6"
-    ;;
+	*"TL-WR840N v6")
+		name="tl-wr840n-v6"
+		;;
+	*"TL-WR849N v6")
+		name="tl-wr849n-v6"
+		;;
+	*"TL-WR849N v62")
+		name="tl-wr849n-v62"
+		;;
 	*"TL-WR845N v3")
 		name="tl-wr845n-v3"
 		;;
