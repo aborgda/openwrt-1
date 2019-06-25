@@ -78,6 +78,7 @@ platform_check_image() {
 	hw550-3g|\
 	iodata,wn-gx300gr|\
 	ip2202|\
+	itlb-ncloud-v1|\
 	jhr-n805r|\
 	jhr-n825r|\
 	jhr-n926r|\
@@ -250,9 +251,19 @@ platform_check_image() {
 		}
 		return 0
 		;;
+	dir-819-a1)
+		if [ "${magic::2}" = "6d" ] || [ "${magic::2}" = "5d" ] 
+		then
+		   return 0
+		fi
+		echo "Invalid image type."
+		return 1
+		;;
 	c20i|\
 	c50|\
 	mr200|\
+	archer-c5-v4|\
+	archer-c20-v4|\
 	tplink,c20-v1|\
 	tplink,c20-v4|\
 	tplink,c50-v3|\
@@ -260,9 +271,18 @@ platform_check_image() {
 	tplink,tl-wr842n-v5|\
 	tplink,tl-wr902ac-v3|\
 	tl-wr840n-v4|\
+	tl-wr840n-v5preset|\
 	tl-wr840n-v5|\
+	tl-wr849n-v4|\
+	tl-wr849n-v5|\
+	tl-wr840n-v6|\
+	tl-wr849n-v6|\
+	tl-wr849n-v62|\
+	tl-wr845n-v3|\
+	tl-wr845n-v4|\
 	tl-wr841n-v13)
-		[ "$magic" != "03000000" ] && {
+		[ "$magic" != "03000000" ] && 
+		[ "$magic" != "03000003" ] && {
 			echo "Invalid image type."
 			return 1
 		}
@@ -279,7 +299,9 @@ platform_check_image() {
 		}
 		return 0
 		;;
-	dlink,dwr-116-a1|\
+	dl-dwr116-a1|\
+	dl-dwr116-a2|\
+	dl-dwr116-a3|\
 	dlink,dwr-921-c1|\
 	dwr-512-b)
 		[ "$magic" != "0404242b" ] && {

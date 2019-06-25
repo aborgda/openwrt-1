@@ -158,7 +158,9 @@ dir-615-h1)
 	set_wifi_led "rt2800pci-phy0::radio"
 	;;
 dir-620-d1|\
-dlink,dwr-116-a1|\
+dl-dwr116-a1|\
+dl-dwr116-a2|\
+dl-dwr116-a3|\
 mzk-ex300np)
 	set_wifi_led "$boardname:green:wifi"
 	;;
@@ -177,6 +179,10 @@ vr500)
 	;;
 dir-860l-b1)
 	ucidef_set_led_netdev "wan" "wan" "$boardname:green:net" "eth0.2"
+	;;
+dir-819-a1)
+	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
+	set_wifi_led "$boardname:green:wlan"
 	;;
 ex2700|\
 wn3000rpv3)
@@ -386,11 +392,31 @@ tiny-ac)
 	set_wifi_led "$boardname:orange:wifi"
 	set_usb_led "$boardname:green:usb"
 	;;
+itlb-ncloud-v1)
+	set_wifi_led "$boardname:green:wifi"
+	set_usb_led "$boardname:green:usb"
+	;;
+tl-wr845n-v4|\
+tl-wr849n-v4|\
+tl-wr840n-v5preset|\
 tl-wr840n-v4)
-	ucidef_set_led_wlan "wlan2g" "wlan2g" "$boardname:green:wlan" "phy0tpt"
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan" "ra0"
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
 	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
 	;;
+tl-wr840n-v5|\
+tl-wr840n-v6|\
+tl-wr849n-v5|\
+tl-wr849n-v6)
+	ucidef_set_led_netdev "wan" "wan" "$boardname:green:power" "eth0.2"
+	;;
+tl-wr849n-v62)
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan" "ra0"
+	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
+	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
+	ucidef_set_led_switch "power" "power" "$boardname:orange:power" "switch0" "0x01"
+	;;
+tl-wr845n-v3|\
 tl-wr841n-v13)
 	ucidef_set_led_wlan "wlan2g" "wlan2g" "$boardname:green:wlan" "phy0tpt"
 	ucidef_set_led_switch "lan1" "lan1" "$boardname:green:lan1" "switch0" "0x2"
@@ -405,10 +431,18 @@ tplink,c20-v1)
 	set_usb_led "$boardname:blue:usb"
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:blue:wlan2g" "wlan0"
 	;;
-tplink,c20-v4)
+tplink,c20-v4|\
+archer-c20-v4)
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
 	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan2g" "wlan0"
+	;;
+tplink,c5-v4|\
+archer-c5-v4)
+	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch1" "0xf"
+	ucidef_set_led_netdev "wan" "wan" "$boardname:green:wan" "eth0.2"
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan2g" "wlan0"
+	ucidef_set_led_netdev "wlan5g" "wlan5g" "$boardname:green:wlan5g" "wlan1"
 	;;
 tplink,c50-v3)
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"

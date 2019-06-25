@@ -622,6 +622,13 @@ define Device/tl-wr940n-v4
 endef
 TARGET_DEVICES += tl-wr940n-v4
 
+define Device/tl-wr940n-v5
+  $(Device/tl-wr940n-v4)
+  DEVICE_TITLE := TP-LINK TL-WR940N v5
+  BOARDNAME := TL-WR940N-v5
+endef
+TARGET_DEVICES += tl-wr940n-v5
+
 define Device/tl-wr940n-v6
   $(Device/tl-wr940n-v4)
   DEVICE_TITLE := TP-LINK TL-WR940N v6
@@ -629,6 +636,14 @@ define Device/tl-wr940n-v6
   TPLINK_HWID := 0x09400006
 endef
 TARGET_DEVICES += tl-wr940n-v6
+
+define Device/tl-wr949n-v6
+  $(Device/tl-wr940n-v4)
+  DEVICE_TITLE := TP-LINK TL-WR949N v6
+  BOARDNAME := TL-WR949N-v6
+  TPLINK_HWID := 0x09400006
+endef
+TARGET_DEVICES += tl-wr949n-v6
 
 define Device/tl-wr941nd-v2
   $(Device/tplink-4m)

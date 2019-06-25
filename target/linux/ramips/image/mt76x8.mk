@@ -128,20 +128,98 @@ endef
 TARGET_DEVICES += tl-wr840n-v4
 
 define Device/tl-wr840n-v5
+  $(Device/tplink)
   DTS := TL-WR840NV5
   IMAGE_SIZE := 3904k
   DEVICE_TITLE := TP-Link TL-WR840N v5
   TPLINK_FLASHLAYOUT := 4Mmtk
   TPLINK_HWID := 0x08400005
+  TPLINK_HWREV := 0x4c
+  TPLINK_HWREVADD := 0x5
+  TPLINK_HVERSION := 3
+endef
+TARGET_DEVICES += tl-wr840n-v5
+
+define Device/tl-wr840n-v5preset
+  $(Device/tplink)
+  DTS := TL-WR840NV5PRESET
+  IMAGE_SIZE := 7808k
+  DEVICE_TITLE := TP-Link TL-WR840N v5PRESET
+  TPLINK_FLASHLAYOUT := 8Mmtk
+  TPLINK_HWID := 0x08400005
   TPLINK_HWREV := 0x1
   TPLINK_HWREVADD := 0x5
   TPLINK_HVERSION := 3
-  KERNEL := $(KERNEL_DTB)
-  KERNEL_INITRAMFS := $(KERNEL_DTB) | tplink-v2-header -e
-  IMAGE/sysupgrade.bin := tplink-v2-image -s -e | append-metadata | \
-	check-size $$$$(IMAGE_SIZE)
 endef
-TARGET_DEVICES += tl-wr840n-v5
+TARGET_DEVICES += tl-wr840n-v5preset
+
+define Device/tl-wr840n-v6
+  $(Device/tplink)
+  DTS := TL-WR840NV6
+  IMAGE_SIZE := 3968k
+  DEVICE_TITLE := TP-Link TL-WR840N v6
+  TPLINK_FLASHLAYOUT := 4Mmtk
+  TPLINK_HWID := 0x08400006
+  TPLINK_HWREV := 0x1
+  TPLINK_HWREVADD := 0x6
+  TPLINK_HVERSION := 3
+  IMAGE/tftp-recovery.bin := pad-extra 64k | $$(IMAGE/factory.bin)
+endef
+TARGET_DEVICES += tl-wr840n-v6
+
+define Device/tl-wr849n-v4
+  $(Device/tl-wr840n-v4)
+  DTS := TL-WR849NV4
+  DEVICE_TITLE := TP-Link TL-WR849N v4
+  TPLINK_HWID := 0x08490004
+endef
+TARGET_DEVICES += tl-wr849n-v4
+
+define Device/tl-wr849n-v5
+  $(Device/tl-wr840n-v5)
+  DTS := TL-WR849NV5
+  DEVICE_TITLE := TP-Link TL-WR849N v5
+  TPLINK_HWID := 0x08490005  
+endef
+TARGET_DEVICES += tl-wr849n-v5
+
+define Device/tl-wr849n-v6
+  $(Device/tl-wr840n-v6)
+  DTS := TL-WR849NV6
+  DEVICE_TITLE := TP-Link TL-WR849N v6
+  TPLINK_HWID := 0x08490006
+endef
+TARGET_DEVICES += tl-wr849n-v6
+
+define Device/tl-wr849n-v62
+  $(Device/tl-wr840n-v6)
+  DTS := TL-WR849NV62
+  DEVICE_TITLE := TP-Link TL-WR849N v62
+  TPLINK_HWID := 0x08490006
+endef
+TARGET_DEVICES += tl-wr849n-v62
+
+define Device/tl-wr845n-v3
+  $(Device/tl-wr840n-v4)
+  DTS := TL-WR845NV3
+  DEVICE_TITLE := TP-Link TL-WR845N v3
+  TPLINK_HWID := 0x08450003
+  TPLINK_HWREV := 0x1
+  TPLINK_HWREVADD := 0x3
+  IMAGES = tftp-recovery.bin sysupgrade.bin
+endef
+TARGET_DEVICES += tl-wr845n-v3
+
+define Device/tl-wr845n-v4
+  $(Device/tl-wr840n-v6)
+  DTS := TL-WR845NV4
+  DEVICE_TITLE := TP-Link TL-WR845N v4
+  TPLINK_HWID := 0x08450004
+  TPLINK_HWREV := 0x1
+  TPLINK_HWREVADD := 0x4
+  IMAGES = tftp-recovery.bin sysupgrade.bin
+endef
+TARGET_DEVICES += tl-wr845n-v4
 
 define Device/tl-wr841n-v13
   $(Device/tplink)
@@ -156,7 +234,7 @@ define Device/tl-wr841n-v13
 endef
 TARGET_DEVICES += tl-wr841n-v13
 
-define Device/tplink_c20-v4
+define Device/archer-c20-v4
   $(Device/tplink)
   DTS := ArcherC20v4
   IMAGE_SIZE := 7808k
@@ -167,7 +245,7 @@ define Device/tplink_c20-v4
   TPLINK_HWREVADD := 0x4
   TPLINK_HVERSION := 3
 endef
-TARGET_DEVICES += tplink_c20-v4
+TARGET_DEVICES += archer-c20-v4
 
 define Device/tplink_c50-v3
   $(Device/tplink)

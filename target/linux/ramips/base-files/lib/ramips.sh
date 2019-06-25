@@ -55,6 +55,12 @@ ramips_board_detect() {
 	*"AR725W")
 		name="ar725w"
 		;;
+	*"ArcherC5 v4")
+		name="archer-c5-v4"
+		;;
+	*"ArcherC20 v4")
+		name="archer-c20-v4"
+		;;
 	*"ASL26555 (8M)")
 		name="asl26555-8M"
 		;;
@@ -160,6 +166,9 @@ ramips_board_detect() {
 	*"DIR-810L")
 		name="dir-810l"
 		;;
+	*"DIR-819 A1")
+                name="dir-819-a1"
+                ;;
 	*"DIR-860L B1")
 		name="dir-860l-b1"
 		;;
@@ -169,6 +178,15 @@ ramips_board_detect() {
 	*"DuZun DM06")
 		name="duzun-dm06"
 		;;
+	*"DWR-116 A1")
+                name="dl-dwr116-a1"
+                ;;
+	*"DWR-116 A2")
+                name="dl-dwr116-a2"
+                ;;
+	*"DWR-116 A3")
+                name="dl-dwr116-a3"
+                ;;
 	*"DWR-512 B")
 		name="dwr-512-b"
 		;;
@@ -258,6 +276,9 @@ ramips_board_detect() {
 		;;
 	*"JHR-N926R")
 		name="jhr-n926r"
+		;;
+	"Intelbras NCLOUD V1")
+		name="itlb-ncloud-v1"
 		;;
 	*"K2P")
 		name="k2p"
@@ -493,8 +514,32 @@ ramips_board_detect() {
 	*"TL-WR840N v4")
 		name="tl-wr840n-v4"
 		;;
+	*"TL-WR840N v5PRESET")
+		name="tl-wr840n-v5preset"
+		;;
 	*"TL-WR840N v5")
 		name="tl-wr840n-v5"
+		;;
+	*"TL-WR849N v4")
+		name="tl-wr849n-v4"
+		;;
+	*"TL-WR849N v5")
+		name="tl-wr849n-v5"
+		;;
+	*"TL-WR840N v6")
+		name="tl-wr840n-v6"
+		;;
+	*"TL-WR849N v6")
+		name="tl-wr849n-v6"
+		;;
+	*"TL-WR849N v62")
+		name="tl-wr849n-v62"
+		;;
+	*"TL-WR845N v3")
+		name="tl-wr845n-v3"
+		;;
+	*"TL-WR845N v4")
+		name="tl-wr845n-v4"
 		;;
 	*"TL-WR841N v13")
 		name="tl-wr841n-v13"
