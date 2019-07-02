@@ -1,28 +1,28 @@
 --- a/gcc/config/mips/mips-cpus.def	2017-01-01 10:07:43.905435000 -0200
-+++ b/gcc/config/mips/mips-cpus.def	2019-06-21 15:04:51.079312459 -0300
++++ b/gcc/config/mips/mips-cpus.def	2019-06-28 11:37:27.632872839 -0300
 @@ -171,3 +171,8 @@
  
  /* MIPS64 Release 6 processors.  */
  MIPS_CPU ("i6400", PROCESSOR_I6400, 69, 0)
 +
 +/* Lexra processors */
-+MIPS_CPU ("lexra4181", PROCESSOR_LEXRA4181, 1, 0)
-+MIPS_CPU ("lexra5280", PROCESSOR_LEXRA5280, 1, 0)
-+MIPS_CPU ("lexra5281", PROCESSOR_LEXRA5281, 1, 0)
++MIPS_CPU ("lx4380", PROCESSOR_LX4380, 1, 0)
++MIPS_CPU ("lx5280", PROCESSOR_LX5280, 1, 0)
++MIPS_CPU ("lx5380", PROCESSOR_LX5380, 1, 0)
 --- a/gcc/config/mips/mips-tables.opt	2017-01-01 10:07:43.905435000 -0200
-+++ b/gcc/config/mips/mips-tables.opt	2019-06-21 15:05:46.286008049 -0300
++++ b/gcc/config/mips/mips-tables.opt	2019-06-28 11:53:08.281445803 -0300
 @@ -696,3 +696,12 @@
  EnumValue
  Enum(mips_arch_opt_value) String(i6400) Value(102) Canonical
  
 +EnumValue
-+Enum(mips_arch_opt_value) String(lexra4181) Value(103) Canonical
++Enum(mips_arch_opt_value) String(lx4380) Value(103) Canonical
 +
 +EnumValue
-+Enum(mips_arch_opt_value) String(lexra5280) Value(104) Canonical
++Enum(mips_arch_opt_value) String(lx5280) Value(104) Canonical
 +
 +EnumValue
-+Enum(mips_arch_opt_value) String(lexra5281) Value(105) Canonical
++Enum(mips_arch_opt_value) String(lx5380) Value(105) Canonical
 +
 --- a/gcc/config/mips/mips.c	2019-06-21 15:50:27.070510816 -0300
 +++ b/gcc/config/mips/mips.c	2019-06-21 11:56:30.260810586 -0300
@@ -38,14 +38,14 @@
      error ("%<-march=%s%> is not compatible with the selected ABI",
  	   mips_arch_info->name);
 --- a/gcc/config/mips/mips.h	2017-01-19 23:05:25.742100000 -0200
-+++ b/gcc/config/mips/mips.h	2019-06-21 15:05:38.552006194 -0300
++++ b/gcc/config/mips/mips.h	2019-06-28 11:49:15.064453334 -0300
 @@ -287,6 +287,10 @@
  #define TARGET_SR71K                (mips_arch == PROCESSOR_SR71000)
  #define TARGET_XLP                  (mips_arch == PROCESSOR_XLP)
  
-+#define TARGET_LEXRA5281    (mips_arch == PROCESSOR_LEXRA5281)
-+#define TARGET_LEXRA        (mips_arch == PROCESSOR_LEXRA4181 \
-+              || mips_arch == PROCESSOR_LEXRA5280 || TARGET_LEXRA5281)
++#define TARGET_LX5380    (mips_arch == PROCESSOR_LX5380)
++#define TARGET_LEXRA     (mips_arch == PROCESSOR_LX4380 \
++              || mips_arch == PROCESSOR_LX5280 || TARGET_LX5380)
 +
  /* Scheduling target defines.  */
  #define TUNE_20KC		    (mips_tune == PROCESSOR_20KC)
@@ -74,7 +74,7 @@
    "%{mhard-float|msoft-float|mno-float|march=mips*:; \
       march=vr41*|march=m4k|march=4k*|march=24kc|march=24kec \
       |march=34kc|march=34kn|march=74kc|march=1004kc|march=5kc \
-+     |march=lexra* \
++     |march=lx* \
       |march=m14k*|march=m5101|march=octeon|march=xlr: -msoft-float; \
       march=*: -mhard-float}"
  
@@ -102,7 +102,7 @@
  
  /* ISA includes sync.  */
 -#define ISA_HAS_SYNC ((mips_isa >= 2 || TARGET_MIPS3900) && !TARGET_MIPS16)
-+#define ISA_HAS_SYNC ((mips_isa >= 2 || TARGET_MIPS3900 || TARGET_LEXRA5281) && !TARGET_MIPS16)
++#define ISA_HAS_SYNC ((mips_isa >= 2 || TARGET_MIPS3900 || TARGET_LX5380) && !TARGET_MIPS16)
  #define GENERATE_SYNC			\
    (target_flags_explicit & MASK_LLSC	\
     ? TARGET_LLSC && !TARGET_MIPS16	\
@@ -111,7 +111,7 @@
     because the expanders use both ISA_HAS_SYNC and ISA_HAS_LL_SC
     instructions.  */
 -#define ISA_HAS_LL_SC (mips_isa >= 2 && !TARGET_MIPS5900 && !TARGET_MIPS16)
-+#define ISA_HAS_LL_SC ((mips_isa >= 2 || TARGET_LEXRA5281) && !TARGET_MIPS5900 && !TARGET_MIPS16)
++#define ISA_HAS_LL_SC ((mips_isa >= 2 || TARGET_LX5380) && !TARGET_MIPS5900 && !TARGET_MIPS16)
  #define GENERATE_LL_SC			\
    (target_flags_explicit & MASK_LLSC	\
     ? TARGET_LLSC && !TARGET_MIPS16	\
@@ -119,21 +119,21 @@
  
  #undef CC1_SPEC
  #define CC1_SPEC "\
-+%{mlexra4181:-march=lexra4181}  \
-+%{mlexra5280:-march=lexra5280}  \
-+%{mlexra5281:-march=lexra5281}  \
++%{mlx4380:-march=lx4380}  \
++%{mlx5280:-march=lx5280}  \
++%{mlx5380:-march=lx5380}  \
  %{G*} %{EB:-meb} %{EL:-mel} %{EB:%{EL:%emay not use both -EB and -EL}} \
  %(subtarget_cc1_spec)"
  
 --- a/gcc/config/mips/mips.md	2017-04-19 01:52:54.447911000 -0300
-+++ b/gcc/config/mips/mips.md	2019-06-21 14:40:27.919095941 -0300
++++ b/gcc/config/mips/mips.md	2019-06-28 11:52:19.537373476 -0300
 @@ -69,6 +69,9 @@
    p5600
    m5100
    i6400
-+  lexra4181
-+  lexra5280
-+  lexra5281
++  lx4380
++  lx5280
++  lx5380
  ])
  
  (define_c_enum "unspec" [
