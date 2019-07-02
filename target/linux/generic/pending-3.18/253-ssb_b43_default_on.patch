@@ -1,0 +1,33 @@
+Index: linux-3.18.140/drivers/ssb/Kconfig
+===================================================================
+--- linux-3.18.140.orig/drivers/ssb/Kconfig
++++ linux-3.18.140/drivers/ssb/Kconfig
+@@ -29,6 +29,7 @@ config SSB_SPROM
+ config SSB_BLOCKIO
+ 	bool
+ 	depends on SSB
++	default y
+ 
+ config SSB_PCIHOST_POSSIBLE
+ 	bool
+@@ -49,7 +50,7 @@ config SSB_PCIHOST
+ config SSB_B43_PCI_BRIDGE
+ 	bool
+ 	depends on SSB_PCIHOST
+-	default n
++	default y
+ 
+ config SSB_PCMCIAHOST_POSSIBLE
+ 	bool
+Index: linux-3.18.140/drivers/bcma/Kconfig
+===================================================================
+--- linux-3.18.140.orig/drivers/bcma/Kconfig
++++ linux-3.18.140/drivers/bcma/Kconfig
+@@ -17,6 +17,7 @@ config BCMA
+ config BCMA_BLOCKIO
+ 	bool
+ 	depends on BCMA
++	default y
+ 
+ config BCMA_HOST_PCI_POSSIBLE
+ 	bool

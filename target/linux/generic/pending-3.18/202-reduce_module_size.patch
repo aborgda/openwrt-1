@@ -1,0 +1,13 @@
+Index: linux-3.18.140/Makefile
+===================================================================
+--- linux-3.18.140.orig/Makefile
++++ linux-3.18.140/Makefile
+@@ -408,7 +408,7 @@ KBUILD_CFLAGS_KERNEL :=
+ KBUILD_AFLAGS   := -D__ASSEMBLY__
+ KBUILD_AFLAGS_MODULE  := -DMODULE
+ KBUILD_CFLAGS_MODULE  := -DMODULE
+-KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
++KBUILD_LDFLAGS_MODULE = -T $(srctree)/scripts/module-common.lds $(if $(CONFIG_PROFILING),,-s)
+ 
+ # Read KERNELRELEASE from include/config/kernel.release (if it exists)
+ KERNELRELEASE = $(shell cat include/config/kernel.release 2> /dev/null)
