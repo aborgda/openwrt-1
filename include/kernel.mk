@@ -76,7 +76,7 @@ endif
 
 ifneq (,$(findstring uml,$(BOARD)))
   LINUX_KARCH=um
-else ifneq (,$(findstring rlx,$(BOARD)))
+else ifneq (,$(findstring realtek,$(BOARD)))
   LINUX_KARCH=rlx
 else ifneq (,$(findstring $(ARCH) , aarch64 aarch64_be ))
   LINUX_KARCH := arm64
