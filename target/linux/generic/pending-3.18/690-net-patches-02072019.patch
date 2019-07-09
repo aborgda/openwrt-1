@@ -218,6 +218,18 @@ Index: linux-3.18.140/net/ipv4/tcp_output.c
 +	mss_now = max(mss_now, sock_net(sk)->ipv4.sysctl_tcp_min_snd_mss);
  	return mss_now;
  }
+
+Index: linux-3.18.140/include/uapi/linux/snmp.h
+===================================================================
+--- linux-3.18.140.orig/include/uapi/linux/snmp.h
++++ linux-3.18.140/include/uapi/linux/snmp.h
+@@ -265,6 +265,7 @@
+ 	LINUX_MIB_TCPWANTZEROWINDOWADV,		/* TCPWantZeroWindowAdv */
+ 	LINUX_MIB_TCPSYNRETRANS,		/* TCPSynRetrans */
+ 	LINUX_MIB_TCPORIGDATASENT,		/* TCPOrigDataSent */
++	LINUX_MIB_TCPWQUEUETOOBIG,		/* TCPWqueueTooBig */
+ 	__LINUX_MIB_MAX
+ };
  
 Index: linux-3.18.140/net/ipv4/proc.c
 ===================================================================
