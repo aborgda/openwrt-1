@@ -21,4 +21,12 @@ endef
 
 include $(INCLUDE_DIR)/target.mk
 
+ifeq ($(SUBTARGET),rtl8197d)
+define Kernel/Patch
+	mkdir -p $(LINUX_DIR)/arch/rlx/soc-rtl819xd/
+	cp $(CURDIR)/config/$(PROFILE).h $(LINUX_DIR)/arch/rlx/soc-rtl819xd/mach_rtl819xd.h
+	$(Kernel/Patch/Default)
+endef
+endif
+
 $(eval $(call BuildTarget))
