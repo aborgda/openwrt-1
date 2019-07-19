@@ -33,3 +33,8 @@ static struct gpio_keys_button rtl819xd_buttons[] __initdata = {
 
 };
 
+static struct mtd_partition rtl8196_parts1[] = {
+       {name: "boot", offset: 0, size:0x30000,},
+       {name: "linux", offset: 0x30000,    size:0x130000,}, //0x130000+ rootfs
+       {name: "rootfs", offset: 0x130000, size:0x2d0000,},
+};

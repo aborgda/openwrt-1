@@ -1,4 +1,15 @@
 
+#ifndef __MACH_RTL_OPENWRT__
+#define __MACH_RTL_OPENWRT__
+
+#include <linux/mtd/mtd.h>
+#include <linux/mtd/map.h>
+#include <linux/mtd/partitions.h>
+
+#include "bspchip.h"
+#include "dev_leds_gpio.h"
+#include "dev-gpio-buttons.h"
+
 #define RTL819X_BUTTONS_POLL_INTERVAL   100 // orignal is 20 , fine-tune to 100
 #define RTL819X_BUTTONS_DEBOUNCE_INTERVAL   3*RTL819X_BUTTONS_POLL_INTERVAL
 #define RTL_MACHINE_NAME "DIR-815 D1"
@@ -36,7 +47,7 @@ static struct gpio_led rtl819xd_leds_gpio[] __initdata = {
                 .active_low     = 1,
         },
         {
-                .name           = "rtl819x:green:lan5",
+                .name           = "rtl819x:green:wan",
                 .gpio           = BSP_GPIO_PIN_B6,
                 .active_low     = 1,
         },
@@ -63,3 +74,12 @@ static struct gpio_keys_button rtl819xd_buttons[] __initdata = {
 
 };
 
+static struct mtd_partition rtl8196_parts1[] = {
+       {name: "boot", offset: 0, size:0x30000,},
+       {name: "kernel", offset: 0x30000,    size:0x1d0000,}, 
+       {name: "rootfs", offset: 0x200000,    size:0x5e0000,},
+       {name: "factory", offset: 0x7e0000, size:0x20000,},
+       {name: "firmware", offset: 0x30000, size:0x7b0000,},
+};
+
+#endif
