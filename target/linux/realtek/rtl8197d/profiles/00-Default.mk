@@ -5,13 +5,13 @@
 # See /LICENSE for more information.
 #
 
-define Profile/GENERIC8197D
+define Profile/Default
   NAME:=Generic RTL8197D
   PACKAGES:=-wpad-mini
 endef
 
-define Profile/GENERIC8197D/Description
+define Profile/Default/Description
         Realtek RTL8197D SOC
 endef
 
-$(eval $(call Profile,GENERIC8197D))
+$(eval $(call Profile,Default))

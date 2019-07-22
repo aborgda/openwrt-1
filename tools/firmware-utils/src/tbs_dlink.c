@@ -1,4 +1,5 @@
 
+#include <getopt.h>             /* for getopt() */
 #include "tbs_dlink.h"
 
 int ConvertEndian(int val,int endian)
@@ -55,7 +56,7 @@ int tbs_crc_file(FILE *fp , unsigned int offset , unsigned long *checksum)
   return 1;
 }
 
-int CreateImgFile(const unsigned char *outimg)
+int CreateImgFile(const unsigned char *outimg, int board_endian)
 {
   char *img_orig;
   update_hdr_t  image_header;
@@ -127,15 +128,15 @@ int CreateImgFile(const unsigned char *outimg)
         Deal with image header            
 ******************************************************************/
 
-  image_header.rootfs_offset = ConvertEndian(image_header.rootfs_offset, LITTLEENDIAN);
-  image_header.rootfs_size = ConvertEndian(image_header.rootfs_size, LITTLEENDIAN);
-  image_header.kernel_offset = ConvertEndian(image_header.kernel_offset, LITTLEENDIAN);
-  image_header.kernel_size = ConvertEndian(image_header.kernel_size, LITTLEENDIAN);
-  image_header.image_len = ConvertEndian(image_header.image_len, LITTLEENDIAN);
+  image_header.rootfs_offset = ConvertEndian(image_header.rootfs_offset, board_endian);
+  image_header.rootfs_size = ConvertEndian(image_header.rootfs_size, board_endian);
+  image_header.kernel_offset = ConvertEndian(image_header.kernel_offset, board_endian);
+  image_header.kernel_size = ConvertEndian(image_header.kernel_size, board_endian);
+  image_header.image_len = ConvertEndian(image_header.image_len, board_endian);
 
   if( tbs_crc_file(pfout , sizeof(update_hdr_t) , &checksum_result ) )
   {
-    image_header.image_checksum = ConvertEndian( checksum_result , LITTLEENDIAN);
+    image_header.image_checksum = ConvertEndian( checksum_result , board_endian);
 
     if(fseek(pfout,0,SEEK_SET) == -1)
     {
@@ -161,7 +162,7 @@ int CreateImgFile(const unsigned char *outimg)
 ******************************************************************/
   
   tbs_crc_file( pfout , 0 , &checksum_result );
-  checksum_result = ConvertEndian( checksum_result, LITTLEENDIAN);
+  checksum_result = ConvertEndian( checksum_result, board_endian);
 
   if(fseek(pfout,0,SEEK_END) == -1)
   {
@@ -186,5 +187,25 @@ int CreateImgFile(const unsigned char *outimg)
 
 int main(int argc, char *argv[])
 {
-  return CreateImgFile(argv[1]);
+  int ret = 0;
+  int bend = LITTLEENDIAN;
+  char c;
+
+  while ((c = getopt(argc, argv, "b")) != -1) {
+    switch (c) {
+      case 'b':
+        bend = BIGENDIAN;
+        break;
+      default:
+	printf("invalid option: -%c\n", optopt);
+        break;
+    }
+  }
+  
+  if (optind == argc) {
+     printf("no output file specified\n");
+       exit(1);
+  }
+
+  return CreateImgFile(argv[++optind], bend);
 }

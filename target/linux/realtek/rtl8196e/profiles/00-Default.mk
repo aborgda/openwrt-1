@@ -5,13 +5,13 @@
 # See /LICENSE for more information.
 #
 
-define Profile/DIR815D1
-  NAME:=D-Link DIR-815 D1
+define Profile/Default
+  NAME:=Generic RTL8196E without WiFi
   PACKAGES:=-wpad-mini
 endef
 
-define Profile/DIR815D1/Description
-        D-Link DIR-815 version D1
+define Profile/Default/Description
+        Realtek RTL8196E SOC
 endef
 
-$(eval $(call Profile,DIR815D1))
+$(eval $(call Profile,Default))
