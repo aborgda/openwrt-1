@@ -1804,7 +1804,7 @@ define Build/Prepare
 	$(PKG_UNPACK)
 ifeq ($(CONFIG_PACKAGE_kmod-rtl8192cd),y)
 	mkdir -p $(PKG_BUILD_DIR)/drivers/net/wireless/realtek
-	$(CP) -r $(DL_DIR)/rtl8192cd $(PKG_BUILD_DIR)/drivers/net/wireless/realtek
+	$(CP) -r $(LINUX_DIR)/drivers/net/wireless/rtl8192cd $(PKG_BUILD_DIR)/drivers/net/wireless/realtek
 endif
 	$(Build/Patch)
 	$(TAR) -C $(PKG_BUILD_DIR) -xzf $(DL_DIR)/$(IPW2100_NAME)-$(IPW2100_VERSION).tgz
