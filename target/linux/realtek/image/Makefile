@@ -7,8 +7,8 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
-define Build/tbs_dlink
-  $(STAGING_DIR_HOST)/bin/tbs_dlink $@
+define Build/tbs_dlink_big
+  $(STAGING_DIR_HOST)/bin/tbs_dlink -b $(1) $@
 endef
 
 define Device/Default
@@ -21,7 +21,8 @@ define Device/DIR815D1
   DEVICE_TITLE := DIR 815 D1
   KERNEL := kernel-bin | lzma
   IMAGES := factory.bin
-  IMAGE/factory.bin := append-kernel | pad-to 1900544 | append-rootfs | pad-rootfs | tbs_dlink -b
+  IMAGE/factory.bin := append-kernel | pad-to 1900544 | append-rootfs | pad-rootfs | \
+	tbs_dlink_big -k 0x197400 -r 0x4DFF70 -g BR -m DIR825G1 -p RTL8197DL_AC1200 
 endef
 TARGET_DEVICES += DIR815D1
 

@@ -56,7 +56,8 @@ int tbs_crc_file(FILE *fp , unsigned int offset , unsigned long *checksum)
   return 1;
 }
 
-int CreateImgFile(const unsigned char *outimg, int board_endian)
+int CreateImgFile(const unsigned char *outimg, unsigned long ksize, unsigned long rsize, int board_endian, const unsigned char *region, 
+	const unsigned char *model, const unsigned char *product)
 {
   char *img_orig;
   update_hdr_t  image_header;
@@ -73,18 +74,18 @@ int CreateImgFile(const unsigned char *outimg, int board_endian)
     
   memset(&image_header,0,sizeof(update_hdr_t));
 
-  strcpy( image_header.product, TBS_PRODUCT);
+  strcpy( image_header.product, product);
   strcpy( image_header.version, TBS_PRODVERSION);
   strcpy( image_header.img_type, TBS_IMGTYPE);
   strcpy( image_header.board_id, TBS_BOARDID);
 
   //for netgear
-  strcpy( image_header.region, TBS_REGION);
-  strcpy( image_header.model_name,  TBS_MODEL_NAME);
+  strcpy( image_header.region, region);
+  strcpy( image_header.model_name,  model);
   strcpy( image_header.swversion,  TBS_SWVERSION);
 
-  image_header.kernel_size = 0x1D0000;
-  image_header.rootfs_size = 0x45E000;
+  image_header.kernel_size = ksize;
+  image_header.rootfs_size = rsize;
 
   img_orig = (unsigned char *)malloc(image_header.kernel_size+image_header.rootfs_size);
   memset(img_orig, 0xffff, image_header.kernel_size+image_header.rootfs_size);
@@ -190,11 +191,31 @@ int main(int argc, char *argv[])
   int ret = 0;
   int bend = LITTLEENDIAN;
   char c;
+  unsigned long ksize = 0x1D0000;
+  unsigned long rsize = 0x45E000;
+  unsigned char region[REGION_LEN];
+  unsigned char model[MODEL_LEN]; 
+  unsigned char product[PRODUCT_NAME_LEN];
 
-  while ((c = getopt(argc, argv, "b")) != -1) {
+  while ((c = getopt(argc, argv, "br:k:g:m:p:")) != -1) {
     switch (c) {
       case 'b':
         bend = BIGENDIAN;
+        break;
+      case 'r':
+        sscanf(optarg, "0x%x", &rsize);
+        break;
+      case 'k':
+        sscanf(optarg, "0x%x", &ksize);
+        break;
+      case 'm':
+        strcpy(model, optarg);
+        break;
+      case 'g':
+        strcpy(region, optarg);
+        break;
+      case 'p':
+        strcpy(product, optarg);
         break;
       default:
 	printf("invalid option: -%c\n", optopt);
@@ -207,5 +228,5 @@ int main(int argc, char *argv[])
        exit(1);
   }
 
-  return CreateImgFile(argv[++optind], bend);
+  return CreateImgFile(argv[optind], ksize, rsize, bend, region, model, product);
 }
