@@ -21,12 +21,12 @@ static struct gpio_led rtl819xd_leds_gpio[] __initdata = {
 		.gpio		= BSP_GPIO_PIN_A6,
 		.active_low	= 1,
 	},
-        {
+/*        {
                 .name           = "rtl819x:green:usb",
                 .gpio           = BSP_GPIO_PIN_B0,
                 .active_low     = 1,
         },
-        {
+*/       {
                 .name           = "rtl819x:green:lan1",
                 .gpio           = BSP_GPIO_PIN_B2,
                 .active_low     = 1,
@@ -74,12 +74,12 @@ static struct gpio_keys_button rtl819xd_buttons[] __initdata = {
 
 };
 
-static struct mtd_partition rtl8196_parts1[] = {
-       {name: "boot", offset: 0, size:0x30000,},
-       {name: "kernel", offset: 0x30000, size:0x1d0000,}, 
-       {name: "rootfs", offset: 0x200000, size:0x5e0000,},
-       {name: "factory", offset: 0x7e0000, size:0x20000,},
-       {name: "firmware", offset: 0x30000, size:0x7b0000,},
+static struct mtd_partition realtek_flash_partitions[] = {
+       {name: "boot", offset: 0, size: 0x30000, mask_flags: MTD_WRITEABLE,},
+       {name: "kernel", offset: 0x30000, size: 0x1d0000,}, 
+       {name: "rootfs", offset: 0x200000, size: 0x5e0000,},
+       {name: "factory", offset: 0x7e0000, size: 0x20000, mask_flags: MTD_WRITEABLE,},
+       {name: "firmware", offset: 0x30000, size: 0x7b0000,},
 };
 
 #endif
