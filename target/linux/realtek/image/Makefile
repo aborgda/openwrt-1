@@ -19,7 +19,7 @@ define Device/DIR815D1
   DEV_PROFILE := DIR815D1
   IMAGE_SIZE := 7936k
   DEVICE_TITLE := DIR 815 D1
-  BLOCKSIZE := 4k
+  BLOCKSIZE := 64k
   KERNEL := kernel-bin | lzma
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin := append-kernel | pad-to 1900544 | append-rootfs | pad-rootfs | \

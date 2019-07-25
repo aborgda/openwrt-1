@@ -21,12 +21,12 @@ static struct gpio_led rtl819xd_leds_gpio[] __initdata = {
 		.gpio		= BSP_GPIO_PIN_A6,
 		.active_low	= 1,
 	},
-        {
+/*        {
                 .name           = "rtl819x:green:usb",
                 .gpio           = BSP_GPIO_PIN_B0,
                 .active_low     = 1,
         },
-        {
+*/        {
                 .name           = "rtl819x:green:lan1",
                 .gpio           = BSP_GPIO_PIN_B2,
                 .active_low     = 1,
