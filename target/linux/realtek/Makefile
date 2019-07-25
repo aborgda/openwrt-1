@@ -29,4 +29,7 @@ define Kernel/Patch
 endef
 endif
 
+DEFAULT_PACKAGES += \
+        kmod-gpio-button-hotplug
+
 $(eval $(call BuildTarget))
