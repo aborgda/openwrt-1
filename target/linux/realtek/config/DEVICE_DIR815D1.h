@@ -12,7 +12,7 @@
 
 #define RTL819X_BUTTONS_POLL_INTERVAL   100 // orignal is 20 , fine-tune to 100
 #define RTL819X_BUTTONS_DEBOUNCE_INTERVAL   3*RTL819X_BUTTONS_POLL_INTERVAL
-#define RTL_MACHINE_NAME "DIR-815 D1"
+#define RTL_MACHINE_NAME "Dlink DIR-815 D1"
 
 static struct gpio_led rtl819xd_leds_gpio[] __initdata = {
 

@@ -13,7 +13,7 @@ realtek_board_detect() {
 	"GENERIC")
 		name="rlx"
 		;;
-	"DIR-815 D1")
+	*"DIR-815 D1")
 		name="dir-815-d1"
 		;;
 	esac
