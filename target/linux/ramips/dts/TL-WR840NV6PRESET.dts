@@ -80,23 +80,11 @@
 
 		partition@10000 {
 			label = "firmware";
-			reg = <0x10000 0x3c0000>;
+			reg = <0x10000 0x3e0000>;
 		};
 
-		config: partition@3d0000 {
-			label = "config";
-			reg = <0x3d0000 0x10000>;
-			read-only;
-		};
-
-		ispconfig: partition@3e0000 {
-			label = "ispconfig";
-			reg = <0x3e0000 0x10000>;
-			read-only;
-		};
-
-		radio: partition@3f0000 {
-			label = "radio";
+		factory: partition@3f0000 {
+			label = "factory";
 			reg = <0x3f0000 0x10000>;
 			read-only;
 		};
@@ -113,12 +101,12 @@
 
 &wmac {
 	status = "okay";
-	mtd-mac-address = <&radio 0xf100>;
-	mediatek,mtd-eeprom = <&radio 0x10000>;
+	mtd-mac-address = <&factory 0xf100>;
+	mediatek,mtd-eeprom = <&factory 0x10000>;
 };
 
 &ethernet {
-	mtd-mac-address = <&radio 0xf100>;
+	mtd-mac-address = <&factory 0xf100>;
 	mediatek,portmap = "wllll";
 };
 
