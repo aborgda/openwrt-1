@@ -41,6 +41,7 @@ get_status_led() {
 	pwh2004|\
 	r6220|\
 	archer-c20-v4|\
+	archer-c20-v5|\
 	tplink,c20-v4|\
 	tplink,c50-v3|\
 	tplink,tl-mr3420-v5|\

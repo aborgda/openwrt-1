@@ -208,6 +208,7 @@ ramips_setup_interfaces()
 	rb750gr3|\
 	rt-n14u|\
 	archer-c20-v4|\
+	archer-c20-v5|\
 	tplink,c20-v4|\
 	tplink,c50-v3|\
 	tplink,tl-mr3420-v5|\

@@ -255,6 +255,19 @@ define Device/archer-c20-v4
 endef
 TARGET_DEVICES += archer-c20-v4
 
+define Device/archer-c20-v5
+  $(Device/tplink)
+  DTS := ArcherC20v5
+  IMAGE_SIZE := 7808k
+  DEVICE_TITLE := TP-Link ArcherC20 v5
+  TPLINK_FLASHLAYOUT := 8Mmtk
+  TPLINK_HWID := 0xc200005
+  TPLINK_HWREV := 0x1
+  TPLINK_HWREVADD := 0x5
+  TPLINK_HVERSION := 3
+endef
+TARGET_DEVICES += archer-c20-v5
+
 define Device/tplink_c50-v3
   $(Device/tplink)
   DTS := ArcherC50V3
