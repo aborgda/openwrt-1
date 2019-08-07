@@ -30,6 +30,6 @@ endef
 endif
 
 DEFAULT_PACKAGES += \
-        kmod-gpio-button-hotplug
+        kmod-gpio-button-hotplug swconfig
 
 $(eval $(call BuildTarget))
