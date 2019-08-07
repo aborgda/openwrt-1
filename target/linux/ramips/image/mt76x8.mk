@@ -281,7 +281,7 @@ define Device/tplink_c50-v3
 endef
 TARGET_DEVICES += tplink_c50-v3
 
-define Device/tplink_c50-v4
+define Device/archer-c50-v4
   $(Device/tplink)
   DTS := ArcherC50V4
   IMAGE_SIZE := 7616k
@@ -291,10 +291,9 @@ define Device/tplink_c50-v4
   TPLINK_HWREV := 0x93
   TPLINK_HWREVADD := 0x2
   TPLINK_HVERSION := 3
-  DEVICE_PACKAGES := kmod-mt76x2
   IMAGES := sysupgrade.bin
 endef
-TARGET_DEVICES += tplink_c50-v4
+TARGET_DEVICES += archer-c50-v4
 
 define Device/tplink_tl-mr3020-v3
   $(Device/tplink)

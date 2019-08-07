@@ -374,7 +374,8 @@ platform_do_upgrade() {
 	ubnt-erx-sfp)
 		nand_do_upgrade "$ARGV"
 		;;
-	tplink,c50-v4)
+	tplink,c50-v4|\
+	archer-c50-v4)
 		MTD_ARGS="-t romfile"
 		default_do_upgrade "$ARGV"
 		;;
