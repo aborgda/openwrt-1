@@ -268,6 +268,7 @@ platform_check_image() {
 	tplink,c20-v1|\
 	tplink,c20-v4|\
 	tplink,c50-v3|\
+	archer-c50-v4|\
 	tplink,tl-mr3420-v5|\
 	tplink,tl-wr842n-v5|\
 	tplink,tl-wr902ac-v3|\

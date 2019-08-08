@@ -64,9 +64,6 @@ ramips_board_detect() {
 	*"ArcherC20 v5")
 		name="archer-c20-v5"
 		;;
-	*"ArcherC50 v4")
-		name="archer-c50-v4"
-		;;
 	*"ASL26555 (8M)")
 		name="asl26555-8M"
 		;;
