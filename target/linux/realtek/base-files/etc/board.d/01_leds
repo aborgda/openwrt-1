@@ -2,14 +2,6 @@
 
 . /lib/functions/uci-defaults.sh
 
-set_usb_led() {
-        ucidef_set_led_usbdev "usb" "USB" "${1}" "${2:-1-1}"
-}
-
-set_wifi_led() {
-        ucidef_set_led_netdev "wifi_led" "wifi" "${1}" "${2:-wlan0}"
-}
-
 board_config_update
 
 board=$(cat /tmp/sysinfo/board_name)
@@ -21,8 +13,8 @@ case $board in
         ucidef_set_led_switch "lan3" "lan3" "rtl819x:green:lan3" "switch0" "0x2"
         ucidef_set_led_switch "lan4" "lan4" "rtl819x:green:lan4" "switch0" "0x1"
         ucidef_set_led_switch "wan" "wan" "rtl819x:green:wan" "switch0" "0x10"
-	set_wifi_led "rtl8192cd:green:wifi2" "wlan0"
-	set_wifi_led "rtl8192cd:green:wifi5" "wlan1"
+	ucidef_set_led_netdev "wifi_led_2g" "wifi_2g" "rtl8192cd:green:wifi2" "wlan0"
+	ucidef_set_led_netdev "wifi_led_5g" "wifi_5g" "rtl8192cd:green:wifi5" "wlan1"
         ;;  
 esac
 
