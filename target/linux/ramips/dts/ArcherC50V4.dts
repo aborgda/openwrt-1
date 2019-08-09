@@ -18,12 +18,12 @@
 			gpios = <&gpio0 11 GPIO_ACTIVE_LOW>;
 		};
 
-		wlan2 {
+		wlan2g {
 			label = "archer-c50-v4:green:wlan2g";
 			gpios = <&gpio1 12 GPIO_ACTIVE_LOW>;
 		};
 
-		wlan5 {
+		wlan5g {
 			label = "archer-c50-v4:green:wlan5g";
 			gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
 		};
