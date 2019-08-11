@@ -258,13 +258,14 @@ TARGET_DEVICES += archer-c20-v4
 define Device/archer-c20-v5
   $(Device/tplink)
   DTS := ArcherC20v5
-  IMAGE_SIZE := 7808k
+  IMAGE_SIZE := 7616k
   DEVICE_TITLE := TP-Link ArcherC20 v5
-  TPLINK_FLASHLAYOUT := 8Mmtk
-  TPLINK_HWID := 0xc200005
+  TPLINK_FLASHLAYOUT := 8MSUmtk
+  TPLINK_HWID := 0x0C200005
   TPLINK_HWREV := 0x1
   TPLINK_HWREVADD := 0x5
   TPLINK_HVERSION := 3
+  IMAGES := sysupgrade.bin
 endef
 TARGET_DEVICES += archer-c20-v5
 

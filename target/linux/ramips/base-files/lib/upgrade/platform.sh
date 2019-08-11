@@ -376,7 +376,8 @@ platform_do_upgrade() {
 		nand_do_upgrade "$ARGV"
 		;;
 	tplink,c50-v4|\
-	archer-c50-v4)
+	archer-c50-v4|\
+	archer-c20-v5)
 		MTD_ARGS="-t romfile"
 		default_do_upgrade "$ARGV"
 		;;
