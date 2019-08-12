@@ -222,4 +222,4 @@ static void __init archer_c60_v2_setup(void)
 }
 
 MIPS_MACHINE(ATH79_MACH_ARCHER_C60_V2, "ARCHER-C60-V2",
-	"TP-LINK Archer C60 v2", archer_c60_v2_setup);
+	"TP-LINK ArcherC60 v2", archer_c60_v2_setup);
