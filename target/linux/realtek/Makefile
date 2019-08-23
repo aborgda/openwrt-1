@@ -29,6 +29,14 @@ define Kernel/Patch
 endef
 endif
 
+ifeq ($(SUBTARGET),rtl8196e)
+define Kernel/Patch
+	mkdir -p $(LINUX_DIR)/arch/rlx/soc-rtl8196e/
+	cp $(CURDIR)/config/$(PROFILE).h $(LINUX_DIR)/arch/rlx/soc-rtl8196e/mach_rtl.h
+	$(Kernel/Patch/Default)
+endef
+endif
+
 DEFAULT_PACKAGES += \
         kmod-gpio-button-hotplug swconfig
 

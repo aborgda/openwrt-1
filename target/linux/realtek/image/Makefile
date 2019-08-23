@@ -15,6 +15,7 @@ define Device/Default
   PROFILES = Default $$(DEV_PROFILE)
 endef
 
+ifeq ($(SUBTARGET),rtl8197d)
 define Device/DIR815D1
   DEV_PROFILE := DIR815D1
   IMAGE_SIZE := 7936k
@@ -26,6 +27,20 @@ define Device/DIR815D1
   IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | append-rootfs | pad-rootfs | append-metadata 
 endef
 TARGET_DEVICES += DIR815D1
+endif
+
+ifeq ($(SUBTARGET),rtl8196e)
+define Device/GWR300
+  DEV_PROFILE := GWR300
+  IMAGE_SIZE := 3904k
+  DEVICE_TITLE := Greatek GWR 300N
+  KERNEL := kernel-bin | lzma
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin := append-kernel | append-rootfs | pad-rootfs 
+  IMAGE/sysupgrade.bin := append-kernel | append-rootfs | pad-rootfs | append-metadata 
+endef
+TARGET_DEVICES += GWR300
+endif
 
 define Image/Build/Initramfs
         $(call Image/Build/Profile/$(PROFILE),initramfs)
