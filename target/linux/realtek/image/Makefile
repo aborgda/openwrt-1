@@ -7,12 +7,102 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
+define Build/loader-common
+  rm -rf $@.src
+  $(MAKE) -C lzma-loader \
+     PKG_BUILD_DIR="$@.src" \
+     TARGET_DIR="$(dir $@)" LOADER_NAME="$(notdir $@)" \
+     BOARD="$(DEV_PROFILE)" \
+     LZMA_TEXT_START=0x81000000 LOADADDR=0x80000000 \
+     $(1) compile loader.bin
+  mv "$@.bin" "$@"
+  rm -rf $@.src
+endef
+
+define Build/loader-cmdline-compile
+  $(call Build/loader-common,LOADER_DATA="$@" KERNEL_CMDLINE="$(CMDLINE)")
+endef
+
+define Build/cvimg
+        $(STAGING_DIR_HOST)/bin/cvimg \
+                -i $@ \
+                -o $@.new \
+                $(1) && mv $@.new $@ || rm -f $@
+endef
+
+define Build/cvimg-kernel
+        $(call Build/cvimg, \
+                -e $(CVIMG_LOADER_START_ADDR) \
+                -b $(CVIMG_KERNEL_BURN_ADDR) \
+                -c new \
+                -t kernel \
+                $(1))
+endef
+
+define Build/cvimg-fw
+        $(call Build/cvimg, \
+                -e $(CVIMG_LOADER_START_ADDR) \
+                -b $(CVIMG_KERNEL_BURN_ADDR) \
+                -c new \
+                -t fw \
+                $(1))
+endef
+
+define Build/cvimg-custom
+        $(call Build/cvimg, \
+                -e $(CVIMG_LOADER_START_ADDR) \
+                -b $(CVIMG_KERNEL_BURN_ADDR) \
+                -s $(CVIMG_CUSTOM_SIGNATURE) \
+                $(1))
+endef
+
+define Build/cvimg-rootfs
+        $(call Build/cvimg, \
+                -e $(CVIMG_ROOTFS_BURN_ADDR) \
+                -b $(CVIMG_ROOTFS_BURN_ADDR) \
+                -c new \
+                -t rootfs \
+                $(1))
+endef
+
+define Build/append-cvimg-rootfs
+        cp $(IMAGE_ROOTFS) $(IMAGE_ROOTFS).new && \
+        $(STAGING_DIR_HOST)/bin/padjffs2 $(IMAGE_ROOTFS).new \
+                $(if $(BLOCKSIZE),$(BLOCKSIZE:%k=%),4 8 16 64 128 256) && \
+        $(STAGING_DIR_HOST)/bin/cvimg \
+                -i $(IMAGE_ROOTFS).new \
+                -o $(IMAGE_ROOTFS).new \
+                -e $(CVIMG_ROOTFS_BURN_ADDR) \
+                -b $(CVIMG_ROOTFS_BURN_ADDR) \
+                -c new \
+                -t rootfs \
+                $(1) && (dd if=$(IMAGE_ROOTFS).new >> $@ && \
+                        rm -f $(IMAGE_ROOTFS).new) || rm -f $@ $(IMAGE_ROOTFS).new
+endef
+
+define Build/append-fake-rootfs
+        $(call Build/cvimg, \
+                -a $(BLOCKSIZE) \
+                -f)
+endef
+
+define Build/cvimg-pad-rootfs
+        $(call Build/cvimg, \
+                -b $(CVIMG_KERNEL_BURN_ADDR) \
+                -c new \
+                -a $(BLOCKSIZE) \
+                -t rootfs \
+                -j)
+endef
+
 define Build/tbs_dlink_big
   $(STAGING_DIR_HOST)/bin/tbs_dlink -b $(1) $@
 endef
 
 define Device/Default
-  PROFILES = Default $$(DEV_PROFILE)
+  BLOCKSIZE := 4k
+  PROFILES := Default $$(DEV_PROFILE)
+  CVIMG_ROOTFS_BURN_ADDR := 0
 endef
 
 ifeq ($(SUBTARGET),rtl8197d)
@@ -34,10 +124,13 @@ define Device/GWR300
   DEV_PROFILE := GWR300
   IMAGE_SIZE := 3904k
   DEVICE_TITLE := Greatek GWR 300N
-  KERNEL := kernel-bin | lzma
+  CVIMG_KERNEL_BURN_ADDR := 0x18000
+  CVIMG_LOADER_START_ADDR := 0x81000000
+  CMDLINE := console=ttyS0,38400 
+  KERNEL := kernel-bin | lzma | loader-cmdline-compile
   IMAGES := factory.bin sysupgrade.bin
-  IMAGE/factory.bin := append-kernel | append-rootfs | pad-rootfs 
-  IMAGE/sysupgrade.bin := append-kernel | append-rootfs | pad-rootfs | append-metadata 
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-fw | cvimg-pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-fw | pad-rootfs
 endef
 TARGET_DEVICES += GWR300
 endif
