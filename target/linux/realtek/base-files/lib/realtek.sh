@@ -16,8 +16,8 @@ realtek_board_detect() {
 	*"DIR-815 D1")
 		name="dir-815-d1"
 		;;
-	*"GWR300N V1")
-		name="gwr-300-v1"
+	*"GWR-300N V1")
+		name="gwr-300n-v1"
 		;;
 	esac
 

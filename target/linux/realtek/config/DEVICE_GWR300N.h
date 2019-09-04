@@ -12,7 +12,7 @@
 
 #define RTL819X_BUTTONS_POLL_INTERVAL   100 // orignal is 20 , fine-tune to 100
 #define RTL819X_BUTTONS_DEBOUNCE_INTERVAL   3*RTL819X_BUTTONS_POLL_INTERVAL
-#define RTL_MACHINE_NAME "Greatek GWR300N V1"
+#define RTL_MACHINE_NAME "Greatek GWR-300N V1"
 
 static struct gpio_led rtl819xd_leds_gpio[] __initdata = {
 
@@ -56,10 +56,7 @@ static struct gpio_keys_button rtl819xd_buttons[] __initdata = {
 
 static struct mtd_partition realtek_flash_partitions[] = {
        {name: "boot", offset: 0, size: 0x18000, mask_flags: MTD_WRITEABLE,},
-       {name: "kernel", offset: 0x18000, size: 0x1d0000,}, 
-/*       {name: "rootfs", offset: 0x200000, size: 0x5e0000,},
-       {name: "factory", offset: 0x7e0000, size: 0x20000, mask_flags: MTD_WRITEABLE,},
-*/       {name: "firmware", offset: 0x18000, size: 0x3E8000,},
+       {name: "firmware", offset: 0x18000, size: 0x3E8000,},
 };
 
 #endif
