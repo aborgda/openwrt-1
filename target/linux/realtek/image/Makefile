@@ -120,8 +120,8 @@ TARGET_DEVICES += DIR815D1
 endif
 
 ifeq ($(SUBTARGET),rtl8196e)
-define Device/GWR300
-  DEV_PROFILE := GWR300
+define Device/GWR300N
+  DEV_PROFILE := GWR300N
   IMAGE_SIZE := 3904k
   DEVICE_TITLE := Greatek GWR 300N
   CVIMG_KERNEL_BURN_ADDR := 0x18000
@@ -132,7 +132,7 @@ define Device/GWR300
   IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-fw | cvimg-pad-rootfs
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-fw | pad-rootfs
 endef
-TARGET_DEVICES += GWR300
+TARGET_DEVICES += GWR300N
 endif
 
 define Image/Build/Initramfs
