@@ -54,7 +54,7 @@ static struct gpio_keys_button rtl819xd_buttons[] __initdata = {
 	}
 };
 
-static struct mtd_partition realtek_flash_partitions[] = {
+static struct mtd_partition rtl8196_parts1[] = {
        {name: "boot", offset: 0, size: 0x18000, mask_flags: MTD_WRITEABLE,},
        {name: "firmware", offset: 0x18000, size: 0x3E8000,},
 };

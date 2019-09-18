@@ -4,8 +4,8 @@
  	bool "uImage based firmware partition parser"
  	select MTD_SPLIT
  
-+config MTD_SPLIT_LZMA_FW
-+	bool "LZMA compressed kernel based firmware partition parser"
++config MTD_SPLIT_CVIMG_FW
++	bool "CVIMG compressed kernel based firmware partition parser"
 +	select MTD_SPLIT
 +
  config MTD_SPLIT
@@ -17,7 +17,7 @@
  mtd-$(CONFIG_MTD_SPLIT_SEAMA_FW) += mtdsplit_seama.o
  mtd-$(CONFIG_MTD_SPLIT_SQUASHFS_ROOT) += mtdsplit_squashfs.o
  mtd-$(CONFIG_MTD_SPLIT_UIMAGE_FW) += mtdsplit_uimage.o
-+mtd-$(CONFIG_MTD_SPLIT_LZMA_FW) += mtdsplit_lzma.o
++mtd-$(CONFIG_MTD_SPLIT_CVIMG_FW) += mtdsplit_cvimg.o
  
  obj-$(CONFIG_MTD_OF_PARTS)	+= ofpart.o
  obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
