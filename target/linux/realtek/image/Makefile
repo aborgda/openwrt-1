@@ -133,6 +133,21 @@ define Device/GWR300N
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-fw | pad-rootfs
 endef
 TARGET_DEVICES += GWR300N
+
+define Device/RE172
+  DEV_PROFILE := RE172
+  IMAGE_SIZE := 4032k
+  DEVICE_TITLE := Multilaser RE172 v1
+  CVIMG_KERNEL_BURN_ADDR := 0x10000
+  CVIMG_LOADER_START_ADDR := 0x81000000
+  CMDLINE := console=ttyS0,38400 
+  KERNEL := kernel-bin | lzma | loader-cmdline-compile
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-fw | pad-rootfs
+endef
+TARGET_DEVICES += RE172
+
 endif
 
 define Image/Build/Initramfs
