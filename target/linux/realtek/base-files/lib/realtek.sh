@@ -20,7 +20,7 @@ realtek_board_detect() {
 		name="gwr-300n-v1"
 		;;
 	*"RE172 V1")
-                name="re-172-v1"
+                name="re172-v1"
                 ;;
 	esac
 
