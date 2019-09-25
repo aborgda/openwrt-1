@@ -132,7 +132,7 @@ define Device/GWR300N
   KERNEL := kernel-bin | lzma | loader-cmdline-compile
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
-  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-fw | pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
 endef
 TARGET_DEVICES += GWR300N
 
@@ -146,7 +146,7 @@ define Device/RE172
   KERNEL := kernel-bin | lzma | loader-cmdline-compile
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
-  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-fw | pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
 endef
 TARGET_DEVICES += RE172
 
