@@ -193,9 +193,9 @@ int main(int argc, char *argv[])
   char c;
   unsigned long ksize = 0x1D0000;
   unsigned long rsize = 0x45E000;
-  unsigned char region[REGION_LEN];
-  unsigned char model[MODEL_LEN]; 
-  unsigned char product[PRODUCT_NAME_LEN];
+  unsigned char region[REGION_LEN] = TBS_REGION;
+  unsigned char model[MODEL_LEN] = TBS_MODEL_NAME; 
+  unsigned char product[PRODUCT_NAME_LEN] = TBS_PRODUCT;
 
   while ((c = getopt(argc, argv, "br:k:g:m:p:")) != -1) {
     switch (c) {
