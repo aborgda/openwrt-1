@@ -1504,10 +1504,22 @@ define KernelPackage/rtl8xxxu/description
   Please report your results!
 endef
 
+define KernelPackage/rtl8192cd/config
+  if PACKAGE_kmod-rtl8192cd
+
+        config PACKAGE_RTL8192CD_AC
+                bool "Enable rtl8192cd 802.11AC support"
+                depends on PACKAGE_kmod-rtl8192cd
+                help
+		  Enable AC Support in RTL8192CD
+
+  endif
+endef
+
 define KernelPackage/rtl8192cd
   $(call KernelPackage/mac80211/Default)
   TITLE:=Realtek 8192cd wireless module support
-  DEPENDS+= @TARGET_realtek +kmod-mac80211 +@DRIVER_11N_SUPPORT +@DRIVER_11AC_SUPPORT
+  DEPENDS+= @TARGET_realtek +@DRIVER_WEXT_SUPPORT +kmod-cfg80211 +@DRIVER_11N_SUPPORT +@PACKAGE_RTL8192CD_AC:DRIVER_11AC_SUPPORT
   FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/realtek/rtl8192cd/rtl8192cd.ko
   AUTOLOAD:=$(call AutoProbe,rtl8192cd)
 endef
