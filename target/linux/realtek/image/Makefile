@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
-DEVICE_VARS += IMAGE_SIZE CVIMG_KERNEL_BURN_ADDR CVIMG_LOADER_START_ADDR
+DEVICE_VARS += IMAGE_SIZE CVIMG_KERNEL_BURN_ADDR CVIMG_LOADER_START_ADDR CVIMG_ROOTFS_BURN_ADDR
 
 define Build/loader-common
   rm -rf $@.src
@@ -111,7 +111,8 @@ ifeq ($(SUBTARGET),rtl8197d)
 define Device/DIR815D1
   DEV_PROFILE := DIR815D1
   IMAGE_SIZE := 7936k
-  DEVICE_TITLE := DIR 815 D1
+  DEVICE_TITLE := D-Link DIR-815 D1
+  SUPPORTED_DEVICES := dir-815-d1
   KERNEL := kernel-bin | lzma
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin := append-kernel | pad-to 1900544 | append-rootfs | pad-rootfs | \
