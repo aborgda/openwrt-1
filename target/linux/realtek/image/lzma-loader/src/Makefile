@@ -32,8 +32,8 @@ CFLAGS		= -D__KERNEL__ -Wall -Wstrict-prototypes -Wno-trigraphs -Os \
 		  -fno-strict-aliasing -fno-common -fomit-frame-pointer -G 0 \
 		  -mno-abicalls -fno-pic -ffunction-sections -pipe -mlong-calls \
 		  -fno-common -ffreestanding \
-		  -mabi=32 -march=4181\
-		  -Wa,-32 -Wa,-march=4181
+		  -mabi=32 -march=lx4380\
+		  -Wa,-32 -Wa,-march=lx4380
 CFLAGS		+= -D_LZMA_PROB32
 
 ASFLAGS		= $(CFLAGS) -D__ASSEMBLY__

@@ -4,10 +4,181 @@
  static inline struct pthread *__pthread_self()
  {
 -#if __mips_isa_rev < 2
-+#if defined(__mlexra)
++#if defined(__mlx5380)
 +	char *tp;
 +	__asm__ __volatile__ ("mflxc0 %0, $8" : "=r" (tp) );	
 +#elif __mips_isa_rev < 2
  	register char *tp __asm__("$3");
  	__asm__ __volatile__ (".word 0x7c03e83b" : "=r" (tp) );
  #else
+--- a/arch/mips/crt_arch.h	
++++ b/arch/mips/crt_arch.h	
+@@ -16,11 +16,19 @@
+ ".hidden _DYNAMIC \n"
+ "	.gpword _DYNAMIC \n"
+ "1:	lw $gp, 0($ra) \n"
++#if defined(__mlx4380)
++"	move $4, $sp \n"
++"	subu $gp, $ra, $gp \n"
++"	lw $5, 8($ra) \n"
++"	lw $25, 4($ra) \n"
++"	addu $5, $5, $gp \n"
++#else
+ "	subu $gp, $ra, $gp \n"
+ "	move $4, $sp \n"
+ "	lw $5, 8($ra) \n"
+ "	addu $5, $5, $gp \n"
+ "	lw $25, 4($ra) \n"
++#endif
+ "	addu $25, $25, $gp \n"
+ "	and $sp, $sp, -8 \n"
+ "	jalr $25 \n"
+--- a/arch/mips/reloc.h
++++ b/arch/mips/reloc.h
+@@ -36,6 +36,7 @@
+ #define CRTJMP(pc,sp) __asm__ __volatile__( \
+ 	"move $sp,%1 ; jr %0" : : "r"(pc), "r"(sp) : "memory" )
+ 
++#ifndef __mlx4380
+ #define GETFUNCSYM(fp, sym, got) __asm__ ( \
+ 	".hidden " #sym "\n" \
+ 	".set push \n" \
+@@ -50,3 +51,21 @@
+ 	"	addu %0, %0, $ra \n" \
+ 	".set pop \n" \
+ 	: "=r"(*(fp)) : : "memory", "ra" )
++#else
++#define GETFUNCSYM(fp, sym, got) __asm__ ( \
++	".hidden " #sym "\n" \
++	".set push \n" \
++	".set noreorder \n" \
++	"	bal 1f \n" \
++	"	 nop \n" \
++	"	.gpword . \n" \
++	"	.gpword " #sym " \n" \
++	"1:	lw %0, ($ra) \n" \
++	"	nop \n" \
++	"	subu %0, $ra, %0 \n" \
++	"	lw $ra, 4($ra) \n" \
++	"	nop \n" \
++	"	addu %0, %0, $ra \n" \
++	".set pop \n" \
++	: "=r"(*(fp)) : : "memory", "ra" )
++#endif 
+--- a/crt/mips/crtn.s
++++ b/crt/mips/crtn.s
+@@ -3,11 +3,23 @@
+ .section .init
+ 	lw $gp,24($sp)
+ 	lw $ra,28($sp)
++#if defined(__mlx4380)
++	addu $sp,$sp,32
++	j $ra
++	nop
++#else
+ 	j $ra
+ 	addu $sp,$sp,32
++#endif
+ 
+ .section .fini
+ 	lw $gp,24($sp)
+ 	lw $ra,28($sp)
++#if defined(__mlx4380)
++	addu $sp,$sp,32
++	j $ra
++	nop
++#else
+ 	j $ra
+ 	addu $sp,$sp,32
++#endif
+--- a/src/ldso/mips/dlsym.s
++++ b/src/ldso/mips/dlsym.s
+@@ -13,5 +13,8 @@
+ 	jalr $25
+ 	nop
+ 	lw $ra, 12($sp)
++#if defined(__mlx4380)
++	nop
++#endif
+ 	jr $ra
+ 	addiu $sp, $sp, 16
+--- a/src/setjmp/mips/longjmp.S
++++ b/src/setjmp/mips/longjmp.S
+@@ -36,5 +36,11 @@
+ 	lw      $22, 32($4)
+ 	lw      $23, 36($4)
+ 	lw      $30, 40($4)
++#if defined(__mlx4380)
++	lw      $28, 44($4)
++	jr      $ra
++	nop
++#else
+ 	jr      $ra
+ 	lw      $28, 44($4)
++#endif
+--- a/src/signal/mips/sigsetjmp.s
++++ b/src/signal/mips/sigsetjmp.s
+@@ -15,6 +15,9 @@
+ 	sw $16, 104+4+16($4)
+ 
+ 	lw $25, %call16(setjmp)($gp)
++#if defined(__mlx4380)
++	nop
++#endif
+ 	jalr $25
+ 	 move $16, $4
+ 
+@@ -25,9 +28,15 @@
+ 
+ .hidden __sigsetjmp_tail
+ 	lw $25, %call16(__sigsetjmp_tail)($gp)
++#if defined(__mlx4380)
++	nop
++#endif
+ 	jr $25
+ 	 nop
+ 
+ 1:	lw $25, %call16(setjmp)($gp)
++#if defined(__mlx4380)
++	nop
++#endif
+ 	jr $25
+ 	 nop
+--- a/src/thread/mips/syscall_cp.s
++++ b/src/thread/mips/syscall_cp.s
+@@ -17,6 +17,9 @@
+ 	subu    $sp, $sp, 32
+ __cp_begin:
+ 	lw      $4, 0($4)
++#if defined(__mlx4380)
++	nop
++#endif
+ 	bne     $4, $0, __cp_cancel
+ 	move    $2, $5
+ 	move    $4, $6
+@@ -46,8 +49,13 @@
+ 	.gpword .
+ 	.gpword __cancel
+ 1:	lw      $3, ($ra)
++#if defined(__mlx4380)
++	lw      $25, 4($ra)
++	subu    $3, $ra, $3
++#else
+ 	subu    $3, $ra, $3
+ 	lw      $25, 4($ra)
++#endif
+ 	addu    $25, $25, $3
+ 	jr      $25
+ 	move    $ra, $2
+--- a/src/unistd/mips/pipe.s
++++ b/src/unistd/mips/pipe.s
+@@ -11,6 +11,9 @@
+ 	beq $7, $0, 1f
+ 	nop
+ 	lw $25, %call16(__syscall_ret)($gp)
++#if defined(__mlx4380)
++	nop
++#endif
+ 	jr $25
+ 	subu $4, $0, $2
+ 1:	sw $2, 0($4)
