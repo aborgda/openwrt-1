@@ -1,3 +1,14 @@
+--- a/arch/mips/syscall_arch.h
++++ b/arch/mips/syscall_arch.h
+@@ -121,6 +121,8 @@
+ 	return r2;
+ }
+ 
++#ifndef __mlx4380
+ #define VDSO_USEFUL
+ #define VDSO_CGT_SYM "__vdso_clock_gettime"
+ #define VDSO_CGT_VER "LINUX_2.6"
++#endif
 --- a/arch/mips/pthread_arch.h	
 +++ b/arch/mips/pthread_arch.h	
 @@ -1,6 +1,9 @@
