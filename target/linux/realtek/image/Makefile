@@ -111,7 +111,6 @@ ifeq ($(SUBTARGET),rtl8197d)
 define Device/DIR815D1
   DEV_PROFILE := DIR815D1
   IMAGE_SIZE := 7936k
-  BLOCKSIZE := 64k
   DEVICE_TITLE := D-Link DIR-815 D1
   SUPPORTED_DEVICES := dir-815-d1
   KERNEL := kernel-bin | lzma
