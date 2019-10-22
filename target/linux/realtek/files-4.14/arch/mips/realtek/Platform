@@ -1,0 +1,7 @@
+#
+# Realtek SoCs
+#
+
+platform-$(CONFIG_REALTEK)	+= realtek/
+cflags-$(CONFIG_REALTEK)	+= -I$(srctree)/arch/mips/include/asm/mach-realtek/rtl8197d
+load-$(CONFIG_REALTEK)		= 0xffffffff80000000
