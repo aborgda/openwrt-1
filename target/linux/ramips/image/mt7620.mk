@@ -25,7 +25,7 @@ define Build/mkuimage_fake_header
 endef
 
 define Build/tbs_dlink
-  $(STAGING_DIR_HOST)/bin/tbs_dlink $@
+  $(STAGING_DIR_HOST)/bin/tbs_dlink $(1) $@
 endef
 
 define Device/ai-br100
@@ -182,7 +182,7 @@ define Device/dir-819-a1
   DEVICE_TITLE := D-Link DIR-819 A1
   IMAGES += factory.bin
   IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
-        append-rootfs | pad-rootfs | tbs_dlink
+        append-rootfs | pad-rootfs | tbs_dlink -g CA -m DIR819 -p DIR-819
   IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | \
         append-rootfs | pad-rootfs | append-metadata 
 endef
