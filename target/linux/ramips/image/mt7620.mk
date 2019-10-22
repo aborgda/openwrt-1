@@ -25,7 +25,7 @@ define Build/mkuimage_fake_header
 endef
 
 define Build/tbs_dlink
-  $(STAGING_DIR_HOST)/bin/tbs_dlink $@
+  $(STAGING_DIR_HOST)/bin/tbs_dlink $(1) $@
 endef
 
 define Device/ai-br100
