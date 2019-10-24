@@ -94,6 +94,8 @@ void __init device_tree_init(void)
 	_intc_membase = of_mapmem("realtek,rtl819x-intc");
 	if(!_intc_membase)
 		panic("Failed to map memory for rtl819x-intc");
+
+	printk("BOOTSTRAP = %x %x %x %x\n", sr_r32(0x00), sr_r32(0x04), sr_r32(0x08), sr_r32(0x10));
 }
 
 void __init plat_time_init(void)

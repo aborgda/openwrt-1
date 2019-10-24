@@ -106,8 +106,9 @@ asmlinkage void plat_irq_dispatch(void)
 
 	pending = read_c0_status() & read_c0_cause() & ST0_IM;
 
-	if (pending & STATUSF_IP7)
+	if (pending & STATUSF_IP7) {
 		do_IRQ(REALTEK_IRQ_TIMER);
+	}
 
 	else if (pending & STATUSF_IP2)
 		do_IRQ(REALTEK_IRQ_GENERIC);
@@ -121,11 +122,11 @@ static int __init intc_of_init(struct device_node *node,
 {
 	struct irq_domain *domain;
 
-	// Reset all interrupts
-	ir_w32(0, REALTEK_INTCTL_REG_MASK);
-
 	// Map Interrupts according to SoC
 	mips_chip_irqs = realtek_soc_irq_init();
+
+	// map high priority interrupts to mips irq controler
+	ir_w32(mips_chip_irqs, REALTEK_INTCTL_REG_MASK);
 
 	domain = irq_domain_add_legacy(node, REALTEK_INTC_IRQ_COUNT,
 			REALTEK_INTC_IRQ_BASE, 0, &irq_domain_ops, NULL);
