@@ -1,0 +1,23 @@
+# 1 "arch/mips/boot/dts/realtek/rtl8197d.dts"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "arch/mips/boot/dts/realtek/rtl8197d.dts"
+
+/dts-v1/;
+
+/include/ "rtl819x.dtsi"
+
+/ {
+ compatible = "realtek,rtl8197d-generic", "realtek,rtl8197d-soc";
+ model = "Realtek RTL8197D Generic Board";
+
+ memory {
+  device_type = "memory";
+  reg = <0x0 0x4000000>;
+ };
+
+ chosen {
+  bootargs = "console=ttyS0,115200";
+ };
+
+};

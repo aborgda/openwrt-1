@@ -1,0 +1,1 @@
+rtl8197d.o: arch/mips/boot/dts/realtek/rtl8197d.dts

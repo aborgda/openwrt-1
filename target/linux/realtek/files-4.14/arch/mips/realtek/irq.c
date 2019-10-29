@@ -26,27 +26,23 @@
 
 static u32 mips_chip_irqs;
 
-#define REALTEK_INTC_IRQ_BASE 8
-
-#define REALTEK_INTCTL_REG_MASK			0x00
-#define REALTEK_INTCTL_REG_STATUS		0x04
+// Above RLX driver (8 for Mips + 8 for RLX)
+#define REALTEK_INTC_IRQ_BASE 16
 
 static void realtek_soc_irq_unmask(struct irq_data *d)
 {
-	unsigned int irq = d->irq - REALTEK_INTC_IRQ_BASE;
 	u32 t;
 
-	t = ir_r32(REALTEK_INTCTL_REG_MASK);
-	ir_w32(t | BIT(irq), REALTEK_INTCTL_REG_MASK);
+	t = ic_r32(REALTEK_IC_REG_MASK);
+	ic_w32(t | BIT(d->hwirq), REALTEK_IC_REG_MASK);
 }
 
 static void realtek_soc_irq_mask(struct irq_data *d)
 {
-	unsigned int irq = d->irq - REALTEK_INTC_IRQ_BASE;
 	u32 t;
 
-	t = ir_r32(REALTEK_INTCTL_REG_MASK);
-	ir_w32(t & ~BIT(irq), REALTEK_INTCTL_REG_MASK);
+	t = ic_r32(REALTEK_IC_REG_MASK);
+	ic_w32(t & ~BIT(d->hwirq), REALTEK_IC_REG_MASK);
 }
 
 static struct irq_chip realtek_soc_irq_chip = {
@@ -60,15 +56,15 @@ static void realtek_soc_irq_handler(struct irq_desc *desc)
 	u32 pending;
 	struct irq_domain *domain;
 
-	pending = ir_r32(REALTEK_INTCTL_REG_MASK) &
-			  ir_r32(REALTEK_INTCTL_REG_STATUS);
+	pending = ic_r32(REALTEK_IC_REG_MASK) &
+			  ic_r32(REALTEK_IC_REG_STATUS);
 
 	if (pending & mips_chip_irqs) {
 		/*
 		 * interrupts routed to mips core found here
 		 * clear these bits as they can't be handled here
 		 */
-		ir_w32(mips_chip_irqs, REALTEK_INTCTL_REG_STATUS);
+		ic_w32(mips_chip_irqs, REALTEK_IC_REG_STATUS);
 		pending &= ~mips_chip_irqs;
 
 		if (!pending)
@@ -83,7 +79,7 @@ static void realtek_soc_irq_handler(struct irq_desc *desc)
 	domain = irq_desc_get_handler_data(desc);
 	while (pending) {
 		int bit = __ffs(pending);
-		generic_handle_irq(irq_find_mapping(domain, REALTEK_INTC_IRQ_BASE + bit));
+		generic_handle_irq(irq_find_mapping(domain, bit));
 		pending &= ~BIT(bit);
 	}
 }
@@ -106,9 +102,8 @@ asmlinkage void plat_irq_dispatch(void)
 
 	pending = read_c0_status() & read_c0_cause() & ST0_IM;
 
-	if (pending & STATUSF_IP7) {
+	if (pending & STATUSF_IP7) 
 		do_IRQ(REALTEK_IRQ_TIMER);
-	}
 
 	else if (pending & STATUSF_IP2)
 		do_IRQ(REALTEK_IRQ_GENERIC);
@@ -126,7 +121,7 @@ static int __init intc_of_init(struct device_node *node,
 	mips_chip_irqs = realtek_soc_irq_init();
 
 	// map high priority interrupts to mips irq controler
-	ir_w32(mips_chip_irqs, REALTEK_INTCTL_REG_MASK);
+	ic_w32(mips_chip_irqs, REALTEK_IC_REG_MASK);
 
 	domain = irq_domain_add_legacy(node, REALTEK_INTC_IRQ_COUNT,
 			REALTEK_INTC_IRQ_BASE, 0, &irq_domain_ops, NULL);

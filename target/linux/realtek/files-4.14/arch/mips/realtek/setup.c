@@ -11,6 +11,7 @@
 #include <asm/setup.h>
 #include <asm/bootinfo.h>
 #include <asm/addrspace.h>
+#include <asm/idle.h>
 
 #include <linux/clk-provider.h>
 #include <linux/clocksource.h>
@@ -34,15 +35,37 @@ const char *get_system_type(void)
 #endif
 }
 
+static inline void wait_instruction(void)
+{
+	__asm__(
+	"       .set    push            \n"
+	"       sleep                   \n"
+	"       .set    pop             \n");
+}
+
 void realtek_machine_restart(char *command)
 {
 	/* Disable all interrupts */
 	local_irq_disable();
 
 	/* Use watchdog to reset the system */
-	tr_w32(0x00, REALTEK_WATCHDOG_TIMER_REG);
+	tc_w32(0x00, REALTEK_WATCHDOG_TIMER_REG);
 
-	for (;;);
+	for (;;)
+		wait_instruction();
+}
+
+void realtek_wait(void)
+{
+	if (!need_resched())
+		wait_instruction();
+	local_irq_enable();
+}
+
+void realtek_halt(void)
+{
+	while (1)
+		wait_instruction();
 }
 
 void __init plat_mem_setup(void)
@@ -50,6 +73,8 @@ void __init plat_mem_setup(void)
 	void *dtb = NULL;
 
 	_machine_restart = realtek_machine_restart;
+	_machine_halt = realtek_halt;
+	cpu_wait = realtek_wait;
 
 	// Initialize DTB
 	if (fw_passed_dtb)
@@ -95,7 +120,7 @@ void __init device_tree_init(void)
 	if(!_intc_membase)
 		panic("Failed to map memory for rtl819x-intc");
 
-	printk("BOOTSTRAP = %x %x %x %x\n", sr_r32(0x00), sr_r32(0x04), sr_r32(0x08), sr_r32(0x10));
+	pr_info("BOOTSTRAP = %x %x %x %x\n", sr_r32(0x00), sr_r32(0x04), sr_r32(0x08), sr_r32(0x10));
 }
 
 void __init plat_time_init(void)

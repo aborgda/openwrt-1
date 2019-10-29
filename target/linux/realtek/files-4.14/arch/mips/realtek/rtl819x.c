@@ -21,21 +21,21 @@
 u32 realtek_soc_irq_init(void) 
 {
 	// IRR0
-	ir_w32((0), 
-		0x08);
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR0);
 
 	// IRR1
-	ir_w32((REALTEK_IRQ_TIMER << 0  | 
+	ic_w32((REALTEK_IRQ_TIMER << 0  | 
 			REALTEK_IRQ_UART0 << 16 ), 
-		0x0C);
+		REALTEK_IC_REG_IRR1);
 
 	// IRR2
-	ir_w32((0), 
-		0x10);
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR2);
 
 	// IRR3
-	ir_w32((0), 
-		0x14);
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR3);
 
 	return INTC_TC0;
 }
