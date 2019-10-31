@@ -67,5 +67,15 @@
 			clocks = <&refclk>;
 		};
 
+		spi0: spi@1200 {
+			compatible = "realtek,rtl819x-spi";
+			reg = <0x1200 0x10>;
+
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			status = "disabled";
+		};
+
 	};
 };
