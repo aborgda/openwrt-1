@@ -2,13 +2,7 @@
 / {
 	#address-cells = <1>;
 	#size-cells = <1>;
-	compatible = "realtek,rtl8197d-soc";
-
-	cpus {
-		cpu@0 {
-			compatible = "realtek,rlx5281";
-		};
-	};
+	compatible = "realtek,rtl819x-soc";
 
 	cpuintc: cpuintc {
 		#address-cells = <0>;

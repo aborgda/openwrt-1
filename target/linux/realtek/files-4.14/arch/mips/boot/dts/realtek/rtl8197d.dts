@@ -4,8 +4,14 @@
 /include/ "rtl819x.dtsi"
 
 / {
-	compatible = "realtek,rtl8197d-generic", "realtek,rtl8197d-soc";
+	compatible = "realtek,rtl8197d-generic", "realtek,rtl819x-soc";
 	model = "Realtek RTL8197D Generic Board";
+
+	cpus {
+		cpu@0 {
+			compatible = "realtek,rlx5281";
+		};
+	};
 
 	memory {
 		device_type = "memory";
