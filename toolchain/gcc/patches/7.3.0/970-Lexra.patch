@@ -39,11 +39,13 @@
  	   mips_arch_info->name);
 --- a/gcc/config/mips/mips.h	2017-01-19 23:05:25.742100000 -0200
 +++ b/gcc/config/mips/mips.h	2019-06-28 11:49:15.064453334 -0300
-@@ -287,6 +287,10 @@
+@@ -287,6 +287,12 @@
  #define TARGET_SR71K                (mips_arch == PROCESSOR_SR71000)
  #define TARGET_XLP                  (mips_arch == PROCESSOR_XLP)
  
 +#define TARGET_LX5380    (mips_arch == PROCESSOR_LX5380)
++#define TARGET_LX5280    (mips_arch == PROCESSOR_LX5280)
++#define TARGET_LX4380    (mips_arch == PROCESSOR_LX4380)
 +#define TARGET_LEXRA     (mips_arch == PROCESSOR_LX4380 \
 +              || mips_arch == PROCESSOR_LX5280 || TARGET_LX5380)
 +
@@ -65,7 +67,7 @@
  	builtin_define ("__mips_no_madd4");				\
 +      if (TARGET_LEXRA)              \
 +  builtin_define ("__mlexra");          \
-+      if (mips_arch == PROCESSOR_LX4380)              \
++      if (TARGET_LX4380)              \
 +  builtin_define ("__mlx4380");          \
 +      if (TARGET_LX5380)              \
 +  builtin_define ("__mlx5380");          \
@@ -92,15 +94,6 @@
  
  /* ISA has LDC1 and SDC1.  */
  #define ISA_HAS_LDC1_SDC1	(!ISA_MIPS1				\
-@@ -1105,7 +1115,7 @@
- 				      && (MODE) == V2SFmode))		\
- 				 && !TARGET_MIPS16)
- 
--#define ISA_HAS_LWL_LWR		(mips_isa_rev <= 5 && !TARGET_MIPS16)
-+#define ISA_HAS_LWL_LWR		(mips_isa_rev <= 5 && !TARGET_MIPS16 && !TARGET_LEXRA)
- 
- #define ISA_HAS_IEEE_754_LEGACY	(mips_isa_rev <= 5)
- 
 @@ -1255,7 +1265,7 @@
  #define ISA_HAS_SYNCI (mips_isa_rev >= 2 && !TARGET_MIPS16)
  
@@ -163,7 +156,7 @@
  		     (match_operand:QI 2 "memory_operand" "ZC")]
  		    UNSPEC_LOAD_LEFT))]
 -  "!TARGET_MIPS16 && mips_mem_fits_mode_p (<MODE>mode, operands[1])"
-+  "!TARGET_MIPS16 && !TARGET_LEXRA && mips_mem_fits_mode_p (<MODE>mode, operands[1])"
++  "!TARGET_MIPS16 && !TARGET_LX5280 && mips_mem_fits_mode_p (<MODE>mode, operands[1])"
    "<load>l\t%0,%2"
    [(set_attr "move_type" "load")
     (set_attr "mode" "<MODE>")])
@@ -172,7 +165,7 @@
  		     (match_operand:GPR 3 "register_operand" "0")]
  		    UNSPEC_LOAD_RIGHT))]
 -  "!TARGET_MIPS16 && mips_mem_fits_mode_p (<MODE>mode, operands[1])"
-+  "!TARGET_MIPS16 && !TARGET_LEXRA && mips_mem_fits_mode_p (<MODE>mode, operands[1])"
++  "!TARGET_MIPS16 && !TARGET_LX5280 && mips_mem_fits_mode_p (<MODE>mode, operands[1])"
    "<load>r\t%0,%2"
    [(set_attr "move_type" "load")
     (set_attr "mode" "<MODE>")])
@@ -181,7 +174,7 @@
  		     (match_operand:QI 2 "memory_operand" "ZC")]
  		    UNSPEC_STORE_LEFT))]
 -  "!TARGET_MIPS16 && mips_mem_fits_mode_p (<MODE>mode, operands[0])"
-+  "!TARGET_MIPS16 && !TARGET_LEXRA && mips_mem_fits_mode_p (<MODE>mode, operands[0])"
++  "!TARGET_MIPS16 && !TARGET_LX5280 && mips_mem_fits_mode_p (<MODE>mode, operands[0])"
    "<store>l\t%z1,%2"
    [(set_attr "move_type" "store")
     (set_attr "mode" "<MODE>")])
@@ -190,7 +183,7 @@
  		     (match_dup 0)]
  		    UNSPEC_STORE_RIGHT))]
 -  "!TARGET_MIPS16 && mips_mem_fits_mode_p (<MODE>mode, operands[0])"
-+  "!TARGET_MIPS16 && !TARGET_LEXRA && mips_mem_fits_mode_p (<MODE>mode, operands[0])"
++  "!TARGET_MIPS16 && !TARGET_LX5280 && mips_mem_fits_mode_p (<MODE>mode, operands[0])"
    "<store>r\t%z1,%2"
    [(set_attr "move_type" "store")
     (set_attr "mode" "<MODE>")])
