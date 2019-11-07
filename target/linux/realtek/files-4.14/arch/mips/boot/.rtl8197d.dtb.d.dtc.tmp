@@ -1,1 +1,0 @@
-arch/mips/boot/dts/realtek/rtl8197d.dtb: arch/mips/boot/dts/realtek/.rtl8197d.dtb.dts.tmp arch/mips/boot/dts/realtek/rtl819x.dtsi

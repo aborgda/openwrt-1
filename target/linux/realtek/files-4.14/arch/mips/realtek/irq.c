@@ -15,19 +15,118 @@
 #include <linux/bitops.h>
 #include <linux/of_platform.h>
 #include <linux/of_irq.h>
+#include <linux/of_address.h>
 #include <linux/irqdomain.h>
 #include <linux/interrupt.h>
 
 #include <asm/irq_cpu.h>
 #include <asm/mipsregs.h>
+#include <asm/time.h>
 
-#include "irq.h"
 #include "realtek_mem.h"
 
+__iomem void *_intc_membase;
 static u32 mips_chip_irqs;
 
-// Above RLX driver (8 for Mips + 8 for RLX)
+#define ic_w32(val, reg) __raw_writel(val, _intc_membase + reg)
+#define ic_r32(reg)      __raw_readl(_intc_membase + reg)
+
+// Interrupt Registers and bits
+#define REALTEK_IC_REG_MASK			0x00
+#define REALTEK_IC_REG_STATUS		0x04
+#define REALTEK_IC_REG2_MASK		0x20
+#define REALTEK_IC_REG2_STATUS		0x24
+
+#define REALTEK_IC_REG_IRR0			0x08
+#define REALTEK_IC_REG_IRR1			0x0C
+#define REALTEK_IC_REG_IRR2			0x10
+#define REALTEK_IC_REG_IRR3			0x14
+#define REALTEK_IC_REG_IRR4			0x28
+#define REALTEK_IC_REG_IRR5			0x2C
+#define REALTEK_IC_REG_IRR6			0x30
+#define REALTEK_IC_REG_IRR7			0x34
+
+#define REALTEK_INTC_IRQ_COUNT	32
+
+#define REALTEK_IRQ_GENERIC		2   
+
+#define REALTEK_IRQ_TIMER		7
+#define REALTEK_IRQ_UART0		REALTEK_IRQ_GENERIC  
+
+/* Definition for SoCs
+   RTL8196E and RTL8197D have a RLX chipset
+     They use 32 SoC IRQs abose the hardware 
+   RTL8197F Have 64 SoC IRQs, but dont have
+     the additional 8 hardware irqs
+*/
+
+#ifdef CONFIG_SOC_RTL8197F
+
+#define REALTEK_INTC_IRQ_BASE 8
+
+u32 realtek_soc_irq_init(void) 
+{
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR0);
+
+	ic_w32((REALTEK_IRQ_UART0 << 4), 
+		REALTEK_IC_REG_IRR1);
+
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR2);
+
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR3);
+
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR4);
+
+	ic_w32((REALTEK_IRQ_TIMER << 28), 
+		REALTEK_IC_REG_IRR5);
+
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR6);
+
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR7);
+
+	// map high priority interrupts to mips irq controler
+	// BIT 15 on MASK2 is R4K Timer
+	ic_w32(0,       REALTEK_IC_REG_MASK);
+	ic_w32(BIT(15), REALTEK_IC_REG2_MASK);
+
+	// Return only MARK1
+	return 0;
+}
+
+#else
+
+// Above RLX driver (8 for Mips + 8 for hardware RLX)
 #define REALTEK_INTC_IRQ_BASE 16
+
+u32 realtek_soc_irq_init(void) 
+{
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR0);
+
+	ic_w32((REALTEK_IRQ_TIMER << 0  | 
+			REALTEK_IRQ_UART0 << 16 ), 
+		REALTEK_IC_REG_IRR1);
+
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR2);
+
+	ic_w32((0), 
+		REALTEK_IC_REG_IRR3);
+
+	// map high priority interrupts to mips irq controler
+	// TC0 (Timer) (BIT8) to mips
+	ic_w32(BIT(8), REALTEK_IC_REG_MASK);
+
+	return BIT(8);
+}
+
+#endif
 
 static void realtek_soc_irq_unmask(struct irq_data *d)
 {
@@ -115,13 +214,27 @@ asmlinkage void plat_irq_dispatch(void)
 static int __init intc_of_init(struct device_node *node,
 			       struct device_node *parent)
 {
+	struct resource res;
 	struct irq_domain *domain;
+
+	if (of_address_to_resource(node, 0, &res))
+		panic("Failed to get resource for %s", node->name);
+
+	_intc_membase = ioremap_nocache(res.start, resource_size(&res));
+	if(!_intc_membase)
+		panic("Failed to map memory for %s", node->name);
+
+#ifdef CONFIG_SOC_RTL8197F
+	// 8197F uses CEVT and Timers from 4K
+	// Just need to redirect the right irq...
+	cp0_compare_irq = REALTEK_IRQ_TIMER;
+    cp0_perfcount_irq = REALTEK_IRQ_TIMER;
+
+	mips_hpt_frequency = 1000000000 / 2;
+#endif
 
 	// Map Interrupts according to SoC
 	mips_chip_irqs = realtek_soc_irq_init();
-
-	// map high priority interrupts to mips irq controler
-	ic_w32(mips_chip_irqs, REALTEK_IC_REG_MASK);
 
 	domain = irq_domain_add_legacy(node, REALTEK_INTC_IRQ_COUNT,
 			REALTEK_INTC_IRQ_BASE, 0, &irq_domain_ops, NULL);

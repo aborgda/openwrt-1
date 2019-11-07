@@ -40,6 +40,7 @@ loader-compile: $(PKG_BUILD_DIR)/.prepared
 		LOADADDR=$(LOADADDR) \
 		LOADER_DATA=$(LOADER_DATA) \
 		BOARD="$(BOARD)" \
+		SUBTARGET="$(SUBTARGET)" \
 		clean all
 
 loader.gz: $(PKG_BUILD_DIR)/loader.bin

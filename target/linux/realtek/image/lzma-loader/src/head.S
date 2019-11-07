@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2011 Gabor Juhos <juhosg@openwrt.org>
  * Copyright (C) 2017 Weijie Gao <hackpascal@gmail.com>
+ * Copyright (C) 2019 Gaspare Bruno <gaspare@anlix.io>
  *
  * Some parts of this code was based on the OpenWrt specific lzma-loader
  * for the BCM47xx and ADM5120 based boards:
@@ -20,13 +21,18 @@
 
 #define KSEG0		0x80000000
 
+#define CP0_COUNT 	$9
+#define CP0_COMPARE $11
 #define CP0_STATUS	$12
 #define CP0_CAUSE	$13
+#define CP0_WATCHLO $18
+#define CP0_WATCHHI $19
 
 	.text
 
 LEAF(startup)
 	.set noreorder
+#ifdef __RLX__
 	.set mips1
 
 	mtc0	zero, CP0_CAUSE		# clear before writing status register
@@ -38,6 +44,25 @@ LEAF(startup)
 	mtc0	t0, CP0_STATUS
 	nop
 	nop
+#else
+// Mips32r2
+	.set mips32
+
+	mtc0	zero, CP0_WATCHLO	# clear watch registers
+	mtc0	zero, CP0_WATCHHI
+	mtc0	zero, CP0_CAUSE		# clear before writing status register
+
+	mfc0	t0, CP0_STATUS
+	li	t1, 0x1000001f
+	or	t0, t1
+	xori	t0, 0x1f
+	mtc0	t0, CP0_STATUS
+	sll     zero, 3
+
+	mtc0	zero, CP0_COUNT
+	mtc0	zero, CP0_COMPARE
+	sll     zero, 3
+#endif
 
 	la	t0, __reloc_label	# get linked address of label
 	bal	__reloc_label		# branch and link to label to
@@ -61,6 +86,7 @@ __reloc_copy:
 	blt	t1, t2, __reloc_copy
 	add	t0, 4
 
+#ifdef __RLX__
 	/* flush cache */
 	mtc0	zero, CP0_CCTL
 	nop
@@ -79,6 +105,31 @@ __reloc_copy:
 	li	t2, CCTL_IInval
 	mtc0	t2, CP0_CCTL
 	nop
+#else
+	/* flush cache */
+	la	t0, _code_start
+	la	t1, _code_end
+
+// CACHELINE_SIZE 32
+	li	t2, ~(31)
+	and	t0, t2
+	and	t1, t2
+	li	t2, 32
+
+	b	__flush_check
+	nop
+
+__flush_line:
+	cache	Hit_Writeback_Inv_D, 0(t0)
+	cache	Hit_Invalidate_I, 0(t0)
+	add	t0, t2
+
+__flush_check:
+	bne	t0, t1, __flush_line
+	nop
+
+	sync
+#endif
 
 __reloc_done:
 

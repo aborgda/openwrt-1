@@ -148,6 +148,7 @@ void loader_main(unsigned long reg_a0, unsigned long reg_a1,
 	printf("\n\nOpenWrt kernel loader for Realtek RTL819X\n");
 	printf("Copyright (C) 2011 Gabor Juhos <juhosg@openwrt.org>\n");
 	printf("Copyright (C) 2017 Weijie Gao <hackpascal@gmail.com>\n");
+	printf("Copyright (C) 2019 Gaspare Bruno <gaspare@anlix.io>\n");
 
 	lzma_init_data();
 

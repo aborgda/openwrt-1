@@ -18,7 +18,7 @@
 
 #include "realtek_mem.h"
 
-#define REALTEK_WATCHDOG_TIMER_REG	0x1C
+#define REALTEK_WATCHDOG_TIMER_REG	0x311C
 
 const char *get_system_type(void)
 {
@@ -37,10 +37,12 @@ const char *get_system_type(void)
 
 static inline void wait_instruction(void)
 {
+#ifndef CONFIG_SOC_RTL8197F
 	__asm__(
 	"       .set    push            \n"
 	"       sleep                   \n"
 	"       .set    pop             \n");
+#endif
 }
 
 void realtek_machine_restart(char *command)
@@ -49,7 +51,7 @@ void realtek_machine_restart(char *command)
 	local_irq_disable();
 
 	/* Use watchdog to reset the system */
-	tc_w32(0x00, REALTEK_WATCHDOG_TIMER_REG);
+	sr_w32(0x00, REALTEK_WATCHDOG_TIMER_REG);
 
 	for (;;)
 		wait_instruction();
@@ -74,7 +76,11 @@ void __init plat_mem_setup(void)
 
 	_machine_restart = realtek_machine_restart;
 	_machine_halt = realtek_halt;
+
+#ifndef CONFIG_SOC_RTL8197F
+	// 8197F uses the r4k wait
 	cpu_wait = realtek_wait;
+#endif
 
 	// Initialize DTB
 	if (fw_passed_dtb)
@@ -86,39 +92,24 @@ void __init plat_mem_setup(void)
 }
 
 __iomem void *_sys_membase;
-__iomem void *_timer_membase;
-__iomem void *_intc_membase;
 
-__iomem void *of_mapmem(const char *node)
+void __init device_tree_init(void)
 {
 	struct device_node *np;
 	struct resource res;
 
-	np = of_find_compatible_node(NULL, NULL, node);
-	if (!np)
-		panic("Failed to find %s node", node);
-
-	if (of_address_to_resource(np, 0, &res))
-		panic("Failed to get resource for %s", node);
-
-	return ioremap_nocache(res.start, resource_size(&res));
-}
-
-void __init device_tree_init(void)
-{
 	unflatten_and_copy_device_tree();
 
-	_sys_membase = of_mapmem("realtek,rtl819x-sysc");
+	np = of_find_compatible_node(NULL, NULL, "realtek,rtl819x-sysc");
+	if (!np)
+		panic("Failed to find realtek,rtl819x-sysc node");
+
+	if (of_address_to_resource(np, 0, &res))
+		panic("Failed to get resource for realtek,rtl819x-sysc");
+
+	_sys_membase = ioremap_nocache(res.start, resource_size(&res));
 	if(!_sys_membase)
 		panic("Failed to map memory for rtl819x-sysc");
-
-	_timer_membase = of_mapmem("realtek,rtl819x-timer");
-	if(!_timer_membase)
-		panic("Failed to map memory for rtl819x-timer");
-
-	_intc_membase = of_mapmem("realtek,rtl819x-intc");
-	if(!_intc_membase)
-		panic("Failed to map memory for rtl819x-intc");
 
 	pr_info("BOOTSTRAP = %x %x %x %x\n", sr_r32(0x00), sr_r32(0x04), sr_r32(0x08), sr_r32(0x10));
 }

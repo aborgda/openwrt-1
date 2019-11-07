@@ -9,6 +9,9 @@
 #ifndef	__ASM_CACHEOPS_H
 #define	__ASM_CACHEOPS_H
 
+#ifdef __RLX__
+// for RLX8196E and RLX8197D 
+
 #define CP0_CCTL       $20
 #define CCTL_DInval    0x00000001
 #define CCTL_IInval    0x00000002
@@ -34,6 +37,14 @@ do {									\
 #define write_c0_cctl(val)	__write_32bit_c0_register($20, 0, val)
 
 #endif	/* __ASSEMBLY__ */
+
+#else
+// For RLX8197F (MIPS32R2)
+
+#define Hit_Invalidate_I	0x10
+#define Hit_Writeback_Inv_D	0x15
+
+#endif
 
 #endif	/* __ASM_CACHEOPS_H */
 
