@@ -1,0 +1,73 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	compatible = "realtek,rtl8197f-soc";
+
+	model = "Realtek RTL8197F Generic Board";
+
+	cpus {
+		cpu@0 {
+			compatible = "mips,mips24KEc";
+		};
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x0 0x4000000>;
+	};
+
+	chosen {
+		bootargs = "console=ttyS0,38400";
+	};
+
+	cpuintc: cpuintc {
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+		interrupt-controller;
+		compatible = "mti,cpu-interrupt-controller";
+	};
+
+	soc {
+		compatible = "simple-bus";
+		ranges = <0x0 0x18000000 0x10000>;
+
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		sysc: system-controller@0 {
+			compatible = "realtek,rtl819x-sysc";
+			reg = <0x0 0x1000>;
+		};
+
+		memc: memory-controller@1000 {
+			compatible = "realtek,rtl819x-memc";
+			reg = <0x1000 0x100>;
+		};		
+
+		intc: intc@3000 {
+			compatible = "realtek,rtl819x-intc";
+			reg = <0x3000 0x100>;
+
+			interrupt-controller;
+			#interrupt-cells = <1>;
+
+			interrupt-parent = <&cpuintc>;
+			interrupts = <2>;
+		};
+	};
+
+	serial0: serial@18147000 {
+		compatible = "realtek,rtl8197f-uart", "snps,dw-apb-uart";
+		reg = <0x18147000 0x100>;
+
+		interrupt-parent = <&intc>;
+		interrupts = <9>;
+
+		reg-io-width = <4>;
+		reg-shift = <2>;
+		clock-frequency = <100000000>;
+	};
+};

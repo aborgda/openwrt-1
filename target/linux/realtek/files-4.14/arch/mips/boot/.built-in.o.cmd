@@ -1,1 +1,0 @@
-cmd_arch/mips/boot/dts/realtek/built-in.o :=  rm -f arch/mips/boot/dts/realtek/built-in.o; mips-openwrt-linux-musl-ar rcSTPD arch/mips/boot/dts/realtek/built-in.o arch/mips/boot/dts/realtek/rtl8197d.dtb.o 

@@ -24,6 +24,27 @@
 
 #include "realtek_mem.h"
 
+__iomem void *_timer_membase;
+#define tc_w32(val, reg) __raw_writel(val, _timer_membase + reg)
+#define tc_r32(reg)		 __raw_readl(_timer_membase + reg)
+
+// Timer Registers and bits
+#define REALTEK_TC_REG_DATA0		0x00
+#define REALTEK_TC_REG_DATA1		0x04
+#define REALTEK_TC_REG_COUNT0		0x08
+#define REALTEK_TC_REG_COUNT1		0x0c
+#define REALTEK_TC_REG_CTRL			0x10
+#define REALTEK_TC_CTRL_TC0_EN		BIT(31)	// Enable Timer0
+#define REALTEK_TC_CTRL_TC0_MODE	BIT(30)	// 0 Counter, 1 Timer
+#define REALTEK_TC_CTRL_TC1_EN		BIT(29)	// Enable Timer1
+#define REALTEK_TC_CTRL_TC1_MODE	BIT(28) // 0 Counter, 1 Timer
+#define REALTEK_TC_REG_IR			0x14
+#define REALTEK_TC_IR_TC0_EN		BIT(31) // Enable Timer Interrupts
+#define REALTEK_TC_IR_TC1_EN		BIT(30)
+#define REALTEK_TC_IR_TC0_PENDING	BIT(29)
+#define REALTEK_TC_IR_TC1_PENDING	BIT(28)
+#define REALTEK_TC_REG_CLOCK_DIV	0x18	// Clock Divider N TimerClock=(BaseClock/N)
+
 // Only the 28 higher bits are valid in the timer register counter
 #define REALTEK_TIMER_RESOLUTION 28
 #define RTLADJ_TICK(x)  (x>>(32-REALTEK_TIMER_RESOLUTION))
@@ -152,9 +173,17 @@ static struct irqaction rtl819x_timer_irqaction = {
 
 static int __init rtl819x_timer_init(struct device_node *np)
 {
+	struct resource res;
 	struct clk *clk;
 	unsigned long timer_rate;
 	u32 div_fac;
+
+	if (of_address_to_resource(np, 0, &res))
+		panic("Failed to get resource for %s", np->name);
+
+	_timer_membase = ioremap_nocache(res.start, resource_size(&res));
+	if(!_timer_membase)
+		panic("Failed to map memory for %s", np->name);
 
 	rtl819x_clockevent.name = np->name;
 	rtl819x_timer_irqaction.name = np->name;

@@ -14,7 +14,7 @@ Index: linux-4.14.131/arch/mips/Kconfig
 ===================================================================
 --- linux-4.14.131.orig/arch/mips/Kconfig
 +++ linux-4.14.131/arch/mips/Kconfig
-@@ -630,6 +630,22 @@ config RALINK
+@@ -630,6 +630,21 @@ config RALINK
  	select ARCH_HAS_RESET_CONTROLLER
  	select RESET_CONTROLLER
  
@@ -27,7 +27,6 @@ Index: linux-4.14.131/arch/mips/Kconfig
 +	select SYS_SUPPORTS_MIPS16
 +	select SYS_SUPPORTS_32BIT_KERNEL
 +	select SYS_HAS_EARLY_PRINTK
-+	select USE_GENERIC_EARLY_PRINTK_8250
 +	select COMMON_CLK
 +	select TIMER_OF
 +	select CLKSRC_MMIO
