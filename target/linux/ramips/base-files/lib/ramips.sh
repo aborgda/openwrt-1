@@ -167,8 +167,8 @@ ramips_board_detect() {
 		name="dir-810l"
 		;;
 	*"DIR-819 A1")
-                name="dir-819-a1"
-                ;;
+		name="dir-819-a1"
+		;;
 	*"DIR-860L B1")
 		name="dir-860l-b1"
 		;;
@@ -179,14 +179,14 @@ ramips_board_detect() {
 		name="duzun-dm06"
 		;;
 	*"DWR-116 A1")
-                name="dl-dwr116-a1"
-                ;;
+				name="dl-dwr116-a1"
+				;;
 	*"DWR-116 A2")
-                name="dl-dwr116-a2"
-                ;;
+				name="dl-dwr116-a2"
+				;;
 	*"DWR-116 A3")
-                name="dl-dwr116-a3"
-                ;;
+				name="dl-dwr116-a3"
+				;;
 	*"DWR-512 B")
 		name="dwr-512-b"
 		;;
@@ -768,6 +768,9 @@ ramips_board_detect() {
 		;;
 	*"ZyXEL Keenetic Viva")
 		name="kng_rc"
+		;;
+	*"ZyXEL EMG1702-T10A V1")
+		name="emg1702-t10a-v1"
 		;;
 	*"YK1")
 		name="youku-yk1"

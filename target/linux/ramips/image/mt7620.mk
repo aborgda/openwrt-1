@@ -188,6 +188,20 @@ define Device/dir-819-a1
 endef
 TARGET_DEVICES += dir-819-a1
 
+define Device/emg1702-t10a-v1
+  DTS := EMG1702-T10A-V1
+  IMAGE_SIZE := 6720k
+  BLOCKSIZE := 4k
+  KERNEL := $(KERNEL_DTB)
+  DEVICE_TITLE := ZyXEL EMG1702-T10A V1
+  IMAGES += factory.bin
+  IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
+        append-rootfs | pad-rootfs | tbs_dlink -g C0 -m EMG1702 -p EMG1702
+  IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | \
+        append-rootfs | pad-rootfs | append-metadata 
+endef
+TARGET_DEVICES += emg1702-t10a-v1
+
 define Device/dl-dwr116-a1
   DTS := DWR-116-A1
   DEVICE_TITLE := D-Link DWR-116 A1
