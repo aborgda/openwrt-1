@@ -113,13 +113,9 @@
 };
 
 &ethernet {
-	mtd-mac-address = <&uboot 0x10458>;
+	mtd-mac-address = <&uboot 0x1045A>;
 	pinctrl-names = "default";
 	mediatek,portmap = "llllw";
-};
-
-&wmac {
-	mtd-mac-address-increment = <(-2)>;
 };
 
 &gsw {
