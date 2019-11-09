@@ -176,7 +176,7 @@ ramips_setup_interfaces()
 	itlb-ncloud-v1|\
 	dir-819-a1|\
 	rt-ac51u|\
-	emg1702-t10a-v1)
+	emg1702-t10a-a1)
 		ucidef_add_switch "switch0" \
 			"0:wan" "1:lan" "2:lan" "3:lan" "4:lan" "6t@eth0"
 		;;
@@ -479,10 +479,11 @@ ramips_setup_macs()
 		wan_mac=$(jboot_config_read -m -i "$(find_mtd_part config)" -o 0xE000)
 		lan_mac=$(macaddr_add "$wan_mac" 1)
 		;;
-	dir-819-a1)
+	dir-819-a1|\
+	emg1702-t10a-a1)
 		offset=$(strings -t x "$(find_mtd_part u-boot)" | grep llconfig | head -n 1 | awk '{ print "0x"$1 }') 
 		offset=$((offset+53))
-	  wan_mac=$(mtd_get_mac_binary u-boot $offset)
+		wan_mac=$(mtd_get_mac_binary u-boot $offset)
 		lan_mac=$(macaddr_add "$wan_mac" 1)
 		;;
 	e1700)
