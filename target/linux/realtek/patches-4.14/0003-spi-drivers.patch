@@ -31,7 +31,7 @@
  obj-$(CONFIG_SPI_ZYNQMP_GQSPI)		+= spi-zynqmp-gqspi.o
  
 +obj-$(CONFIG_SPI_REALTEK)			+= spi-realtek.o
-+obj-$(CONFIG_SPI_SHEIPA)			+= sheipa/
++obj-$(CONFIG_SPI_SHEIPA)			+= spi-sheipa.o
 +
  # SPI slave protocol handlers
  obj-$(CONFIG_SPI_SLAVE_TIME)		+= spi-slave-time.o

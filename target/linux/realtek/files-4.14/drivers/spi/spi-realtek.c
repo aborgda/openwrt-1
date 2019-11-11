@@ -284,7 +284,6 @@ static int realtek_spi_probe(struct platform_device *pdev)
 	/* Deassert all chip selects */
 	realtek_spi_wr(rsd, RTK_SPI_CONTROL_STATUS_OFFSET, RTK_SPI_CS_ALL_HIGH | RTK_SPI_READY);
 
-	//ret = spi_register_master(spi_master_get(master));
 	ret = devm_spi_register_master(&pdev->dev, master);
 	if (ret)
 		goto err_out;
