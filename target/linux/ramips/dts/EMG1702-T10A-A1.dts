@@ -6,11 +6,11 @@
 #include <dt-bindings/input/input.h>
 
 / {
-	compatible = "zyxel,emg1702-t10a-v1", "ralink,mt7620a-soc";
-	model = "ZyXEL EMG1702-T10A V1";
+	compatible = "zyxel,emg1702-t10a-a1", "ralink,mt7620a-soc";
+	model = "ZyXEL EMG1702-T10A A1";
 
   chosen {
-    bootargs = "console=ttyS0,115200";
+	bootargs = "console=ttyS0,115200";
   };
 
   memory@0 {
@@ -41,17 +41,17 @@
 		compatible = "gpio-leds";
 
 		wan {
-			label = "dir-819-a1:green:wan";
+			label = "emg1702-t10a-a1:green:wan";
 			gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
 		};
 
 		wlan {
-			label = "dir-819-a1:green:wlan";
+			label = "emg1702-t10a-a1:green:wlan";
 			gpios = <&gpio3 0 GPIO_ACTIVE_LOW>;
 		};
 
 		wps {
-			label = "dir-819-a1:green:wps";
+			label = "emg1702-t10a-a1:green:wps";
 			gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;
 		};
 	};
@@ -80,7 +80,7 @@
 		reg = <0>;
 		spi-max-frequency = <10000000>;
 
-		partition@0 {
+		uboot: partition@0 {
 			label = "u-boot";
 			reg = <0x0 0x30000>;
 			read-only;
@@ -93,20 +93,13 @@
 
 		partition@200000 {
 			label = "rootfs";
-			reg = <0x200000 0x5e0000>;
+			reg = <0x200000 0x600000>;
 		};
 
-		factory: partition@7e0000 {
-      label = "factory";
-      reg = <0x7e0000 0x20000>;
-			read-only;
-    };
-
-    partition {
+		partition {
 			label = "firmware";
-			reg = <0x30000 0x7b0000>;
+			reg = <0x30000 0x7d0000>;
 		};
-
 	};
 };
 
@@ -120,10 +113,9 @@
 };
 
 &ethernet {
-  pinctrl-names = "default";
-  mediatek,portmap = "llllw";
+	pinctrl-names = "default";
+	mediatek,portmap = "llllw";
 };
-
 
 &gsw {
 	mediatek,port4 = "ephy";

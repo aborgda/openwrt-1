@@ -252,7 +252,7 @@ platform_check_image() {
 		return 0
 		;;
 	dir-819-a1|\
-	emg1702-t10a-v1)
+	emg1702-t10a-a1)
 		if [ "${magic::2}" = "6d" ] || [ "${magic::2}" = "5d" ] 
 		then
 		   return 0
