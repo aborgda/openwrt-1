@@ -15,6 +15,7 @@ define Build/loader-common
      PKG_BUILD_DIR="$@.src" \
      TARGET_DIR="$(dir $@)" LOADER_NAME="$(notdir $@)" \
      BOARD="$(DEV_PROFILE)" \
+     SUBTARGET="$(SUBTARGET)" \
      LZMA_TEXT_START=0x81000000 LOADADDR=0x80000000 \
      $(1) compile loader.bin
   mv "$@.bin" "$@"
@@ -121,6 +122,23 @@ define Device/DIR815D1
   pad-rootfs | append-metadata 
 endef
 TARGET_DEVICES += DIR815D1
+endif
+
+ifeq ($(SUBTARGET),rtl8197f)
+define Device/RE708
+  DEV_PROFILE := RE708
+  IMAGE_SIZE := 7936k
+  DEVICE_TITLE := Multilaser RE708 V1
+  SUPPORTED_DEVICES := re-708-v1
+  CVIMG_KERNEL_BURN_ADDR := 0x18000
+  CVIMG_LOADER_START_ADDR := 0x81000000
+  CMDLINE := console=ttyS0,38400 
+  KERNEL := kernel-bin | lzma | loader-cmdline-compile
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
+endef
+TARGET_DEVICES += RE708
 endif
 
 ifeq ($(SUBTARGET),rtl8196e)

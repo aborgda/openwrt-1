@@ -51,6 +51,7 @@ static u32 mips_chip_irqs;
 #define REALTEK_IRQ_GENERIC		2   
 
 #define REALTEK_IRQ_TIMER		7
+#define REALTEK_IRQ_NET			4
 #define REALTEK_IRQ_UART0		REALTEK_IRQ_GENERIC  
 
 /* Definition for SoCs
@@ -69,7 +70,8 @@ u32 realtek_soc_irq_init(void)
 	ic_w32((0), 
 		REALTEK_IC_REG_IRR0);
 
-	ic_w32((REALTEK_IRQ_UART0 << 4), 
+	ic_w32((REALTEK_IRQ_NET 	<< 28) |
+		   (REALTEK_IRQ_UART0 	<< 4), 
 		REALTEK_IC_REG_IRR1);
 
 	ic_w32((0), 
@@ -91,12 +93,13 @@ u32 realtek_soc_irq_init(void)
 		REALTEK_IC_REG_IRR7);
 
 	// map high priority interrupts to mips irq controler
+	// BIT 15 on MASK1 is network switch
 	// BIT 15 on MASK2 is R4K Timer
-	ic_w32(0,       REALTEK_IC_REG_MASK);
+	ic_w32(BIT(15), REALTEK_IC_REG_MASK);
 	ic_w32(BIT(15), REALTEK_IC_REG2_MASK);
 
 	// Return only MARK1
-	return 0;
+	return BIT(15);
 }
 
 #else
@@ -203,6 +206,9 @@ asmlinkage void plat_irq_dispatch(void)
 
 	if (pending & STATUSF_IP7) 
 		do_IRQ(REALTEK_IRQ_TIMER);
+
+	else if (pending & STATUSF_IP4) 
+		do_IRQ(REALTEK_IRQ_NET);
 
 	else if (pending & STATUSF_IP2)
 		do_IRQ(REALTEK_IRQ_GENERIC);
