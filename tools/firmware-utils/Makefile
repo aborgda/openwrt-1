@@ -86,6 +86,7 @@ define Host/Compile
 	$(call cc,dns313-header, -Wall)
 	$(call cc,mkuimage_fake_header, -Wall -lz)
 	$(call cc,tbs_dlink)
+	$(call cc,cvimg)
 endef
 
 define Host/Install

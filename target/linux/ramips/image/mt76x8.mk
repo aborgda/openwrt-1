@@ -167,6 +167,22 @@ define Device/tl-wr840n-v6
 endef
 TARGET_DEVICES += tl-wr840n-v6
 
+define Device/tl-wr840n-v6preset
+  $(Device/tl-wr840n-v6)
+  DTS := TL-WR840NV6PRESET
+  DEVICE_TITLE := TP-Link TL-WR840N v6PRESET
+  IMAGES := sysupgrade.bin factory.bin
+endef
+TARGET_DEVICES += tl-wr840n-v6preset
+
+define Device/tl-wr840n-v62
+  $(Device/tl-wr840n-v6)
+  DTS := TL-WR840NV62
+  DEVICE_TITLE := TP-Link TL-WR840N v62
+  TPLINK_HWID := 0x08400006
+endef
+TARGET_DEVICES += tl-wr840n-v62
+
 define Device/tl-wr849n-v4
   $(Device/tl-wr840n-v4)
   DTS := TL-WR849NV4
@@ -247,6 +263,20 @@ define Device/archer-c20-v4
 endef
 TARGET_DEVICES += archer-c20-v4
 
+define Device/archer-c20-v5
+  $(Device/tplink)
+  DTS := ArcherC20v5
+  IMAGE_SIZE := 7616k
+  DEVICE_TITLE := TP-Link ArcherC20 v5
+  TPLINK_FLASHLAYOUT := 8MSUmtk
+  TPLINK_HWID := 0x0C200005
+  TPLINK_HWREV := 0x1
+  TPLINK_HWREVADD := 0x5
+  TPLINK_HVERSION := 3
+  IMAGES := sysupgrade.bin
+endef
+TARGET_DEVICES += archer-c20-v5
+
 define Device/tplink_c50-v3
   $(Device/tplink)
   DTS := ArcherC50V3
@@ -259,6 +289,34 @@ define Device/tplink_c50-v3
   TPLINK_HVERSION := 3
 endef
 TARGET_DEVICES += tplink_c50-v3
+
+define Device/archer-c50-v4
+  $(Device/tplink)
+  DTS := ArcherC50V4
+  IMAGE_SIZE := 7616k
+  DEVICE_TITLE := TP-Link ArcherC50 v4
+  TPLINK_FLASHLAYOUT := 8MSUmtk
+  TPLINK_HWID := 0x001D589B
+  TPLINK_HWREV := 0x93
+  TPLINK_HWREVADD := 0x2
+  TPLINK_HVERSION := 3
+  IMAGES := sysupgrade.bin
+endef
+TARGET_DEVICES += archer-c50-v4
+
+define Device/tplink_tl-mr3020-v3
+  $(Device/tplink)
+  DTS := TL-MR3020V3
+  IMAGE_SIZE := 7808k
+  DEVICE_TITLE := TP-Link TL-MR3020 v3
+  TPLINK_FLASHLAYOUT := 8Mmtk
+  TPLINK_HWID := 0x30200003
+  TPLINK_HWREV := 0x3
+  TPLINK_HWREVADD := 0x3
+  TPLINK_HVERSION := 3
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-usb-ledtrig-usbport
+endef
+TARGET_DEVICES += tplink_tl-mr3020-v3
 
 define Device/tplink_tl-mr3420-v5
   $(Device/tplink)

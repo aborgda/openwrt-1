@@ -64,7 +64,7 @@ TARGET_DEVICES += archer-c60-v1
 
 define Device/archer-c60-v2
   $(Device/archer-c60-v1)
-  DEVICE_TITLE := TP-LINK Archer C60 v2
+  DEVICE_TITLE := TP-LINK ArcherC60 v2
   BOARDNAME := ARCHER-C60-V2
   TPLINK_BOARD_ID := ARCHER-C60-V2
   DEVICE_PROFILE := ARCHERC60V2

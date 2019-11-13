@@ -17,12 +17,12 @@
 #define MODEL_LEN         16
 #define REGION_LEN      4
 
-#define TBS_PRODUCT "DIR-819"
+#define TBS_PRODUCT "ANLIX"
 #define TBS_PRODVERSION "R2"
 #define TBS_IMGTYPE "imgs"
 #define TBS_BOARDID "0123456789"
-#define TBS_REGION "CA"
-#define TBS_MODEL_NAME "DIR819"
+#define TBS_REGION "BR"
+#define TBS_MODEL_NAME "ANLIX"
 #define TBS_SWVERSION "1.0.6.2"
 
 #define BIGENDIAN    1 

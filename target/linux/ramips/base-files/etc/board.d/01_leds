@@ -180,7 +180,8 @@ vr500)
 dir-860l-b1)
 	ucidef_set_led_netdev "wan" "wan" "$boardname:green:net" "eth0.2"
 	;;
-dir-819-a1)
+dir-819-a1|\
+emg1702-t10a-a1)
 	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
 	set_wifi_led "$boardname:green:wlan"
 	;;
@@ -410,6 +411,8 @@ tl-wr849n-v5|\
 tl-wr849n-v6)
 	ucidef_set_led_netdev "wan" "wan" "$boardname:green:power" "eth0.2"
 	;;
+tl-wr840n-v6preset|\
+tl-wr840n-v62|\
 tl-wr849n-v62)
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan" "ra0"
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
@@ -444,11 +447,19 @@ archer-c5-v4)
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan2g" "wlan0"
 	ucidef_set_led_netdev "wlan5g" "wlan5g" "$boardname:green:wlan5g" "wlan1"
 	;;
-tplink,c50-v3)
+tplink,c50-v3|\
+tplink,c50-v4)
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
 	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
 	ucidef_set_led_wlan "wlan2g" "wlan2g" "$boardname:green:wlan2g" "phy0tpt"
 	ucidef_set_led_wlan "wlan5g" "wlan5g" "$boardname:green:wlan5g" "phy1tpt"
+	;;
+archer-c50-v4|\
+archer-c20-v5)
+	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
+	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x01"
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan2g" "wlan0"
+	ucidef_set_led_netdev "wlan5g" "wlan5g" "$boardname:green:wlan5g" "wlan1"
 	;;
 tplink,tl-mr3420-v5|\
 tplink,tl-wr842n-v5)

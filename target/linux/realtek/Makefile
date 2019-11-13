@@ -1,0 +1,43 @@
+#
+# Copyright (C) 2008-2011 OpenWrt.org
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+#
+include $(TOPDIR)/rules.mk
+
+ARCH:=mips
+BOARD:=realtek
+BOARDNAME:=Realtek
+SUBTARGETS:=rtl8197d rtl8196e
+FEATURES:=squashfs gpio
+MAINTAINER:=Anlix <contato@anlix.io>
+
+KERNEL_PATCHVER:=3.10
+
+define Target/Description
+	Build firmware images for Realtek based boards.
+endef
+
+include $(INCLUDE_DIR)/target.mk
+
+ifeq ($(SUBTARGET),rtl8197d)
+define Kernel/Patch
+	mkdir -p $(LINUX_DIR)/arch/rlx/soc-rtl819xd/
+	cp $(CURDIR)/config/$(PROFILE).h $(LINUX_DIR)/arch/rlx/soc-rtl819xd/mach_rtl.h
+	$(Kernel/Patch/Default)
+endef
+endif
+
+ifeq ($(SUBTARGET),rtl8196e)
+define Kernel/Patch
+	mkdir -p $(LINUX_DIR)/arch/rlx/soc-rtl8196e/
+	cp $(CURDIR)/config/$(PROFILE).h $(LINUX_DIR)/arch/rlx/soc-rtl8196e/mach_rtl.h
+	$(Kernel/Patch/Default)
+endef
+endif
+
+DEFAULT_PACKAGES += \
+        kmod-gpio-button-hotplug swconfig
+
+$(eval $(call BuildTarget))

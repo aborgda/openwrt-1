@@ -51,7 +51,7 @@ else
   endif
 endif
 
-ifneq ($(filter 4.9,$(KERNEL_PATCHVER)),)
+ifneq ($(filter 3.10 4.9,$(KERNEL_PATCHVER)),)
   DEFAULT_PACKAGES.router:=$(filter-out kmod-ipt-offload,$(DEFAULT_PACKAGES.router))
 endif
 
@@ -175,6 +175,8 @@ ifeq ($(DUMP),1)
     CPU_CFLAGS_24kc = -mips32r2 -mtune=24kc
     CPU_CFLAGS_74kc = -mips32r2 -mtune=74kc
     CPU_CFLAGS_octeon = -march=octeon -mabi=64
+    CPU_CFLAGS_lx53 = -march=lx5380
+    CPU_CFLAGS_lx43 = -march=lx4380
   endif
   ifeq ($(ARCH),i386)
     CPU_TYPE ?= pentium
