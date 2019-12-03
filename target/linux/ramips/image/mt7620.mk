@@ -50,6 +50,7 @@ define Device/Archer
   KERNEL := $(KERNEL_DTB)
   KERNEL_INITRAMFS := $(KERNEL_DTB) | tplink-v2-header -e
   IMAGE/factory.bin := tplink-v2-image -e
+  IMAGE/tftp-recovery.bin := pad-extra 128k | $$(IMAGE/factory.bin)
   IMAGE/sysupgrade.bin := tplink-v2-image -s -e | append-metadata
 endef
 
@@ -60,7 +61,7 @@ define Device/ArcherC5v4
   TPLINK_FLASHLAYOUT := 8Mmtk
   TPLINK_HWID := 0xc5000004
   TPLINK_HWREV := 60
-  IMAGES += factory.bin
+  IMAGES = tftp-recovery.bin sysupgrade.bin
   DEVICE_TITLE := TP-Link ArcherC5v4
 endef
 TARGET_DEVICES += ArcherC5v4
