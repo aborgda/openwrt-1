@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+
+#include "RTL8197F.dtsi"
+
+/ {
+	compatible = "multilaser,re708", "realtek,rtl8197f-soc";
+	model = "Multilaser RE708 V1";
+
+	memory {
+		device_type = "memory";
+		reg = <0x0 0x4000000>;
+	};
+
+	chosen {
+		bootargs = "console=ttyS0,38400";
+	};
+};
+
+&spi0 {
+	status = "okay";
+
+	m25p80@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <41000000>;
+
+		partition@0 {
+			label = "bootloader";
+			reg = <0x0 0x30000>;
+			read-only;
+		};
+
+		partition@20000 {
+			label = "firmware";
+			reg = <0x30000 0x7C0000>;
+		};
+	};
+};

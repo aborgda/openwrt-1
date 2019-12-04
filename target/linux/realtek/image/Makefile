@@ -1,4 +1,4 @@
-# 
+#
 # Copyright (C) 2006-2010 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
@@ -108,6 +108,12 @@ define Device/Default
   CVIMG_ROOTFS_BURN_ADDR := 0
 endef
 
+define Device/RealtekDTS
+  PROFILES = Default $$(DTS)
+  DEVICE_DTS_DIR := ../dts
+  KERNEL := kernel-bin | append-dtb | lzma
+endef
+
 ifeq ($(SUBTARGET),rtl8197d)
 define Device/DIR815D1
   DEV_PROFILE := DIR815D1
@@ -117,23 +123,25 @@ define Device/DIR815D1
   KERNEL := kernel-bin | lzma
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin := append-kernel | pad-to 1900544 | append-rootfs | pad-rootfs | \
-	tbs_dlink_big -k 0x197400 -r 0x4DFF70 -g BR -m DIR825G1 -p RTL8197DL_AC1200 
+	tbs_dlink_big -k 0x197400 -r 0x4DFF70 -g BR -m DIR825G1 -p RTL8197DL_AC1200
   IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | append-rootfs | \
-  pad-rootfs | append-metadata 
+  pad-rootfs | append-metadata
 endef
 TARGET_DEVICES += DIR815D1
 endif
 
 ifeq ($(SUBTARGET),rtl8197f)
 define Device/RE708
-  DEV_PROFILE := RE708
-  IMAGE_SIZE := 7936k
+  $(Device/RealtekDTS)
+  DEVICE_DTS := RE708
   DEVICE_TITLE := Multilaser RE708 V1
-  SUPPORTED_DEVICES := re-708-v1
-  CVIMG_KERNEL_BURN_ADDR := 0x18000
+  SUPPORTED_DEVICES := re708v1 re708-v1
+  IMAGE_SIZE := 7936k
+  DEV_PROFILE := RE708
+  CMDLINE := console=ttyS0,38400
+  KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
+  CVIMG_KERNEL_BURN_ADDR := 0x30000
   CVIMG_LOADER_START_ADDR := 0x81000000
-  CMDLINE := console=ttyS0,38400 
-  KERNEL := kernel-bin | lzma | loader-cmdline-compile
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
@@ -148,7 +156,7 @@ define Device/GWR300N
   DEVICE_TITLE := Greatek GWR 300N
   CVIMG_KERNEL_BURN_ADDR := 0x18000
   CVIMG_LOADER_START_ADDR := 0x81000000
-  CMDLINE := console=ttyS0,38400 
+  CMDLINE := console=ttyS0,38400
   KERNEL := kernel-bin | lzma | loader-cmdline-compile
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
@@ -162,7 +170,7 @@ define Device/RE172
   DEVICE_TITLE := Multilaser RE172 v1
   CVIMG_KERNEL_BURN_ADDR := 0x10000
   CVIMG_LOADER_START_ADDR := 0x81000000
-  CMDLINE := console=ttyS0,38400 
+  CMDLINE := console=ttyS0,38400
   KERNEL := kernel-bin | lzma | loader-cmdline-compile
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
