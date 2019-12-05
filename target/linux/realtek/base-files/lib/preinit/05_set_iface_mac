@@ -6,12 +6,16 @@ preinit_set_mac_address() {
 	. /lib/functions.sh
 	. /lib/functions/system.sh
 	board=$(cat /tmp/sysinfo/board_name)
-	
+
 	case $(board_name) in
 	dir-815-d1)
 		offset=$(strings -t x "$(find_mtd_part boot)" | grep llconfig | head -n 1 | awk '{ print "0x"$1 }')
 			offset=$((offset+53))
 			wan_mac=$(mtd_get_mac_binary boot $offset)
+		[ -n "$wan_mac" ] && ifconfig eth1 hw ether "$wan_mac"
+		;;
+	re708-v1)
+		wan_mac=$(mtd_get_mac_binary boot 131079)
 		[ -n "$wan_mac" ] && ifconfig eth1 hw ether "$wan_mac"
 		;;
 	gwr-300n-v1)

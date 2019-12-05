@@ -133,6 +133,7 @@ endif
 ifeq ($(SUBTARGET),rtl8197f)
 define Device/RE708
   $(Device/RealtekDTS)
+  BLOCKSIZE := 64k
   DEVICE_DTS := RE708
   DEVICE_TITLE := Multilaser RE708 V1
   SUPPORTED_DEVICES := re708v1 re708-v1

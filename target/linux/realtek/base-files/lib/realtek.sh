@@ -20,8 +20,11 @@ realtek_board_detect() {
 		name="gwr-300n-v1"
 		;;
 	*"RE172 V1")
-                name="re172-v1"
-                ;;
+		name="re172-v1"
+		;;
+	*"RE708 V1")
+		name="re708-v1"
+		;;
 	esac
 
 	# use generic board detect if no name is set
