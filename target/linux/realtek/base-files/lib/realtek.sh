@@ -25,6 +25,9 @@ realtek_board_detect() {
 	*"RE708 V1")
 		name="re708-v1"
 		;;
+	*"ACTIONRG1200 V1")
+		name="actionrg1200-v1"
+		;;
 	esac
 
 	# use generic board detect if no name is set

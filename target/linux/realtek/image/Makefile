@@ -148,6 +148,24 @@ define Device/RE708
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
 endef
 TARGET_DEVICES += RE708
+
+define Device/ACTIONRG1200
+  $(Device/RealtekDTS)
+  BLOCKSIZE := 64k
+  DEVICE_DTS := ACTIONRG1200
+  DEVICE_TITLE := Intelbras ACTIONRG1200 V1
+  SUPPORTED_DEVICES := actionrg1200v1
+  IMAGE_SIZE := 7936k
+  DEV_PROFILE := ACTIONRG1200
+  CMDLINE := console=ttyS0,115200
+  KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
+  CVIMG_KERNEL_BURN_ADDR := 0x30000
+  CVIMG_LOADER_START_ADDR := 0x80A00000
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
+endef
+TARGET_DEVICES += ACTIONRG1200
 endif
 
 ifeq ($(SUBTARGET),rtl8196e)
