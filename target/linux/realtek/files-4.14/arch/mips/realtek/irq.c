@@ -56,6 +56,8 @@ static u32 mips_chip_irqs;
 #define REALTEK_IRQ_PCI0		5
 #define REALTEK_IRQ_PCI1		REALTEK_IRQ_WIFI
 #define REALTEK_IRQ_UART0		REALTEK_IRQ_GENERIC  
+#define REALTEK_IRQ_GPIO1		REALTEK_IRQ_GENERIC
+#define REALTEK_IRQ_GPIO2		REALTEK_IRQ_GENERIC
 
 /* Definition for SoCs
    RTL8196E and RTL8197D have a RLX chipset
@@ -77,7 +79,9 @@ u32 realtek_soc_irq_init(void)
 		   (REALTEK_IRQ_UART0 	<< 4), 
 		REALTEK_IC_REG_IRR1);
 
-	ic_w32((REALTEK_IRQ_PCI0 << 20), 
+	ic_w32((REALTEK_IRQ_PCI0 << 20) |
+		   (REALTEK_IRQ_GPIO2 << 4) |
+		   (REALTEK_IRQ_GPIO1 << 0), 
 		REALTEK_IC_REG_IRR2);
 
 	ic_w32((REALTEK_IRQ_WIFI << 20), 

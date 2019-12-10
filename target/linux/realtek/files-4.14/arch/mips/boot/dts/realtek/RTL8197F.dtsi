@@ -46,6 +46,22 @@
 			interrupt-parent = <&cpuintc>;
 			interrupts = <2>;
 		};
+
+		gpio0: gpio-controller@3500 {
+			compatible = "realtek,rtl8197f-gpio";
+			reg = <0x3500 0x1c>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			status = "disabled";
+		};
+
+		gpio1: gpio-controller@351C {
+			compatible = "realtek,rtl8197f-gpio";
+			reg = <0x351C 0x1c>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			status = "disabled";
+		};
 	};
 
 	serial0: serial@18147000 {
