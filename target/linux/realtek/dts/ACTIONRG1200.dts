@@ -40,7 +40,7 @@
 
 		partition@7E0000 {
 			label = "config";
-			reg = <0x7E0000 0x10000>;
+			reg = <0x7E0000 0x20000>;
 			read-only;
 		};
 	};

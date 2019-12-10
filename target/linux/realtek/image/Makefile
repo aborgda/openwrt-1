@@ -173,15 +173,15 @@ define Device/ACTIONRG1200
   DEVICE_DTS := ACTIONRG1200
   DEVICE_TITLE := Intelbras ACTIONRG1200 V1
   SUPPORTED_DEVICES := actionrg1200v1
-  IMAGE_SIZE := 7936k
+  IMAGE_SIZE := 7872k
   DEV_PROFILE := ACTIONRG1200
   CMDLINE := console=ttyS0,115200
   KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
   CVIMG_KERNEL_BURN_ADDR := 0x30000
   CVIMG_LOADER_START_ADDR := 0x80A00000
   IMAGES := factory.bin sysupgrade.bin
-  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
-  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
+  IMAGE/factory.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel
+  IMAGE/sysupgrade.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel
 endef
 TARGET_DEVICES += ACTIONRG1200
 endif
