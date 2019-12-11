@@ -137,6 +137,7 @@ static uint32_t align_size = 0;
 static uint32_t append_fake_rootfs = 0;
 static uint32_t append_jffs2_marker = 0;
 static uint32_t insert_chksum_after_format = 0;
+static uint32_t insert_chksum_sysupgrade_format = 0;
 static enum data_type sig_type = (enum data_type) -1;
 static enum cpu_type sig_cpu = (enum cpu_type) -1;
 
@@ -547,7 +548,7 @@ static int build_image(void)
 	hdr.burn_addr = htonl(burn_addr);
 	hdr.len = htonl(fsize_aligned + sizeof (chksum));
 
-	if (insert_chksum_after_format)
+	if (insert_chksum_after_format == 1 || insert_chksum_sysupgrade_format == 1)
 	{
 		// This header will only be used to generate the checksum
 		memcpy(hdr_after_format.signature, sig, 4);
@@ -575,7 +576,7 @@ static int build_image(void)
 
 	fclose(f);
 
-	if (insert_chksum_after_format)
+	if (insert_chksum_after_format == 1 || insert_chksum_sysupgrade_format == 1)
 	{
 		// This header will only be used to generate the checksum
 		memcpy(buf, &hdr_after_format, sizeof (struct img_header));
@@ -586,9 +587,16 @@ static int build_image(void)
 		memcpy(buf + fsize_aligned, &chksum_after_format, sizeof (chksum_after_format));
 	}
 
-	memcpy(buf, &hdr, sizeof (struct img_header));
-	chksum = calculate_checksum((uint8_t *) buf + sizeof (struct img_header), fsize_aligned);
-	memcpy(buf + fsize_aligned + sizeof (struct img_header), &chksum, sizeof (chksum));
+	if (insert_chksum_sysupgrade_format)
+	{
+		memcpy(buf, &hdr_after_format, sizeof (struct img_header));
+	}
+	else
+	{
+		memcpy(buf, &hdr, sizeof (struct img_header));
+		chksum = calculate_checksum((uint8_t *) buf + sizeof (struct img_header), fsize_aligned);
+		memcpy(buf + fsize_aligned + sizeof (struct img_header), &chksum, sizeof (chksum));
+	}
 
 	f = fopen(ofname, "wb");
 	if (!f)
@@ -639,7 +647,7 @@ int main(int argc, char *argv[])
 	{
 		int c;
 
-		c = getopt(argc, argv, "a:b:c:e:i:o:s:t:Tfhj");
+		c = getopt(argc, argv, "a:b:c:e:i:o:s:t:TSfhj");
 		if (c == -1)
 			break;
 
@@ -686,6 +694,9 @@ int main(int argc, char *argv[])
 			break;
 		case 'T':
 			insert_chksum_after_format = 1;
+			break;
+		case 'S':
+			insert_chksum_sysupgrade_format = 1;
 			break;
 		case 'f':
 			append_fake_rootfs = 1;
