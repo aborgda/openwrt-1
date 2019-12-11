@@ -136,6 +136,7 @@ static uint32_t burn_addr = 0;
 static uint32_t align_size = 0;
 static uint32_t append_fake_rootfs = 0;
 static uint32_t append_jffs2_marker = 0;
+static uint32_t insert_chksum_after_format = 0;
 static enum data_type sig_type = (enum data_type) -1;
 static enum cpu_type sig_cpu = (enum cpu_type) -1;
 
@@ -167,6 +168,7 @@ static void usage(int status)
 		"  -t <type>       set the type of the payload data (boot/kernel/rootfs/fw are allowed)\n"
 		"  -c <cpu>        set the CPU type of pre-defined signatures (any/rtl8196b/new/other are allowed)\n"
 		"  -a <size>       set the size of output file to be aligned\n"
+		"  -T              Insert a checksum considering a total image length 16 bytes shorter (Tenda bootloader)\n"
 		"  -f              append fake rootfs only, image header will not be created, requires -a specified for block size\n"
 		"  -j              append jffs2 end marker image only, conflicts with -f, requires -b to be specified for fw burn address and -a for block size\n"
 		"  -h              show this screen\n"
@@ -424,7 +426,7 @@ static int image_append_jffs2_marker(void)
 	struct img_header hdr;
 	uint32_t jffs2_addr;
 	uint16_t chksum;
-	
+
 	f = fopen(ifname, "rb");
 	if (!f)
 	{
@@ -514,10 +516,11 @@ static int image_append_jffs2_marker(void)
 static int build_image(void)
 {
 	FILE *f;
-	char *buf, *fake_rootfs;
-	int fsize, fsize_aligned, bufsize, fake_rootfs_start, fake_rootfs_size;
-	uint16_t chksum;
+	char *buf;
+	int fsize, fsize_aligned, bufsize;
+	uint16_t chksum, chksum_after_format;
 	struct img_header hdr;
+	struct img_header hdr_after_format;
 
 	f = fopen(ifname, "rb");
 	if (!f)
@@ -544,6 +547,15 @@ static int build_image(void)
 	hdr.burn_addr = htonl(burn_addr);
 	hdr.len = htonl(fsize_aligned + sizeof (chksum));
 
+	if (insert_chksum_after_format)
+	{
+		// This header will only be used to generate the checksum
+		memcpy(hdr_after_format.signature, sig, 4);
+		hdr_after_format.start_addr = htonl(start_addr);
+		hdr_after_format.burn_addr = htonl(burn_addr);
+		hdr_after_format.len = htonl(fsize_aligned + sizeof (chksum) - sizeof (struct img_header));
+	}
+
 	bufsize = size_aligned(fsize_aligned + sizeof (struct img_header) + sizeof (chksum), align_size);
 
 	buf = (char *) calloc(bufsize, 1);
@@ -563,10 +575,19 @@ static int build_image(void)
 
 	fclose(f);
 
+	if (insert_chksum_after_format)
+	{
+		// This header will only be used to generate the checksum
+		memcpy(buf, &hdr_after_format, sizeof (struct img_header));
+		// Copy length without last 16 bytes (img_header)
+		memcpy(buf + fsize_aligned - sizeof (hdr_after_format.len), &hdr_after_format.len, sizeof (hdr_after_format.len));
+		chksum_after_format = calculate_checksum((uint8_t *) buf + sizeof (struct img_header), fsize_aligned - sizeof (struct img_header));
+		// Copy new checksum after format
+		memcpy(buf + fsize_aligned, &chksum_after_format, sizeof (chksum_after_format));
+	}
+
 	memcpy(buf, &hdr, sizeof (struct img_header));
-
 	chksum = calculate_checksum((uint8_t *) buf + sizeof (struct img_header), fsize_aligned);
-
 	memcpy(buf + fsize_aligned + sizeof (struct img_header), &chksum, sizeof (chksum));
 
 	f = fopen(ofname, "wb");
@@ -618,7 +639,7 @@ int main(int argc, char *argv[])
 	{
 		int c;
 
-		c = getopt(argc, argv, "a:b:c:e:i:o:s:t:fhj");
+		c = getopt(argc, argv, "a:b:c:e:i:o:s:t:Tfhj");
 		if (c == -1)
 			break;
 
@@ -662,6 +683,9 @@ int main(int argc, char *argv[])
 			break;
 		case 't':
 			sig_type = resolve_payload_type(optarg);
+			break;
+		case 'T':
+			insert_chksum_after_format = 1;
 			break;
 		case 'f':
 			append_fake_rootfs = 1;
