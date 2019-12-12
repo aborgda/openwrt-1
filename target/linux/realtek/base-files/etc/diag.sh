@@ -11,6 +11,12 @@ get_status_led() {
 	actionrg1200-v1)
 		status_led="actionrg1200:blue:sys"
 		;;
+	re708-v1)
+		status_led="re708:green:wps"
+		;;
+	gwr1200ac-v1)
+		status_led="gwr1200ac:green:wps"
+		;;
 	esac
 }
 

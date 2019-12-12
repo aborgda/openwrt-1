@@ -31,6 +31,16 @@ case $board in
     ucidef_set_led_netdev "wifi0" "wifi0" "actionrg1200:blue:wifi0" "wlan0" "link tx rx"
     ucidef_set_led_default "sys" "sys" "actionrg1200:blue:sys" "1"
     ;;
+  re708-v1)
+    ucidef_set_led_netdev "wifi0" "wifi0" "rtl8192cd:green:wifi0" "wlan0" "link tx rx"
+    ucidef_set_led_netdev "wifi1" "wifi1" "rtl8192cd:green:wifi1" "wlan1" "link tx rx"
+    ucidef_set_led_default "wps" "wps" "re708:green:wps" "0"
+    ;;
+  gwr1200ac-v1)
+    ucidef_set_led_netdev "wifi0" "wifi0" "rtl8192cd:green:wifi0" "wlan0" "link tx rx"
+    ucidef_set_led_netdev "wifi1" "wifi1" "rtl8192cd:green:wifi1" "wlan1" "link tx rx"
+    ucidef_set_led_default "wps" "wps" "gwr1200ac:green:wps" "0"
+    ;;
 esac
 
 board_config_flush
