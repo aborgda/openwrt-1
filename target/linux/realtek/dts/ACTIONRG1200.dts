@@ -36,22 +36,22 @@
 		compatible = "gpio-leds";
 
 		sys {
-			label = "actionrg1200:green:sys";
+			label = "actionrg1200:blue:sys";
 			gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
 		};
 
 		wan {
-			label = "actionrg1200:green:wan";
+			label = "actionrg1200:blue:wan";
 			gpios = <&gpio0 23 GPIO_ACTIVE_HIGH>;
 		};
 
 		lan {
-			label = "actionrg1200:green:lan";
+			label = "actionrg1200:blue:lan";
 			gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
 		};
 
 		wifi0 {
-			label = "actionrg1200:green:wifi0";
+			label = "actionrg1200:blue:wifi0";
 			gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
 		};
 	};
