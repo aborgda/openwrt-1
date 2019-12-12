@@ -31,6 +31,9 @@ realtek_board_detect() {
 	*"ACTIONRG1200 V1")
 		name="actionrg1200-v1"
 		;;
+	*"ACTIONRF1200 V1")
+		name="actionrf1200-v1"
+		;;
 	esac
 
 	# use generic board detect if no name is set

@@ -11,6 +11,9 @@ get_status_led() {
 	actionrg1200-v1)
 		status_led="actionrg1200:blue:sys"
 		;;
+	actionrf1200-v1)
+		status_led="actionrf1200:blue:sys"
+		;;
 	re708-v1)
 		status_led="re708:green:wps"
 		;;

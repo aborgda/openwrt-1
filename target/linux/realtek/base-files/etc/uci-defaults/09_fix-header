@@ -40,7 +40,8 @@ fix_header() {
 board=$(board_name)
 
 case "$board" in
-actionrg1200-v1)
+actionrg1200-v1 | \
+actionrf1200-v1)
 	fix_header
 	;;
 esac

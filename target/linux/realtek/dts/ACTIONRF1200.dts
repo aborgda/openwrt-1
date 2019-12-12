@@ -44,6 +44,26 @@
 			label = "actionrf1200:blue:wifi0";
 			gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
 		};
+
+		wan {
+			label = "actionrf1200:blue:wan";
+			gpios = <&gpio1 22 GPIO_ACTIVE_LOW>;
+		};
+
+		lan0 {
+			label = "actionrf1200:blue:lan0";
+			gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+		};
+
+		lan1 {
+			label = "actionrf1200:blue:lan1";
+			gpios = <&gpio1 24 GPIO_ACTIVE_LOW>;
+		};
+
+		lan2 {
+			label = "actionrf1200:blue:lan2";
+			gpios = <&gpio1 23 GPIO_ACTIVE_LOW>;
+		};
 	};
 };
 
