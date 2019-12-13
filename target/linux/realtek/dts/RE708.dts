@@ -32,14 +32,15 @@
 		};
 	};
 
-	gpio-leds {
-		compatible = "gpio-leds";
+	// Breaks device switch. Still needs fix before using it
+	// gpio-leds {
+	// 	compatible = "gpio-leds";
 
-		wps {
-			label = "re708:green:wps";
-			gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
-		};
-	};
+	// 	wps {
+	// 		label = "re708:green:wps";
+	// 		gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+	// 	};
+	// };
 
 };
 
