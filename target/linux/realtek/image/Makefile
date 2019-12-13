@@ -252,6 +252,24 @@ define Device/RE172
 endef
 TARGET_DEVICES += RE172
 
+define Device/RE707
+  $(Device/RealtekDTS)
+  BLOCKSIZE := 64k
+  DEVICE_DTS := RE707
+  DEVICE_TITLE := Multilaser RE707 V1
+  SUPPORTED_DEVICES := re707v1 re707-v1
+  IMAGE_SIZE := 3904k
+  DEV_PROFILE := RE707
+  CMDLINE := console=ttyS0,38400
+  KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
+  CVIMG_KERNEL_BURN_ADDR := 0x30000
+  CVIMG_LOADER_START_ADDR := 0x81000000
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
+endef
+TARGET_DEVICES += RE707
+
 endif
 
 define Image/Build/Initramfs
