@@ -128,6 +128,25 @@ define Device/DIR815D1
   pad-rootfs | append-metadata
 endef
 TARGET_DEVICES += DIR815D1
+
+define Device/DIR822C1
+  $(Device/RealtekDTS)
+  BLOCKSIZE := 64k
+  DEVICE_DTS := DIR822C1
+  DEVICE_TITLE := D-Link DIR-822 C1
+  SUPPORTED_DEVICES := dir-822-c1
+  IMAGE_SIZE := 7936k
+  DEV_PROFILE := DIR822C1
+  CMDLINE := console=ttyS0,38400
+  KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
+  CVIMG_KERNEL_BURN_ADDR := 0x30000
+  CVIMG_LOADER_START_ADDR := 0x81000000
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
+endef
+TARGET_DEVICES += DIR822C1
+
 endif
 
 ifeq ($(SUBTARGET),rtl8197f)
