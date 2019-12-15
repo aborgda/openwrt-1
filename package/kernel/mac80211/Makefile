@@ -43,7 +43,7 @@ PKG_DRIVERS = \
 	rt61-pci rt73-usb \
 	rtl8180 rtl8187 \
 	rtlwifi rtlwifi-pci rtlwifi-btcoexist rtlwifi-usb rtl8192c-common \
-	rtl8192ce rtl8192se rtl8192de rtl8192cu rtl8821ae rtl8192cd \
+	rtl8192ce rtl8192se rtl8192de rtl8192cu rtl8821ae \
 	rtl8xxxu \
 	wlcore wl12xx wl18xx \
 	zd1211rw
@@ -1504,30 +1504,6 @@ define KernelPackage/rtl8xxxu/description
   Please report your results!
 endef
 
-define KernelPackage/rtl8192cd/config
-  if PACKAGE_kmod-rtl8192cd
-
-        config PACKAGE_RTL8192CD_AC
-                bool "Enable rtl8192cd 802.11AC support"
-                depends on PACKAGE_kmod-rtl8192cd
-                help
-		  Enable AC Support in RTL8192CD
-
-  endif
-endef
-
-define KernelPackage/rtl8192cd
-  $(call KernelPackage/mac80211/Default)
-  TITLE:=Realtek 8192cd wireless module support
-  DEPENDS+= @TARGET_realtek +@DRIVER_WEXT_SUPPORT +kmod-cfg80211 +@DRIVER_11N_SUPPORT +@PACKAGE_RTL8192CD_AC:DRIVER_11AC_SUPPORT
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/realtek/rtl8192cd/rtl8192cd.ko
-  AUTOLOAD:=$(call AutoProbe,rtl8192cd)
-endef
-
-define KernelPackage/rtl8192cd/description
- This module adds support for Realtek rtl8192cd wireless adapters
-endef
-
 define KernelPackage/wlcore
   $(call KernelPackage/mac80211/Default)
   TITLE:=TI common driver part
@@ -1774,7 +1750,6 @@ config-$(call config_package,rtl8192se) += RTL8192SE
 config-$(call config_package,rtl8192de) += RTL8192DE
 config-$(call config_package,rtl8192cu) += RTL8192CU
 config-$(call config_package,rtl8821ae) += RTL8821AE
-config-$(call config_package,rtl8192cd) += RTL8192CD
 config-$(CONFIG_PACKAGE_RTLWIFI_DEBUG) += RTLWIFI_DEBUG
 
 config-$(call config_package,rtl8xxxu) += RTL8XXXU
@@ -1791,15 +1766,6 @@ MAKE_OPTS:= -C "$(PKG_BUILD_DIR)" \
 	KERNEL_SUBLEVEL=$(lastword $(subst ., ,$(KERNEL_PATCHVER))) \
 	KBUILD_LDFLAGS_MODULE_PREREQ=
 
-ifeq ($(CONFIG_PACKAGE_kmod-rtl8192cd),y)
-	MAKE_OPTS += "EXTRA_CFLAGS += -w -I$(PKG_BUILD_DIR)/drivers/net/wireless/realtek/rtl8192cd \
-                                -I$(PKG_BUILD_DIR)/drivers/net/wireless/realtek/rtl8192cd/phydm \
-                                -I$(PKG_BUILD_DIR)/drivers/net/wireless/realtek/rtl8192cd/WlanHAL \
-                                -I$(PKG_BUILD_DIR)/drivers/net/wireless/realtek/rtl8192cd/WlanHAL/RTL88XX \
-                                -I$(PKG_BUILD_DIR)/drivers/net/wireless/realtek/rtl8192cd/WlanHAL/HalMac88XX \
-                                -DDM_ODM_SUPPORT_TYPE=0x1"
-endif
-
 define ConfigVars
 $(subst $(space),,$(foreach opt,$(config-$(1)),CPTCFG_$(opt)=$(1)
 ))
@@ -1814,10 +1780,6 @@ define Build/Prepare
 	rm -rf $(PKG_BUILD_DIR)
 	mkdir -p $(PKG_BUILD_DIR)
 	$(PKG_UNPACK)
-ifeq ($(CONFIG_PACKAGE_kmod-rtl8192cd),y)
-	mkdir -p $(PKG_BUILD_DIR)/drivers/net/wireless/realtek
-	$(CP) -r $(LINUX_DIR)/drivers/net/wireless/rtl8192cd $(PKG_BUILD_DIR)/drivers/net/wireless/realtek
-endif
 	$(Build/Patch)
 	$(TAR) -C $(PKG_BUILD_DIR) -xzf $(DL_DIR)/$(IPW2100_NAME)-$(IPW2100_VERSION).tgz
 	$(TAR) -C $(PKG_BUILD_DIR) -xzf $(DL_DIR)/$(IPW2200_NAME)-$(IPW2200_VERSION).tgz
@@ -2003,7 +1965,6 @@ $(eval $(call KernelPackage,rtl8192se))
 $(eval $(call KernelPackage,rtl8192de))
 $(eval $(call KernelPackage,rtl8192cu))
 $(eval $(call KernelPackage,rtl8821ae))
-$(eval $(call KernelPackage,rtl8192cd))
 $(eval $(call KernelPackage,rtl8xxxu))
 $(eval $(call KernelPackage,wlcore))
 $(eval $(call KernelPackage,wl12xx))
