@@ -197,7 +197,7 @@ define Device/emg1702-t10a-a1
   DEVICE_TITLE := ZyXEL EMG1702-T10A A1
   IMAGES += factory.bin
   IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
-        append-rootfs | pad-rootfs | tbs_dlink -g C0 -m EMG1702 -p EMG1702
+        append-rootfs | pad-rootfs | tbs_dlink -g PR -m Sitecom -p EMG1702-T10A
   IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | \
         append-rootfs | pad-rootfs | append-metadata 
 endef
