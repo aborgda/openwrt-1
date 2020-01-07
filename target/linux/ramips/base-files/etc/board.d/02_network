@@ -213,6 +213,7 @@ ramips_setup_interfaces()
 	tplink,c20-v4|\
 	tplink,c50-v3|\
 	tplink,c50-v4|\
+	archer-c50-v3|\
 	archer-c50-v4|\
 	tplink,tl-mr3420-v5|\
 	tplink,tl-wr842n-v5|\
@@ -480,7 +481,7 @@ ramips_setup_macs()
 		;;
 	dir-819-a1|\
 	emg1702-t10a-a1)
-		offset=$(strings -t x "$(find_mtd_part u-boot)" | grep llconfig | head -n 1 | awk '{ print "0x"$1 }') 
+		offset=$(strings -t x "$(find_mtd_part u-boot)" | grep llconfig | head -n 1 | awk '{ print "0x"$1 }')
 		offset=$((offset+53))
 		wan_mac=$(mtd_get_mac_binary u-boot $offset)
 		lan_mac=$(macaddr_add "$wan_mac" 1)

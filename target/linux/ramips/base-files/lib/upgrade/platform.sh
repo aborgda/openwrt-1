@@ -253,7 +253,7 @@ platform_check_image() {
 		;;
 	dir-819-a1|\
 	emg1702-t10a-a1)
-		if [ "${magic::2}" = "6d" ] || [ "${magic::2}" = "5d" ] 
+		if [ "${magic::2}" = "6d" ] || [ "${magic::2}" = "5d" ]
 		then
 		   return 0
 		fi
@@ -269,6 +269,7 @@ platform_check_image() {
 	tplink,c20-v1|\
 	tplink,c20-v4|\
 	tplink,c50-v3|\
+	archer-c50-v3|\
 	archer-c50-v4|\
 	tplink,tl-mr3420-v5|\
 	tplink,tl-wr842n-v5|\
@@ -286,7 +287,7 @@ platform_check_image() {
 	tl-wr845n-v3|\
 	tl-wr845n-v4|\
 	tl-wr841n-v13)
-		[ "$magic" != "03000000" ] && 
+		[ "$magic" != "03000000" ] &&
 		[ "$magic" != "03000003" ] && {
 			echo "Invalid image type."
 			return 1
