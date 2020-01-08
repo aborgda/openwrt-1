@@ -266,6 +266,7 @@ platform_check_image() {
 	archer-c5-v4|\
 	archer-c20-v4|\
 	archer-c20-v5|\
+	archer-c20-v5preset|\
 	tplink,c20-v1|\
 	tplink,c20-v4|\
 	tplink,c50-v3|\
