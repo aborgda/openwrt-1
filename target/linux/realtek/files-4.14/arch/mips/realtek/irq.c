@@ -126,7 +126,7 @@ u32 realtek_soc_irq_init(void)
 			REALTEK_IRQ_NET   << 28 ), 
 		REALTEK_IC_REG_IRR1);
 
-	ic_w32((0), 
+	ic_w32((REALTEK_IRQ_PCI0 << 20), 
 		REALTEK_IC_REG_IRR2);
 
 	ic_w32((0), 
@@ -135,9 +135,10 @@ u32 realtek_soc_irq_init(void)
 	// map high priority interrupts to mips irq controler
 	// TC0 (Timer) (BIT8) to mips
 	// Network Switch (BIT15)
-	ic_w32(BIT(8)|BIT(15), REALTEK_IC_REG_MASK);
+	// PCIE0 (wifi0) (BIT21)
+	ic_w32(BIT(8)|BIT(15)|BIT(21), REALTEK_IC_REG_MASK);
 
-	return BIT(8)|BIT(15);
+	return BIT(8)|BIT(15)|BIT(21);
 }
 
 #endif
