@@ -116,11 +116,13 @@ endef
 
 ifeq ($(SUBTARGET),rtl8197d)
 define Device/DIR815D1
+  $(Device/RealtekDTS)
+  DEVICE_DTS := DIR815D1
   DEV_PROFILE := DIR815D1
   IMAGE_SIZE := 7936k
   DEVICE_TITLE := D-Link DIR-815 D1
   SUPPORTED_DEVICES := dir-815-d1
-  KERNEL := kernel-bin | lzma
+  KERNEL := kernel-bin | append-dtb | lzma
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin := append-kernel | pad-to 1900544 | append-rootfs | pad-rootfs | \
 	tbs_dlink_big -k 0x197400 -r 0x4DFF70 -g BR -m DIR825G1 -p RTL8197DL_AC1200
@@ -239,13 +241,16 @@ endef
 TARGET_DEVICES += GWR300N
 
 define Device/RE172
-  DEV_PROFILE := RE172
+  $(Device/RealtekDTS)
+  DEVICE_DTS := RE172
+  DEVICE_TITLE := Multilaser RE172 V1
+  SUPPORTED_DEVICES := re172v1 re172-v1
   IMAGE_SIZE := 4032k
-  DEVICE_TITLE := Multilaser RE172 v1
+  DEV_PROFILE := RE172
+  CMDLINE := console=ttyS0,38400
+  KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
   CVIMG_KERNEL_BURN_ADDR := 0x10000
   CVIMG_LOADER_START_ADDR := 0x81000000
-  CMDLINE := console=ttyS0,38400
-  KERNEL := kernel-bin | lzma | loader-cmdline-compile
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
@@ -254,7 +259,6 @@ TARGET_DEVICES += RE172
 
 define Device/RE707
   $(Device/RealtekDTS)
-  BLOCKSIZE := 64k
   DEVICE_DTS := RE707
   DEVICE_TITLE := Multilaser RE707 V1
   SUPPORTED_DEVICES := re707v1 re707-v1

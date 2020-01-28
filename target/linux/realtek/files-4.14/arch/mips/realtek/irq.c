@@ -126,7 +126,13 @@ u32 realtek_soc_irq_init(void)
 			REALTEK_IRQ_NET   << 28 ), 
 		REALTEK_IC_REG_IRR1);
 
-	ic_w32((REALTEK_IRQ_PCI0 << 20), 
+
+	ic_w32((
+		REALTEK_IRQ_PCI0 << 20
+#ifdef CONFIG_SOC_RTL8197D
+		| REALTEK_IRQ_PCI1 << 24
+#endif
+		), 
 		REALTEK_IC_REG_IRR2);
 
 	ic_w32((0), 
@@ -136,9 +142,17 @@ u32 realtek_soc_irq_init(void)
 	// TC0 (Timer) (BIT8) to mips
 	// Network Switch (BIT15)
 	// PCIE0 (wifi0) (BIT21)
-	ic_w32(BIT(8)|BIT(15)|BIT(21), REALTEK_IC_REG_MASK);
+	ic_w32(BIT(8)|BIT(15)|BIT(21)
+#ifdef CONFIG_SOC_RTL8197D
+		|BIT(22)
+#endif
+		, REALTEK_IC_REG_MASK);
 
-	return BIT(8)|BIT(15)|BIT(21);
+	return BIT(8)|BIT(15)|BIT(21)
+#ifdef CONFIG_SOC_RTL8197D
+		|BIT(22)
+#endif
+		;
 }
 
 #endif
