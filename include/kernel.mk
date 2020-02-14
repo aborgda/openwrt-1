@@ -76,8 +76,6 @@ endif
 
 ifneq (,$(findstring uml,$(BOARD)))
   LINUX_KARCH=um
-else ifneq (,$(findstring rtl8196e,$(SUBTARGET)))
-  LINUX_KARCH=rlx
 else ifneq (,$(findstring $(ARCH) , aarch64 aarch64_be ))
   LINUX_KARCH := arm64
 else ifneq (,$(findstring $(ARCH) , arceb ))
