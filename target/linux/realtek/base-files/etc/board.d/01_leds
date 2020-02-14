@@ -25,6 +25,33 @@ case $board in
     ucidef_set_led_switch "wan" "wan" "rtl819x:green:wan" "switch0" "0x10"
     ucidef_set_led_netdev "wifi_led_2g" "wifi_2g" "rtl8192cd:green:wifi2" "wlan0"
     ;;
+  actionrg1200-v1)
+    ucidef_set_led_netdev "lan" "lan" "actionrg1200:blue:lan" "eth0" "tx rx"
+    ucidef_set_led_netdev "wan" "wan" "actionrg1200:blue:wan" "eth1" "tx rx"
+    ucidef_set_led_netdev "wifi0" "wifi0" "actionrg1200:blue:wifi0" "wlan0" "link tx rx"
+    ucidef_set_led_default "sys" "sys" "actionrg1200:blue:sys" "1"
+    ;;
+  actionrf1200-v1)
+    ucidef_set_led_netdev "wifi0" "wifi0" "actionrf1200:blue:wifi0" "wlan0" "link tx rx"
+    ucidef_set_led_default "sys" "sys" "actionrf1200:blue:sys" "1"
+    ;;
+  re708-v1)
+    ucidef_set_led_switch "wan" "wan" "rtl8367r:green:wan_1" "switch0" "0x10"
+    ucidef_set_led_switch "lan1" "lan1" "rtl8367r:green:lan1_1" "switch0" "0x1"
+    ucidef_set_led_switch "lan2" "lan2" "rtl8367r:green:lan2_1" "switch0" "0x2"
+    ucidef_set_led_switch "lan3" "lan3" "rtl8367r:green:lan3_1" "switch0" "0x4"
+    ucidef_set_led_switch "lan4" "lan4" "rtl8367r:green:lan4_1" "switch0" "0x8"
+    ucidef_set_led_netdev "wifi0" "wifi0" "rtl8192cd:green:wifi0" "wlan0" "link tx rx"
+    ucidef_set_led_netdev "wifi1" "wifi1" "rtl8192cd:green:wifi1" "wlan1" "link tx rx"
+    # Breaks device switch. Still needs fix before using it
+    # ucidef_set_led_default "wps" "wps" "re708:green:wps" "0"
+    ;;
+  gwr1200ac-v1)
+    ucidef_set_led_netdev "wifi0" "wifi0" "rtl8192cd:green:wifi0" "wlan0" "link tx rx"
+    ucidef_set_led_netdev "wifi1" "wifi1" "rtl8192cd:green:wifi1" "wlan1" "link tx rx"
+    # Breaks device switch. Still needs fix before using it
+    # ucidef_set_led_default "wps" "wps" "gwr1200ac:green:wps" "0"
+    ;;
 esac
 
 board_config_flush

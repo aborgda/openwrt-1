@@ -52,7 +52,12 @@ static u32 mips_chip_irqs;
 
 #define REALTEK_IRQ_TIMER		7
 #define REALTEK_IRQ_NET			4
+#define REALTEK_IRQ_WIFI		6
+#define REALTEK_IRQ_PCI0		5
+#define REALTEK_IRQ_PCI1		REALTEK_IRQ_WIFI
 #define REALTEK_IRQ_UART0		REALTEK_IRQ_GENERIC  
+#define REALTEK_IRQ_GPIO1		REALTEK_IRQ_GENERIC
+#define REALTEK_IRQ_GPIO2		REALTEK_IRQ_GENERIC
 
 /* Definition for SoCs
    RTL8196E and RTL8197D have a RLX chipset
@@ -74,10 +79,12 @@ u32 realtek_soc_irq_init(void)
 		   (REALTEK_IRQ_UART0 	<< 4), 
 		REALTEK_IC_REG_IRR1);
 
-	ic_w32((0), 
+	ic_w32((REALTEK_IRQ_PCI0 << 20) |
+		   (REALTEK_IRQ_GPIO2 << 4) |
+		   (REALTEK_IRQ_GPIO1 << 0), 
 		REALTEK_IC_REG_IRR2);
 
-	ic_w32((0), 
+	ic_w32((REALTEK_IRQ_WIFI << 20), 
 		REALTEK_IC_REG_IRR3);
 
 	ic_w32((0), 
@@ -94,12 +101,14 @@ u32 realtek_soc_irq_init(void)
 
 	// map high priority interrupts to mips irq controler
 	// BIT 15 on MASK1 is network switch
+	// BIT 21 on MASK1 is PCIE (wifi5g)
+	// BIT 29 on MASK1 is wifi 2.4G
 	// BIT 15 on MASK2 is R4K Timer
-	ic_w32(BIT(15), REALTEK_IC_REG_MASK);
+	ic_w32(BIT(15)|BIT(21)|BIT(29), REALTEK_IC_REG_MASK);
 	ic_w32(BIT(15), REALTEK_IC_REG2_MASK);
 
 	// Return only MARK1
-	return BIT(15);
+	return BIT(15)|BIT(21)|BIT(29);
 }
 
 #else
@@ -209,6 +218,12 @@ asmlinkage void plat_irq_dispatch(void)
 
 	else if (pending & STATUSF_IP4) 
 		do_IRQ(REALTEK_IRQ_NET);
+
+	else if (pending & STATUSF_IP5) 
+		do_IRQ(REALTEK_IRQ_PCI0);
+
+	else if (pending & STATUSF_IP6) 
+		do_IRQ(REALTEK_IRQ_PCI1);
 
 	else if (pending & STATUSF_IP2)
 		do_IRQ(REALTEK_IRQ_GENERIC);

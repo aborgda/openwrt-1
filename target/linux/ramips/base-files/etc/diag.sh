@@ -42,8 +42,10 @@ get_status_led() {
 	r6220|\
 	archer-c20-v4|\
 	archer-c20-v5|\
+	archer-c20-v5preset|\
 	tplink,c20-v4|\
 	tplink,c50-v3|\
+	archer-c50-v3|\
 	archer-c50-v4|\
 	tplink,tl-mr3420-v5|\
 	tplink,tl-wr842n-v5|\

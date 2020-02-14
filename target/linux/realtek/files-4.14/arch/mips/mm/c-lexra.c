@@ -18,7 +18,7 @@
 #include <asm/io.h>
 #include <asm/cpu.h>
 #include <asm/cacheops.h>
-#include <asm/lxregs.h>
+#include <asm/mach-realtek/lxregs.h>
 #include <asm/barrier.h>
 
 #define LEXRA_CCTL_BARRIER \

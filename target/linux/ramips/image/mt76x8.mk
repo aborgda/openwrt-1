@@ -195,7 +195,7 @@ define Device/tl-wr849n-v5
   $(Device/tl-wr840n-v5)
   DTS := TL-WR849NV5
   DEVICE_TITLE := TP-Link TL-WR849N v5
-  TPLINK_HWID := 0x08490005  
+  TPLINK_HWID := 0x08490005
 endef
 TARGET_DEVICES += tl-wr849n-v5
 
@@ -277,7 +277,20 @@ define Device/archer-c20-v5
 endef
 TARGET_DEVICES += archer-c20-v5
 
-define Device/tplink_c50-v3
+define Device/archer-c20-v5preset
+  $(Device/tplink)
+  DTS := ArcherC20v5PRESET
+  IMAGE_SIZE := 7808k
+  DEVICE_TITLE := TP-Link ArcherC20 v5PRESET
+  TPLINK_FLASHLAYOUT := 8Mmtk
+  TPLINK_HWID := 0x0C200005
+  TPLINK_HWREV := 0x1
+  TPLINK_HWREVADD := 0x5
+  TPLINK_HVERSION := 3
+endef
+TARGET_DEVICES += archer-c20-v5preset
+
+define Device/archer-c50-v3
   $(Device/tplink)
   DTS := ArcherC50V3
   IMAGE_SIZE := 7808k
@@ -288,7 +301,7 @@ define Device/tplink_c50-v3
   TPLINK_HWREVADD := 0x1
   TPLINK_HVERSION := 3
 endef
-TARGET_DEVICES += tplink_c50-v3
+TARGET_DEVICES += archer-c50-v3
 
 define Device/archer-c50-v4
   $(Device/tplink)

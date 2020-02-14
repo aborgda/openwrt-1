@@ -185,7 +185,7 @@ define Device/dir-819-a1
   IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
         append-rootfs | pad-rootfs | tbs_dlink -g CA -m DIR819 -p DIR-819
   IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | \
-        append-rootfs | pad-rootfs | append-metadata 
+        append-rootfs | pad-rootfs | append-metadata
 endef
 TARGET_DEVICES += dir-819-a1
 
@@ -196,10 +196,10 @@ define Device/emg1702-t10a-a1
   KERNEL := $(KERNEL_DTB)
   DEVICE_TITLE := ZyXEL EMG1702-T10A A1
   IMAGES += factory.bin
-  IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
-        append-rootfs | pad-rootfs | tbs_dlink -g C0 -m EMG1702 -p EMG1702
-  IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | \
-        append-rootfs | pad-rootfs | append-metadata 
+  IMAGE/factory.bin :=  append-kernel | pad-to 1904640 | \
+        append-rootfs | pad-rootfs | tbs_dlink -k 0x1D1000 -g PR -m Sitecom -p EMG1702-T10A
+  IMAGE/sysupgrade.bin := append-kernel | pad-to 1904640 | \
+        append-rootfs | pad-rootfs | append-metadata
 endef
 TARGET_DEVICES += emg1702-t10a-a1
 
@@ -412,11 +412,11 @@ TARGET_DEVICES += mlwg2
 
 define Device/itlb-ncloud-v1
   DTS := ITLB-NCLOUD
-  DEVICE_TITLE := Intelbras NCLOUD 
+  DEVICE_TITLE := Intelbras NCLOUD
   DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-ehci kmod-usb-ledtrig-usbport
   IMAGES += factory.bin
   IMAGE/factory.bin := $$(IMAGE/sysupgrade.bin) | mkuimage_fake_header $$$$(IMAGE_SIZE) 4096 | \
-    check-size $$$$(IMAGE_SIZE) 
+    check-size $$$$(IMAGE_SIZE)
 endef
 TARGET_DEVICES += itlb-ncloud-v1
 
@@ -717,7 +717,7 @@ define Device/zbt-we826-16M
   IMAGE_SIZE := $(ralink_default_fw_size_16M)
   SUPPORTED_DEVICES += zbt-we826
   DEVICE_TITLE := Zbtlink ZBT-WE826 (16M)
-  DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-mt76 kmod-sdhci-mt7620 
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-mt76 kmod-sdhci-mt7620
 endef
 TARGET_DEVICES += zbt-we826-16M
 
