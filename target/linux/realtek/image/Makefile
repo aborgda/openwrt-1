@@ -122,7 +122,6 @@ define Device/DIR815D1
   IMAGE_SIZE := 7936k
   DEVICE_TITLE := D-Link DIR-815 D1
   SUPPORTED_DEVICES := dir-815-d1
-  KERNEL := kernel-bin | append-dtb | lzma
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin := append-kernel | pad-to 1900544 | append-rootfs | pad-rootfs | \
 	tbs_dlink_big -k 0x197400 -r 0x4DFF70 -g BR -m DIR825G1 -p RTL8197DL_AC1200
@@ -227,13 +226,16 @@ endif
 
 ifeq ($(SUBTARGET),rtl8196e)
 define Device/GWR300N
-  DEV_PROFILE := GWR300N
-  IMAGE_SIZE := 3904k
+  $(Device/RealtekDTS)
+  DEVICE_DTS := GWR300
   DEVICE_TITLE := Greatek GWR 300N
+  SUPPORTED_DEVICES := gwr300v1 gwr300-v1
+  IMAGE_SIZE := 3904k
+  DEV_PROFILE := GWR300N
+  CMDLINE := console=ttyS0,38400
+  KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
   CVIMG_KERNEL_BURN_ADDR := 0x18000
   CVIMG_LOADER_START_ADDR := 0x81000000
-  CMDLINE := console=ttyS0,38400
-  KERNEL := kernel-bin | lzma | loader-cmdline-compile
   IMAGES := factory.bin sysupgrade.bin
   IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
