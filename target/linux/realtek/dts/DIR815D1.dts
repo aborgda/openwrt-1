@@ -1,0 +1,59 @@
+// SPDX-License-Identifier: GPL-2.0
+/dts-v1/;
+
+#include "RTL819X.dtsi"
+
+/ {
+	compatible = "D-Link,dir-815-d1", "realtek,rtl819x-soc";
+	model = "D-Link DIR-815 D1";
+
+	cpus {
+		cpu@0 {
+			compatible = "realtek,rlx5281";
+		};
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x0 0x4000000>;
+	};
+
+	chosen {
+		bootargs = "console=ttyS0,115200";
+	};
+};
+
+
+&spi0 {
+	status = "okay";
+
+	m25p80@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <12000000>;
+
+		partition@0 {
+			label = "bootloader";
+			reg = <0x0 0x30000>;
+			read-only;
+		};
+		kernel: partition@30000 {
+			label = "kernel";
+			reg = <0x30000 0x1D0000>;
+		};
+		partition@200000 {
+			label = "rootfs";
+			reg = <0x200000 0x5E0000>;
+		};
+		factory: partition@7E0000 {
+			label = "factory";
+			reg = <0x7E0000 0x20000>;
+		};
+		firmware@30000 {
+			label = "firmware";
+			reg = <0x30000 0x7B0000>;
+		};
+	};
+};
