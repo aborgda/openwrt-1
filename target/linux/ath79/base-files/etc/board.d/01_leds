@@ -126,6 +126,8 @@ tplink,archer-c6-v2|\
 tplink,archer-c6-v2-us)
 	ucidef_set_led_switch "lan" "LAN" "tp-link:green:lan" "switch0" "0x3C"
 	ucidef_set_led_switch "wan" "WAN" "tp-link:green:wan" "switch0" "0x02"
+	ucidef_set_led_wlan "wlan2g" "WLAN2G" "tp-link:green:wlan2g" "phy1tpt"
+	ucidef_set_led_wlan "wlan5g" "WLAN5G" "tp-link:green:wlan5g" "phy0tpt"
 	;;
 tplink,archer-c25-v1|\
 tplink,tl-wr841-v9|\
