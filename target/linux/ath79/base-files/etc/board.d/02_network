@@ -356,6 +356,11 @@ ath79_setup_macs()
 		wan_mac=$(mtd_get_mac_binary factory 0)
 		lan_mac=$(macaddr_setbit_la "$wan_mac")
 		;;
+	tplink,archer-c6-v2|\
+	tplink,archer-c6-v2-us)
+		wan_mac=$(mtd_get_mac_binary mac 8)
+		lan_mac=$(macaddr_add "$wan_mac" 1)
+		;;
 	tplink,archer-a7-v5|\
 	tplink,archer-c7-v4|\
 	tplink,archer-c7-v5|\

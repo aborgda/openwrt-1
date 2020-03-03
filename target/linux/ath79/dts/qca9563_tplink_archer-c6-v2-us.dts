@@ -42,12 +42,12 @@
 
 		wan {
 			label = "tp-link:green:wan";
-			gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio 7 GPIO_ACTIVE_LOW>;
 		};
 
 		wan_fail {
 			label = "tp-link:amber:wan";
-			gpios = <&gpio 7 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
 		};
 
 		wps {

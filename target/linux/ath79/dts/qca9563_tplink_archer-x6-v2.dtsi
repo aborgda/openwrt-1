@@ -54,4 +54,5 @@
 
 	mtd-cal-data = <&art 0x1000>;
 	mtd-mac-address = <&mac 0x8>;
+	mtd-mac-address-increment = <2>;
 };
