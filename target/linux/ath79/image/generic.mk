@@ -253,6 +253,19 @@ define Device/devolo_dvl1750x
 endef
 TARGET_DEVICES += devolo_dvl1750x
 
+define Device/dlink_covr-c1200-a1
+  ATH_SOC := qca9563
+  DEVICE_TITLE := D-LINK COVR-C1200 A1
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/default := append-rootfs | pad-rootfs | pad-to 14876672 | append-kernel 
+  IMAGE/sysupgrade.bin := $$(IMAGE/default) | append-metadata | check-size $$$$(IMAGE_SIZE)
+  IMAGE/factory.bin := $$(IMAGE/default) | check-size $$$$(IMAGE_SIZE)
+  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca9888-ct-htt
+  SUPPORTED_DEVICES += covr-c1200-a1
+  IMAGE_SIZE := 16000k
+endef
+TARGET_DEVICES += dlink_covr-c1200-a1
+
 define Device/dlink_dir-825-b1
   ATH_SOC := ar7161
   DEVICE_TITLE := D-LINK DIR-825 B1

@@ -81,7 +81,7 @@ define Device/Archer
   TPLINK_HWREVADD := 0
   TPLINK_HVERSION := 3
   KERNEL := $(KERNEL_DTB)
-  KERNEL_INITRAMFS := $(KERNEL_DTB) | tplink-v2-header -e
+  KERNEL_INITRAMFS := $(KERNEL_DTB)
   IMAGE/factory.bin := tplink-v2-image -e
   IMAGE/sysupgrade.bin := tplink-v2-image -s -e | append-metadata
 endef
@@ -636,6 +636,19 @@ define Device/tplink_c2-v1
   DEVICE_PACKAGES := kmod-mt76x0e kmod-usb2 kmod-usb-ohci kmod-usb-ledtrig-usbport kmod-switch-rtl8366-smi kmod-switch-rtl8367b
 endef
 TARGET_DEVICES += tplink_c2-v1
+
+define Device/tplink_c5-v4
+  $(Device/Archer)
+  DTS := ArcherC5v4
+  TPLINK_FLASHLAYOUT := 8Mmtk
+  TPLINK_HWID := 0x04DA857C
+  TPLINK_HWREV := 0x0C000600
+  TPLINK_HWREVADD := 0x04000000
+  IMAGES += factory.bin
+  DEVICE_TITLE := TP-Link Archer C5 v4
+  DEVICE_PACKAGES := kmod-mt76x2 kmod-switch-rtl8367c
+endef
+TARGET_DEVICES += tplink_c5-v4
 
 define Device/tplink_c20-v1
   $(Device/Archer)

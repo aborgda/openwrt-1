@@ -321,6 +321,20 @@ endef
 
 $(eval $(call KernelPackage,switch-rtl8367b))
 
+define KernelPackage/switch-rtl8367c
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Realtek RTL8367S/C switch support
+  DEPENDS:=@GPIO_SUPPORT +kmod-swconfig
+  KCONFIG:=CONFIG_RTL8367C_PHY
+  FILES:=$(LINUX_DIR)/drivers/net/phy/rtk/rtl8367c.ko
+  AUTOLOAD:=$(call AutoLoad,43,rtl8367c)
+endef
+
+define KernelPackage/switch-rtl8367c/description
+  Realtek RTL8367S/C switch support
+endef
+
+ $(eval $(call KernelPackage,switch-rtl8367c))
 
 define KernelPackage/natsemi
   SUBMENU:=$(NETWORK_DEVICES_MENU)
