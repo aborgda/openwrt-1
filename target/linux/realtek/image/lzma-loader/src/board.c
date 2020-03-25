@@ -24,7 +24,7 @@
 #else
 // For mips RTL8197F
 #define UART_BASE	0xb8147000
-#define UART_TX		0x24
+#define UART_TX		(((READREG(0xB8000000) & 0xFFFFF000) == 0x8197F000) ? 0x024 : 0x0)
 #define UART_SHIFT	0
 #endif
 
