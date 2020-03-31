@@ -172,7 +172,6 @@ TARGET_DEVICES += RE708
 define Device/GWR1200AC
   $(Device/RealtekDTS)
   BLOCKSIZE := 64k
-  DEVICE_DTS := GWR1200AC
   DEVICE_TITLE := Greatek GWR1200AC V1
   SUPPORTED_DEVICES := gwr1200ac-v1
   IMAGE_SIZE := 7936k
@@ -185,7 +184,22 @@ define Device/GWR1200AC
   IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
 endef
-TARGET_DEVICES += GWR1200AC
+
+define Device/GWR1200AC-V1
+  $(Device/GWR1200AC)
+  DEVICE_DTS := GWR1200ACV1
+  DEVICE_TITLE := Greatek GWR1200AC V1
+  SUPPORTED_DEVICES := gwr1200ac-v1
+endef
+TARGET_DEVICES += GWR1200AC-V1
+
+define Device/GWR1200AC-V2
+  $(Device/GWR1200AC)
+  DEVICE_DTS := GWR1200ACV2
+  DEVICE_TITLE := Greatek GWR1200AC V2
+  SUPPORTED_DEVICES := gwr1200ac-v2
+endef
+TARGET_DEVICES += GWR1200AC-V2
 
 define Device/ACTIONRG1200
   $(Device/RealtekDTS)
