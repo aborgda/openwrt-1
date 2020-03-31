@@ -28,6 +28,9 @@ realtek_board_detect() {
 	*"GWR1200AC V1")
 		name="gwr1200ac-v1"
 		;;
+	*"GWR1200AC V2")
+		name="gwr1200ac-v2"
+		;;
 	*"ACTIONRG1200 V1")
 		name="actionrg1200-v1"
 		;;
