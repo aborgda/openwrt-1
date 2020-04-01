@@ -32,16 +32,25 @@
 		};
 	};
 
-	// Breaks device switch. Still needs fix before using it
-	// gpio-leds {
-	// 	compatible = "gpio-leds";
+	gpio-leds {
+		compatible = "gpio-leds";
 
+		power {
+			label = "gwr1200ac:green:power";
+			gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
+		};
+
+	// Breaks device switch. Still needs fix before using it
 	// 	wps {
 	// 		label = "gwr1200ac:green:wps";
 	// 		gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
 	// 	};
-	// };
 
+	};
+};
+
+&gpio0 {
+	status = "okay";
 };
 
 &gpio1 {
