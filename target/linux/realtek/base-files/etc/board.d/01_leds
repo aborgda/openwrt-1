@@ -53,8 +53,8 @@ case $board in
     # ucidef_set_led_default "wps" "wps" "gwr1200ac:green:wps" "0"
     ;;
   gwr1200ac-v2)
-    ucidef_set_led_netdev "wifi0" "wifi0" "rtl8192cd:green:wifi0" "wlan0" "link tx rx"
-    ucidef_set_led_netdev "wifi1" "wifi1" "rtl8192cd:green:wifi1" "wlan1" "link tx rx"
+    ucidef_set_led_default "wifi0" "wifi0" "rtl8192cd:green:wifi0" "1"
+    ucidef_set_led_default "wifi1" "wifi1" "rtl8192cd:green:wifi1" "1"
     # Breaks device switch. Still needs fix before using it
     # ucidef_set_led_default "wps" "wps" "gwr1200ac:green:wps" "0"
     ;;
