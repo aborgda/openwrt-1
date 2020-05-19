@@ -647,6 +647,7 @@ define Device/tplink_c5-v4
   IMAGES += factory.bin
   DEVICE_TITLE := TP-Link Archer C5 v4
   DEVICE_PACKAGES := kmod-mt76x2 kmod-switch-rtl8367c
+  SUPPORTED_DEVICES += archer-c5-v4
 endef
 TARGET_DEVICES += tplink_c5-v4
 
