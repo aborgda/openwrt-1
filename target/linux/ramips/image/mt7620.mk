@@ -83,6 +83,7 @@ define Device/Archer
   KERNEL := $(KERNEL_DTB)
   KERNEL_INITRAMFS := $(KERNEL_DTB)
   IMAGE/factory.bin := tplink-v2-image -e
+  IMAGE/tftp-recovery.bin := pad-extra 128k | $$(IMAGE/factory.bin)
   IMAGE/sysupgrade.bin := tplink-v2-image -s -e | append-metadata
 endef
 
@@ -644,7 +645,7 @@ define Device/tplink_c5-v4
   TPLINK_HWID := 0x04DA857C
   TPLINK_HWREV := 0x0C000600
   TPLINK_HWREVADD := 0x04000000
-  IMAGES += factory.bin
+  IMAGES += tftp-recovery.bin
   DEVICE_TITLE := TP-Link Archer C5 v4
   DEVICE_PACKAGES := kmod-mt76x2 kmod-switch-rtl8367c
   SUPPORTED_DEVICES += archer-c5-v4
