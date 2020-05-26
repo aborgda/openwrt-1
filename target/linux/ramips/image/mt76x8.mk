@@ -271,6 +271,7 @@ define Device/tplink_c20-v4
   TPLINK_HWREVADD := 0x4
   TPLINK_HVERSION := 3
   DEVICE_PACKAGES := kmod-mt76x0e
+  SUPPORTED_DEVICES += archer-c20-v4
 endef
 TARGET_DEVICES += tplink_c20-v4
 
@@ -286,6 +287,7 @@ define Device/tplink_c20-v5
   TPLINK_HVERSION := 3
   DEVICE_PACKAGES := kmod-mt76x0e
   IMAGES := sysupgrade.bin
+  SUPPORTED_DEVICES += archer-c20-v5
 endef
 TARGET_DEVICES += tplink_c20-v5
 
