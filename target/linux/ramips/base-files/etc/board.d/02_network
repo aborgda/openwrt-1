@@ -241,6 +241,7 @@ ramips_setup_interfaces()
 	skylab,skw92a|\
 	tplink,c20-v4|\
 	tplink,c20-v5|\
+	tplink,c20-v5w|\
 	tplink,c50-v3|\
 	tplink,c50-v4|\
 	tplink,tl-mr3420-v5|\

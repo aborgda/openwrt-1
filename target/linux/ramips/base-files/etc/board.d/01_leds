@@ -334,6 +334,7 @@ tplink,c20-v1)
 	;;
 tplink,c20-v4|\
 tplink,c20-v5|\
+tplink,c20-v5w|\
 tplink,c50-v3|\
 tplink,c50-v4)
 	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x1e"
