@@ -283,6 +283,22 @@ define Device/e1700
 endef
 TARGET_DEVICES += e1700
 
+define Device/dlink_dir-819-a1
+  DTS := DIR-819-A1
+  IMAGE_SIZE := 6720k
+  BLOCKSIZE := 4k
+  KERNEL := $(KERNEL_DTB)
+  DEVICE_TITLE := D-Link DIR-819 A1
+  IMAGES += factory.bin
+  IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
+    append-rootfs | pad-rootfs | tbs
+  IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | \
+    append-rootfs | pad-rootfs | append-metadata
+  DEVICE_PACKAGES := kmod-mt76x0e
+  SUPPORTED_DEVICES += dir-819-a1
+endef
+TARGET_DEVICES += dlink_dir-819-a1
+
 define Device/zyxel_emg1702-t10a-a1
   DTS := EMG1702-T10A-A1
   IMAGE_SIZE := 6720k

@@ -160,6 +160,7 @@ dlink,dwr-922-e2)
 dir-860l-b1)
 	ucidef_set_led_netdev "wan" "wan" "$boardname:green:net" "eth0.2"
 	;;
+dlink,dir-819-a1|\
 zyxel,emg1702-t10a-a1)
 	ucidef_set_led_switch "wan" "wan" "tbs:green:wan" "switch0" "0x01"
 	ucidef_set_led_wlan "wlan2g" "wlan2g" "tbs:green:wlan2g" "phy1tpt"
