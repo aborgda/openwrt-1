@@ -47,13 +47,13 @@
 &wmac {
 	ralink,mtd-eeprom = <&uboot 0x10220>;
 	mtd-mac-address = <&uboot 0x1047a>;
-	mtd-mac-address-increment = <1>;
+	mtd-mac-address-increment = <(-2)>;
 };
 
 &pcie0 {
 	mt76@0,0 {
 		mediatek,mtd-eeprom = <&uboot 0x10012>;
 		mtd-mac-address = <&uboot 0x1047a>;
-		mtd-mac-address-increment = <2>;
+		mtd-mac-address-increment = <(-1)>;
 	};
 };
