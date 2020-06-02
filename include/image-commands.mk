@@ -74,6 +74,10 @@ define Build/zyxel-ras-image
 		&& mv $@.new $@
 endef
 
+define Build/tbs
+	$(STAGING_DIR_HOST)/bin/tbs $@
+endef
+
 define Build/netgear-chk
 	$(STAGING_DIR_HOST)/bin/mkchkimg \
 		-o $@.new \

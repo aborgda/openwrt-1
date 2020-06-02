@@ -283,6 +283,22 @@ define Device/e1700
 endef
 TARGET_DEVICES += e1700
 
+define Device/zyxel_emg1702-t10a-a1
+  DTS := EMG1702-T10A-A1
+  IMAGE_SIZE := 6720k
+  BLOCKSIZE := 4k
+  KERNEL := $(KERNEL_DTB)
+  DEVICE_TITLE := ZyXEL EMG1702-T10A A1
+  IMAGES += factory.bin
+  IMAGE/factory.bin :=  append-kernel | pad-to 1904640 | \
+    append-rootfs | pad-rootfs | tbs -k 0x1D1000 -g PR -m Sitecom -p EMG1702-T10A
+  IMAGE/sysupgrade.bin := append-kernel | pad-to 1904640 | \
+    append-rootfs | pad-rootfs | append-metadata
+  DEVICE_PACKAGES := kmod-mt76x0e
+  SUPPORTED_DEVICES += emg1702-t10a-a1
+endef
+TARGET_DEVICES += zyxel_emg1702-t10a-a1
+
 define Device/ex2700
   NETGEAR_HW_ID := 29764623+4+0+32+2x2+0
   NETGEAR_BOARD_ID := EX2700

@@ -202,6 +202,7 @@ ramips_setup_interfaces()
 		ucidef_add_switch "switch0" \
 			"0:lan:1" "1:lan:2" "2:lan:3" "3:lan:4" "4:wan:5" "6@eth0"
 		;;
+	zyxel,emg1702-t10a-a1|\
 	ar670w|\
 	ar725w|\
 	rakwireless,rak633|\
