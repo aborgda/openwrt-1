@@ -164,7 +164,7 @@ dlink,dir-819-a1|\
 zyxel,emg1702-t10a-a1)
 	ucidef_set_led_switch "wan" "wan" "tbs:green:wan" "switch0" "0x01"
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "tbs:green:wlan2g" "wlan0"
-	ucidef_set_led_netdev "wlan5g" "wlan5g" "mt76-phy0" "wlan1" "tx rx"
+	ucidef_set_led_netdev "wlan5g" "wlan5g" "mt76-phy0" "wlan1"
 	;;
 ex2700|\
 wn3000rpv3)
