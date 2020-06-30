@@ -288,6 +288,22 @@ define Device/tl-wr840n-v62
 endef
 TARGET_DEVICES += tl-wr840n-v62
 
+define Device/tl-wr849n-v4
+  $(Device/tl-wr840n-v4)
+  DTS := TL-WR849NV4
+  DEVICE_TITLE := TP-Link TL-WR849N v4
+  TPLINK_HWID := 0x08490004
+endef
+TARGET_DEVICES += tl-wr849n-v4
+
+define Device/tl-wr849n-v5
+  $(Device/tl-wr840n-v5)
+  DTS := TL-WR849NV5
+  DEVICE_TITLE := TP-Link TL-WR849N v5
+  TPLINK_HWID := 0x08490005  
+endef
+TARGET_DEVICES += tl-wr849n-v5
+
 define Device/tl-wr849n-v6
   $(Device/tl-wr840n-v6)
   DTS := TL-WR849NV6
