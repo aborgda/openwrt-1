@@ -247,6 +247,19 @@ define Device/tl-wr840n-v5
 endef
 TARGET_DEVICES += tl-wr840n-v5
 
+define Device/tl-wr840n-v5preset
+  $(Device/tplink)
+  DTS := TL-WR840NV5PRESET
+  IMAGE_SIZE := 7808k
+  DEVICE_TITLE := TP-Link TL-WR840N v5PRESET
+  TPLINK_FLASHLAYOUT := 8Mmtk
+  TPLINK_HWID := 0x08400005
+  TPLINK_HWREV := 0x1
+  TPLINK_HWREVADD := 0x5
+  TPLINK_HVERSION := 3
+endef
+TARGET_DEVICES += tl-wr840n-v5preset
+
 define Device/tl-wr841n-v13
   $(Device/tplink)
   DTS := TL-WR841NV13
