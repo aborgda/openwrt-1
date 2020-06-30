@@ -311,6 +311,8 @@ tama,w06)
 	ucidef_set_led_netdev "wan" "WAN" "$boardname:green:wan" "eth0"
 	ucidef_set_led_wlan "wlan" "WLAN" "$boardname:green:wlan" "phy0tpt"
 	;;
+tl-wr840n-v62|\
+tl-wr849n-v62|\
 tl-wr840n-v5preset|\
 tl-wr840n-v4)
 	ucidef_set_led_wlan "wlan2g" "wlan2g" "$boardname:green:wlan" "phy0tpt"
