@@ -263,6 +263,13 @@ define Device/tplink_tl-wr940n-v6
 endef
 TARGET_DEVICES += tplink_tl-wr940n-v6
 
+define Device/tplink_tl-wr949n-v6
+  $(Device/tplink_tl-wr940n-v6)
+  DEVICE_TITLE := TP-Link TL-WR949N v6
+  SUPPORTED_DEVICES += tl-wr949n-v6
+endef
+TARGET_DEVICES += tplink_tl-wr949n-v6
+
 define Device/tplink_tl-wr941-v2
   $(Device/tplink-4m)
   ATH_SOC := ar9132
