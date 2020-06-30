@@ -251,6 +251,8 @@ ramips_setup_interfaces()
 	tl-wr840n-v4|\
 	tl-wr840n-v5|\
 	tl-wr840n-v5preset|\
+	tl-wr840n-v6|\
+	tl-wr849n-v6|\
 	tl-wr841n-v13|\
 	u7628-01-128M-16M|\
 	ubnt-erx|\
