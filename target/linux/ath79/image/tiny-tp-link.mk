@@ -243,6 +243,13 @@ define Device/tplink_tl-wr940n-v4
 endef
 TARGET_DEVICES += tplink_tl-wr940n-v4
 
+define Device/tplink_tl-wr940n-v5
+  $(Device/tplink_tl-wr940n-v4)
+  DEVICE_TITLE := TP-Link TL-WR940N v5
+  SUPPORTED_DEVICES += tl-wr940n-v5
+endef
+TARGET_DEVICES += tplink_tl-wr940n-v5
+
 define Device/tplink_tl-wr940n-v6
   $(Device/tplink-4mlzma)
   ATH_SOC := tp9343
