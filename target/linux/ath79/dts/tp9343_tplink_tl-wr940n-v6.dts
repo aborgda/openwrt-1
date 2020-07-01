@@ -25,7 +25,6 @@
 		led_diag_orange: diag_orange {
 			label = "tp-link:orange:diag";
 			gpios = <&gpio 15 GPIO_ACTIVE_HIGH>;
-			default-state = "on";
 		};
 	};
 };
