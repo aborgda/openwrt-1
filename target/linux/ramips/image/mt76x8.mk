@@ -291,7 +291,7 @@ define Device/tl-wr845n-v3
   DEVICE_TITLE := TP-Link TL-WR845N v3
   TPLINK_HWID := 0x08450003
   TPLINK_HWREVADD := 0x3
-  IMAGES = factory.bin sysupgrade.bin
+  IMAGES = tftp-recovery.bin sysupgrade.bin
 endef
 TARGET_DEVICES += tl-wr845n-v3
 
