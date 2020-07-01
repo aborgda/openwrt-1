@@ -140,6 +140,7 @@ tplink,tl-wr842n-v3)
 	ucidef_set_led_switch "lan2" "LAN2" "tp-link:green:lan2" "switch0" "0x08"
 	ucidef_set_led_switch "lan3" "LAN3" "tp-link:green:lan3" "switch0" "0x04"
 	ucidef_set_led_switch "lan4" "LAN4" "tp-link:green:lan4" "switch0" "0x02"
+	ucidef_set_led_wlan "wlan2g" "wlan2g" "tp-link:green:wlan" "phy0tpt"
 	;;
 tplink,archer-c58-v1|\
 tplink,archer-c59-v1|\
@@ -212,6 +213,10 @@ tplink,tl-wr842n-v2)
 	ucidef_set_led_switch "lan2" "LAN2" "tp-link:green:lan2" "switch0" "0x08"
 	ucidef_set_led_switch "lan3" "LAN3" "tp-link:green:lan3" "switch0" "0x10"
 	ucidef_set_led_switch "lan4" "LAN4" "tp-link:green:lan4" "switch0" "0x02"
+	ucidef_set_led_wlan "wlan2g" "wlan2g" "tp-link:green:wlan" "phy0tpt"
+	;;
+tplink,tl-wr841-v7)
+	ucidef_set_led_wlan "wlan2g" "wlan2g" "tp-link:green:wlan" "phy0tpt"
 	;;
 tplink,tl-wr940n-v3|\
 tplink,tl-wr940n-v4|\
@@ -222,10 +227,17 @@ tplink,tl-wr941nd-v6)
 	ucidef_set_led_switch "lan2" "LAN2" "tp-link:blue:lan2" "switch0" "0x08"
 	ucidef_set_led_switch "lan3" "LAN3" "tp-link:blue:lan3" "switch0" "0x04"
 	ucidef_set_led_switch "lan4" "LAN4" "tp-link:blue:lan4" "switch0" "0x02"
+	ucidef_set_led_wlan "wlan2g" "wlan2g" "tp-link:blue:wlan" "phy0tpt"
 	;;
 tplink,tl-wr949n-v6|\
 tplink,tl-wr940n-v6)
 	ucidef_set_led_netdev "wan" "WAN" "tp-link:blue:wan" "eth1"
+	;;
+tplink,tl-wdr3500-v1|\
+tplink,tl-wdr3600-v1|\
+tplink,tl-wdr4300-v1)
+	ucidef_set_led_wlan "wlan2g" "WLAN2G" "tp-link:green:wlan2g" "phy0tpt"
+	ucidef_set_led_wlan "wlan2g" "WLAN5G" "tp-link:green:wlan5g" "phy1tpt"
 	;;
 ubnt,bullet-m|\
 ubnt,bullet-m-xw|\
