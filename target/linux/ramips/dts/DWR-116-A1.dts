@@ -6,7 +6,7 @@
 #include <dt-bindings/input/input.h>
 
 / {
-	compatible = "dlink,dwr-116-a1", "ralink,mt7620n-soc";
+	compatible = "dlink,dwr-116-a1", "dlink,dwr-116-a3", "ralink,mt7620n-soc";
 	model = "D-Link DWR-116 A1/A2";
 
 	aliases {
