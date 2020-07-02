@@ -406,6 +406,7 @@ define Device/tplink_c50-v3
   TPLINK_HWREVADD := 0x1
   TPLINK_HVERSION := 3
   DEVICE_PACKAGES := kmod-mt76x2
+  SUPPORTED_DEVICES += archer-c50-v3
 endef
 TARGET_DEVICES += tplink_c50-v3
 
@@ -421,6 +422,7 @@ define Device/tplink_c50-v4
   TPLINK_HVERSION := 3
   DEVICE_PACKAGES := kmod-mt76x2
   IMAGES := sysupgrade.bin
+  SUPPORTED_DEVICES += archer-c50-v4
 endef
 TARGET_DEVICES += tplink_c50-v4
 
