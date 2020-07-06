@@ -236,8 +236,8 @@ tplink,tl-wr940n-v6)
 tplink,tl-wdr3500-v1|\
 tplink,tl-wdr3600-v1|\
 tplink,tl-wdr4300-v1)
-	ucidef_set_led_wlan "wlan2g" "WLAN2G" "tp-link:green:wlan2g" "phy0tpt"
-	ucidef_set_led_wlan "wlan2g" "WLAN5G" "tp-link:green:wlan5g" "phy1tpt"
+	ucidef_set_led_wlan "wlan2g" "wlan2g" "tp-link:green:wlan2g" "phy0tpt"
+	ucidef_set_led_wlan "wlan5g" "WLAN5G" "tp-link:green:wlan5g" "phy1tpt"
 	;;
 ubnt,bullet-m|\
 ubnt,bullet-m-xw|\
