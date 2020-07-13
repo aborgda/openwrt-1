@@ -149,6 +149,8 @@ tplink,archer-c60-v2|\
 tplink,archer-c60-v3)
 	ucidef_set_led_switch "lan" "LAN" "tp-link:green:lan" "switch0" "0x1E"
 	ucidef_set_led_netdev "wan" "WAN" "tp-link:green:wan" "eth1"
+	ucidef_set_led_wlan "wlan2g" "wlan2g" "tp-link:green:wlan2g" "phy1tpt"
+	ucidef_set_led_wlan "wlan5g" "wlan5g" "tp-link:green:wlan5g" "phy0tpt"
 	;;
 tplink,archer-d50-v1)
 	ucidef_set_led_switch "lan" "LAN" "tp-link:white:lan" "switch0" "0x1c"
