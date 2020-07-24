@@ -524,7 +524,6 @@ TARGET_DEVICES += mlwg2
 define Device/itlb-ncloud-v1
   DTS := ITLB-NCLOUD
   DEVICE_TITLE := Intelbras NCLOUD 
-  DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-ehci kmod-usb-ledtrig-usbport
   IMAGES += factory.bin
   IMAGE/factory.bin := $$(IMAGE/sysupgrade.bin) | mkuimage_fake_header $$$$(IMAGE_SIZE) 4096 | \
     check-size $$$$(IMAGE_SIZE) 
