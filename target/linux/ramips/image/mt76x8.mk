@@ -275,6 +275,7 @@ define Device/tl-wr840n-v6preset
   $(Device/tl-wr840n-v6)
   DTS := TL-WR840NV6PRESET
   DEVICE_TITLE := TP-Link TL-WR840N v6PRESET
+  IMAGES := sysupgrade.bin factory.bin
 endef
 TARGET_DEVICES += tl-wr840n-v6preset
 
