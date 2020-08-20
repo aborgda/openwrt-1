@@ -16,7 +16,7 @@
 #include <linux/clk-provider.h>
 #include <linux/clocksource.h>
 
-#include "realtek_mem.h"
+#include <asm/mach-realtek/realtek_mem.h>
 
 #define REALTEK_WATCHDOG_TIMER_REG	0x311C
 
@@ -114,14 +114,13 @@ void __init device_tree_init(void)
 	pr_info("BOOTSTRAP = %x %x %x %x\n", sr_r32(0x00), sr_r32(0x04), sr_r32(0x08), sr_r32(0x10));
 
 #ifdef CONFIG_SOC_RTL8197D
-	pr_info("OLD REG88 = %x\n", sr_r32(0x88));
+	/* Voodoo from SDK */
 	if((sr_r32(0x00)&0xf)<3)
 	{
 		sr_w32((sr_r32(0x88) & ( ~(3<<5)&~(0xF<<0))), 0x88);
 		sr_w32((sr_r32(0x88)|(1<<4)), 0x88);
 		sr_w32(sr_r32(0x88) & (~(3<<7)), 0x88);
 	}
-	pr_info("NEW REG88 = %x\n", sr_r32(0x88));
 #endif
 }
 

@@ -23,7 +23,7 @@
 #include <asm/mipsregs.h>
 #include <asm/time.h>
 
-#include "realtek_mem.h"
+#include <asm/mach-realtek/realtek_mem.h>
 
 __iomem void *_intc_membase;
 static u32 mips_chip_irqs;

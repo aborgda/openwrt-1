@@ -22,7 +22,7 @@
 #include <linux/sched_clock.h>
 #include <linux/clk.h>
 
-#include "realtek_mem.h"
+#include <asm/mach-realtek/realtek_mem.h>
 
 __iomem void *_timer_membase;
 #define tc_w32(val, reg) __raw_writel(val, _timer_membase + reg)

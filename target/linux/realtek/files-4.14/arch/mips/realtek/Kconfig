@@ -12,6 +12,7 @@ choice
 		select USE_GENERIC_EARLY_PRINTK_8250
 		select SYS_SUPPORTS_BIG_ENDIAN
 		select SYS_HAS_CPU_RLX4181
+		select HW_HAS_PCI
 		select GPIOLIB
 		select GPIO_GENERIC
 		select GPIOLIB_IRQCHIP
@@ -21,6 +22,7 @@ choice
 		select USE_GENERIC_EARLY_PRINTK_8250
 		select SYS_SUPPORTS_BIG_ENDIAN
 		select SYS_HAS_CPU_RLX5281
+		select HW_HAS_PCI
 		select GPIOLIB
 		select GPIO_GENERIC
 		select GPIOLIB_IRQCHIP
