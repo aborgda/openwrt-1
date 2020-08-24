@@ -75,7 +75,7 @@ define Build/zyxel-ras-image
 endef
 
 define Build/tbs
-	$(STAGING_DIR_HOST)/bin/tbs $@
+	$(STAGING_DIR_HOST)/bin/tbs $(1) $@
 endef
 
 define Build/netgear-chk
