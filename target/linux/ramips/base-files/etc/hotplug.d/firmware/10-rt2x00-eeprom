@@ -71,6 +71,20 @@ case "$FIRMWARE" in
 		rt2x00_eeprom_extract "factory" 0 512
 		rt2x00_eeprom_set_macaddr $wifi_mac
 		;;
+	dlink,dir-819-a1)
+		rt2x00_eeprom_extract "u-boot" 66080 512
+		offset=$(strings -t x "$(find_mtd_part u-boot)" | grep llconfig | head -n 1 | awk '{ print "0x"$1 }') 
+		offset=$((offset+53))
+		wan_mac=$(mtd_get_mac_binary u-boot $offset)
+		rt2x00_eeprom_set_macaddr $(macaddr_add "$wan_mac" 2)
+		;;
+	zyxel,emg1702-t10a-a1)
+		rt2x00_eeprom_extract "u-boot" 65552 512
+		offset=$(strings -t x "$(find_mtd_part u-boot)" | grep llconfig | head -n 1 | awk '{ print "0x"$1 }') 
+		offset=$((offset+53))
+		wan_mac=$(mtd_get_mac_binary u-boot $offset)
+		rt2x00_eeprom_set_macaddr $(macaddr_add "$wan_mac" 2)
+		;;
 	*)
 		rt2x00_eeprom_die "Please define mtd-eeprom in $board DTS file!"
 		;;

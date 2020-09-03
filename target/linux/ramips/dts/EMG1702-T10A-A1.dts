@@ -40,10 +40,6 @@
 	};
 };
 
-&wmac {
-	ralink,mtd-eeprom = <&uboot 0x10010>;
-};
-
 &pcie0 {
 	mt76@0,0 {
 		mediatek,mtd-eeprom = <&uboot 0x10220>;
