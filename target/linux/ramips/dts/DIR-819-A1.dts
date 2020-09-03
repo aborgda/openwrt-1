@@ -43,5 +43,7 @@
 &pcie0 {
 	mt76@0,0 {
 		mediatek,mtd-eeprom = <&uboot 0x10012>;
+		mtd-mac-address = <&uboot 0x1047a>;
+		mtd-mac-address-increment = <3>;
 	};
 };
