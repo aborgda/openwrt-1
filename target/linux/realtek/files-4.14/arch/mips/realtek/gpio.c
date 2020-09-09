@@ -19,10 +19,91 @@
 #include <linux/module.h>
 #include <linux/irq.h>
 
+struct gpio_mux {
+	u32 mask;
+	u32 value;
+	u32 addr;
+};
+
+struct gpio_mux muxA[] = {
+	{ 28, 0x8, 0x7 },
+	{ 28, 0x8, 0x6 },
+	{ 24, 0xb, 0x6 },
+	{ 16, 0x8, 0x7 },
+	{ 24, 0x7, 0x7 },
+	{ 20, 0x6, 0x6 },
+	{ 16, 0x5, 0x6 },
+	{ 20, 0x6, 0x7 },
+
+	{ 24, 0x8, 0x0 },
+	{ 16, 0xa, 0x2 },
+	{ 16, 0x8, 0x1 },
+	{ 20, 0x8, 0x1 },
+	{ 24, 0x8, 0x1 },
+	{ 28, 0x7, 0x1 },
+	{ 28, 0x8, 0x0 },
+	{ 24, 0x8, 0x2 },
+
+	{ 20, 0x6, 0x2 },
+	{ 12, 0x7, 0x2 },
+	{  8, 0x6, 0x2 },
+	{  4, 0x6, 0x2 },
+	{ 16, 0x2, 0x10 },
+	{ 12, 0x6, 0x10 },
+	{  8, 0x8, 0x10 },
+	{  4, 0x5, 0x10 },
+
+	{  0, 0x5, 0x10 },
+	{ 28, 0x5, 0xf },
+	{ 24, 0x5, 0xf },
+	{ 20, 0x5, 0xf },
+	{ 16, 0x5, 0xf },
+	{ 12, 0x7, 0xf },
+	{  8, 0x6, 0xf },
+	{  4, 0x7, 0xf }
+};
+
+struct gpio_mux muxB[] = {
+	{  0, 0x7, 0xf },
+	{ 28, 0x1, 0x11 },
+	{ 24, 0x1, 0x11 },
+	{ 20, 0x1, 0x11 },
+	{ 16, 0x1, 0x11 },
+	{ 12, 0x1, 0x11 },
+	{  8, 0x1, 0x11 },
+	{  4, 0x1, 0x11 },
+
+	{  0, 0x1, 0x11 },
+	{ 28, 0x2, 0x12 },
+	{ 24, 0x4, 0x12 },
+	{ 20, 0x4, 0x12 },
+	{ 16, 0x6, 0x12 },
+	{ 12, 0x6, 0x12 },
+	{ 24, 0x6, 0x8 },
+	{ 28, 0x6, 0x8 },
+
+	{ 20, 0x6, 0x8 },
+	{ 16, 0x7, 0x8 },
+	{ 12, 0x7, 0x8 },
+	{ 28, 0x2, 0x9 },
+	{ 24, 0x1, 0x9 },
+	{ 20, 0x0, 0x9 },
+	{ 28, 0x3, 0xd },
+	{ 24, 0x3, 0xd },
+
+	{ 20, 0x3, 0xd },
+	{ 16, 0x2, 0xd },
+	{ 28, 0x2, 0xe },
+	{ 24, 0x1, 0xc },
+	{ 28, 0x1, 0xc },
+	{  0, 0x1, 0x8 }
+};
+
 struct realtek_gpio_ctrl {
 	struct gpio_chip gc;
 	void __iomem *base;
 	char gpio_pin_int_masks[32];
+	struct gpio_mux *mux;
 };
 
 static u32 realtek_gpio_read(struct realtek_gpio_ctrl *ctrl, unsigned reg)
@@ -39,15 +120,30 @@ static int realtek_gpio_request(struct gpio_chip *chip, unsigned gpio_pin)
 {
 	unsigned long flags;
 	unsigned long pinmask;
+	u32 muxval;
+	u32 addr;
+	u32 mask;
+	u32 val;
+
 	struct realtek_gpio_ctrl *ctrl = container_of(chip, struct realtek_gpio_ctrl, gc);
 
 	if (gpio_pin >= chip->ngpio)
 		return -EINVAL;
 
 	spin_lock_irqsave(&chip->bgpio_lock, flags);
+
+	if(ctrl->mux!=muxB || gpio_pin<30) {
+		addr = 0xB8000800UL+(ctrl->mux[gpio_pin].addr*4);
+		mask = 0xf<<ctrl->mux[gpio_pin].mask;
+		val = ctrl->mux[gpio_pin].value<<ctrl->mux[gpio_pin].mask;
+		muxval = __raw_readl((void __iomem*)addr);
+		__raw_writel(((muxval&(~mask)) | (val)), (void __iomem*)addr);
+	}
+
 	pinmask = realtek_gpio_read(ctrl, 0x0);
 	pinmask &= ~(BIT(gpio_pin));
 	realtek_gpio_write(ctrl, 0x0, pinmask);
+
 	spin_unlock_irqrestore(&chip->bgpio_lock, flags);
 	return 0;
 }
@@ -206,6 +302,7 @@ static int realtek_gpio_probe(struct platform_device *pdev)
 	struct realtek_gpio_ctrl *ctrl;
 	struct resource *res;
 	int err, irq=0;
+	u8 muxinfo=0;
 
 	ctrl = devm_kzalloc(&pdev->dev, sizeof(*ctrl), GFP_KERNEL);
 	if (!ctrl)
@@ -244,6 +341,14 @@ static int realtek_gpio_probe(struct platform_device *pdev)
 		// use autodetect
 		ctrl->gc.base = -1;
 	}
+
+	if(np && of_property_read_bool(np, "mux"))
+		of_property_read_u8(np, "mux", &muxinfo);
+
+	if(muxinfo == 0)
+		ctrl->mux = muxA;
+	else
+		ctrl->mux = muxB;
 
 	memset(ctrl->gpio_pin_int_masks, 0, sizeof(ctrl->gpio_pin_int_masks));
 

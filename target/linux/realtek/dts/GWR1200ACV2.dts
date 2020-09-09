@@ -44,15 +44,13 @@
 
 		led_status: power {
 			label = "gwr1200ac:green:power";
-			gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
 		};
 
-	// Breaks device switch. Still needs fix before using it
-	// 	wps {
-	// 		label = "gwr1200ac:green:wps";
-	// 		gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
-	// 	};
-
+		wps_green {
+			label = "gwr1200ac:green:wps";
+			gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+		};
 	};
 };
 

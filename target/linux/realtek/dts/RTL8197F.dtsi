@@ -58,6 +58,7 @@
 		gpio1: gpio-controller@351C {
 			compatible = "realtek,rtl8197f-gpio";
 			reg = <0x351C 0x1c>;
+			mux = <1>;
 			gpio-controller;
 			#gpio-cells = <2>;
 			status = "disabled";
