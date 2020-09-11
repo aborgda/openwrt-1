@@ -35,6 +35,10 @@ case $board in
     ucidef_set_led_netdev "wifi0" "wifi0" "actionrf1200:blue:wifi0" "wlan0" "link tx rx"
     ucidef_set_led_default "sys" "sys" "actionrf1200:blue:sys" "1"
     ;;
+  gf1200-v1)
+    ucidef_set_led_netdev "lan" "lan" "gf1200:blue:lan" "eth0" "tx rx"
+    ucidef_set_led_netdev "wan" "wan" "gf1200:blue:wan" "eth1" "tx rx"
+    ;;
   re708-v1)
     ucidef_set_led_switch "wan" "wan" "rtl8367r:green:wan" "switch0" "0x10"
     ucidef_set_led_switch "lan1" "lan1" "rtl8367r:green:lan1" "switch0" "0x1"

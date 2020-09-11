@@ -236,6 +236,24 @@ define Device/ACTIONRF1200
   IMAGE/sysupgrade.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -S
 endef
 TARGET_DEVICES += ACTIONRF1200
+
+define Device/GF1200
+  $(Device/RealtekDTS)
+  BLOCKSIZE := 64k
+  DEVICE_DTS := GF1200
+  DEVICE_TITLE := Intelbras GF1200 V1
+  SUPPORTED_DEVICES := gf1200v1
+  IMAGE_SIZE := 7872k
+  DEV_PROFILE := GF1200
+  CMDLINE := console=ttyS0,38400
+  KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
+  CVIMG_KERNEL_BURN_ADDR := 0x30000
+  CVIMG_LOADER_START_ADDR := 0x80A00000
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -T
+  IMAGE/sysupgrade.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -S
+endef
+TARGET_DEVICES += GF1200
 endif
 
 ifeq ($(SUBTARGET),rtl8196e)
