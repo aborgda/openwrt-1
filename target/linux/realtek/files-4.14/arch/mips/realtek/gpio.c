@@ -302,7 +302,6 @@ static int realtek_gpio_probe(struct platform_device *pdev)
 	struct realtek_gpio_ctrl *ctrl;
 	struct resource *res;
 	int err, irq=0;
-	u8 muxinfo=0;
 
 	ctrl = devm_kzalloc(&pdev->dev, sizeof(*ctrl), GFP_KERNEL);
 	if (!ctrl)
@@ -332,23 +331,18 @@ static int realtek_gpio_probe(struct platform_device *pdev)
 	}
 
 	ctrl->gc.request = realtek_gpio_request;
-	if(np && of_property_read_bool(np, "base"))
-	{
-		u8 base=0;
-		of_property_read_u8(np, "base", &base);
-		ctrl->gc.base = base;
-	} else {
-		// use autodetect
-		ctrl->gc.base = -1;
+
+	if(np && of_property_read_bool(np, "pinmux-A")) {
+		ctrl->mux = muxA;
+		printk("%s: Using Mux A\n", ctrl->gc.label);
+		ctrl->gc.base = 0;
 	}
 
-	if(np && of_property_read_bool(np, "mux"))
-		of_property_read_u8(np, "mux", &muxinfo);
-
-	if(muxinfo == 0)
-		ctrl->mux = muxA;
-	else
+	if(np && of_property_read_bool(np, "pinmux-B")) {
 		ctrl->mux = muxB;
+		printk("%s: Using Mux B\n", ctrl->gc.label);
+		ctrl->gc.base = 32;
+	}
 
 	memset(ctrl->gpio_pin_int_masks, 0, sizeof(ctrl->gpio_pin_int_masks));
 
