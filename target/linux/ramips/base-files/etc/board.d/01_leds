@@ -349,6 +349,8 @@ tplink,c5-v4)
 tplink,c20-v1)
 	ucidef_set_led_switch "lan" "lan" "$boardname:blue:lan" "switch0" "0x1e"
 	ucidef_set_led_switch "wan" "wan" "$boardname:blue:wan" "switch0" "0x01"
+	ucidef_set_led_wlan "wlan2g" "wlan2g" "$boardname:blue:wlan2g" "phy0tpt"
+	ucidef_set_led_wlan "wlan5g" "wlan5g" "$boardname:blue:wlan5g" "phy1tpt"
 	;;
 tplink,c20-v4|\
 tplink,c20-v5|\
