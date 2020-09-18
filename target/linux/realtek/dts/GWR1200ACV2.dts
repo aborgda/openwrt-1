@@ -34,7 +34,7 @@
 
 		reset {
 			label = "reset";
-			gpios = <&gpio1 22 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio1 22 GPIO_ACTIVE_HIGH>;
 			linux,code = <KEY_RESTART>;
 		};
 	};
