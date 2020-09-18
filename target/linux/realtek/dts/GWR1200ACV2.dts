@@ -47,6 +47,11 @@
 			gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
 		};
 
+		wlan: wlan {
+			label = "gwr1200ac:green:wlan";
+			gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
+		};
+
 		wps_green {
 			label = "gwr1200ac:green:wps";
 			gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
