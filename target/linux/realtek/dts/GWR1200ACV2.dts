@@ -34,7 +34,7 @@
 
 		reset {
 			label = "reset";
-			gpios = <&gpio1 22 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio1 22 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
 		};
 	};
@@ -44,7 +44,7 @@
 
 		led_status: power {
 			label = "gwr1200ac:green:power";
-			gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
 		};
 
 	// Breaks device switch. Still needs fix before using it
