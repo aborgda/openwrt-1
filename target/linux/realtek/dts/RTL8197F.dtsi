@@ -90,4 +90,11 @@
 
 		status = "disabled";
 	};
+
+	gpio2: gpio-controller {
+		compatible = "realtek,rtl8192cd-gpio";
+		gpio-controller;
+		#gpio-cells = <2>;
+		status = "disabled";
+	};
 };
