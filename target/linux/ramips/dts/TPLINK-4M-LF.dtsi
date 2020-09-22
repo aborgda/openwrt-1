@@ -7,7 +7,7 @@
 
 	memory@0 {
 		device_type = "memory";
-		reg = <0x0 0x4000000>;
+		reg = <0x0 0x2000000>;
 	};
 };
 
@@ -26,14 +26,14 @@
 
 			partition@0 {
 				label = "boot";
-				reg = <0x0 0x20000>;
+				reg = <0x0 0x10000>;
 				read-only;
 			};
 
-			partition@20000 {
+			partition@10000 {
 				compatible = "tplink,firmware";
 				label = "firmware";
-				reg = <0x20000 0x3d0000>;
+				reg = <0x10000 0x3e0000>;
 			};
 
 			factory: partition@3f0000 {
@@ -45,16 +45,16 @@
 	};
 };
 
+&esw {
+	mediatek,portmap = <0x3e>;
+};
+
 &ehci {
 	status = "disabled";
 };
 
 &ohci {
 	status = "disabled";
-};
-
-&esw {
-	mediatek,portmap = <0x3e>;
 };
 
 &wmac {

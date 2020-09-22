@@ -16,11 +16,6 @@
 		led-upgrade = &led_power_green;
 	};
 
-	memory@0 {
-		device_type = "memory";
-		reg = <0x0 0x4000000>;
-	};
-
 	keys {
 		compatible = "gpio-keys-polled";
 		poll-interval = <20>;
@@ -45,10 +40,6 @@
 			gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
 		};
 	};
-};
-
-&esw {
-	mediatek,portmap = <0x3e>;
 };
 
 &pinctrl {
