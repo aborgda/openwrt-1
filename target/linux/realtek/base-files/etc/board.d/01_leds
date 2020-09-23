@@ -46,10 +46,9 @@ case $board in
     ucidef_set_led_switch "lan2" "lan2" "rtl8367r:green:lan2" "switch0" "0x2"
     ucidef_set_led_switch "lan3" "lan3" "rtl8367r:green:lan3" "switch0" "0x4"
     ucidef_set_led_switch "lan4" "lan4" "rtl8367r:green:lan4" "switch0" "0x8"
-    ucidef_set_led_netdev "wifi0" "wifi0" "rtl8192cd:green:wifi0" "wlan0" "link tx rx"
-    ucidef_set_led_netdev "wifi1" "wifi1" "rtl8192cd:green:wifi1" "wlan1" "link tx rx"
-    # Breaks device switch. Still needs fix before using it
-    # ucidef_set_led_default "wps" "wps" "re708:green:wps" "0"
+    ucidef_set_led_netdev "wifi0" "wifi0" "re708:green:wlan_2g" "wlan0" "link tx rx"
+    ucidef_set_led_netdev "wifi1" "wifi1" "re708:green:wlan_5g" "wlan1" "link tx rx"
+    ucidef_set_led_default "wps" "wps" "re708:green:wps" "0"
     ;;
   gwr1200ac-v1)
     ucidef_set_led_netdev "wifi0" "wifi0" "rtl8192cd:green:wifi0" "wlan0" "link tx rx"
