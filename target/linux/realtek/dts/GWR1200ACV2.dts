@@ -45,17 +45,24 @@
 		led_status: power {
 			label = "gwr1200ac:green:power";
 			gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
+			default-state = "on";
 		};
 
-		wlan: wlan {
-			label = "gwr1200ac:green:wlan";
-			gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
+	 	wlan_2g {
+	 		label = "gwr1200ac:green:wlan_2g";
+	 		gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
+	 	};
+
+	 	wps {
+	 		label = "gwr1200ac:green:wps";
+	 		gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+	 	};
+
+	 	wlan_5g {
+			label = "gwr1200ac:green:wlan_5g";
+			gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
 		};
 
-		wps_green {
-			label = "gwr1200ac:green:wps";
-			gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
-		};
 	};
 };
 
@@ -64,6 +71,10 @@
 };
 
 &gpio1 {
+	status = "okay";
+};
+
+&gpio2 {
 	status = "okay";
 };
 
@@ -79,7 +90,13 @@
 
 		partition@0 {
 			label = "boot";
-			reg = <0x0 0x30000>;
+			reg = <0x0 0x20000>;
+			read-only;
+		};
+
+		partition@20000 {
+			label = "config";
+			reg = <0x20000 0x10000>;
 			read-only;
 		};
 
