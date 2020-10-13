@@ -296,7 +296,7 @@ define Device/dlink_dir-819-a1
   DEVICE_TITLE := D-Link DIR-819 A1
   IMAGES += factory.bin
   IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
-    append-rootfs | pad-rootfs | tbs
+    append-rootfs | pad-rootfs | tbs -g CA -m DIR819 -p DIR-819
   IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | \
     append-rootfs | pad-rootfs | append-metadata
   DEVICE_PACKAGES := kmod-mt76x0e
