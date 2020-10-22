@@ -32,6 +32,21 @@ redboot_fis_do_upgrade() {
 	fi
 }
 
+tplink_restore_partition(){
+	local _sysfile="$1"
+	local _sizesf=$(wc -c "$_sysfile" | awk '{print $1}')
+	local _partsize=$(printf %d 0x$(cat /proc/mtd | grep firmware| awk '{print $2}'))
+	local _cmd
+
+	if [ $_sizesf -gt $_partsize ]
+	then
+		dd if="$_sysfile" of="/tmp/tpl_file" bs=1 skip=$_partsize 2>/dev/null
+		_cmd="dd bs=1k count=$(( _partsize / 1024 ))"
+		mtd write /tmp/tpl_file tplink
+	fi
+	default_do_upgrade "$_sysfile" "$_cmd"
+}
+
 platform_check_image() {
 	return 0
 }
@@ -46,6 +61,9 @@ platform_do_upgrade() {
 	ubnt,routerstation|\
 	ubnt,routerstation-pro)
 		redboot_fis_do_upgrade "$1" kernel
+		;;
+	tplink,archer-c6-v2-us)
+		tplink_restore_partition "$1"
 		;;
 	*)
 		default_do_upgrade "$1"

@@ -50,7 +50,6 @@
 		wlan {
 			label = "tp-link:green:wlan";
 			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
-			linux,default-trigger = "phy0tpt";
 		};
 
 		qss {

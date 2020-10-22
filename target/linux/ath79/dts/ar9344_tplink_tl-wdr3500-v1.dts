@@ -60,6 +60,7 @@
 
 &wmac {
 	mtd-mac-address = <&uboot 0x1fc00>;
+	mtd-mac-address-increment = <2>;
 };
 
 &eth1 {
@@ -81,5 +82,4 @@
 	phy-handle = <&swphy4>;
 
 	mtd-mac-address = <&uboot 0x1fc00>;
-	mtd-mac-address-increment = <2>;
 };
