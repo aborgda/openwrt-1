@@ -254,6 +254,24 @@ define Device/GF1200
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
 endef
 TARGET_DEVICES += GF1200
+
+define Device/W51200F
+  $(Device/RealtekDTS)
+  BLOCKSIZE := 64k
+  DEVICE_DTS := W51200F
+  DEVICE_TITLE := Intelbras W5-1200F V1
+  SUPPORTED_DEVICES := w51200fv1
+  IMAGE_SIZE := 7872k
+  DEV_PROFILE := W51200F
+  CMDLINE := console=ttyS0,115200
+  KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
+  CVIMG_KERNEL_BURN_ADDR := 0x30000
+  CVIMG_LOADER_START_ADDR := 0x80A00000
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
+endef
+TARGET_DEVICES += W51200F
 endif
 
 ifeq ($(SUBTARGET),rtl8196e)
