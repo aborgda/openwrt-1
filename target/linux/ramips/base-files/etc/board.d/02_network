@@ -204,6 +204,7 @@ ramips_setup_interfaces()
 		;;
 	ar670w|\
 	ar725w|\
+	itlb-ncloud-v1|\
 	rakwireless,rak633|\
 	rt-ac51u)
 		ucidef_add_switch "switch0" \
@@ -221,6 +222,8 @@ ramips_setup_interfaces()
 		ucidef_add_switch "switch0" \
 			"1:lan" "2:lan" "3:lan" "4:lan" "6t@eth0"
 		;;
+	dlink,dir-819-a1|\
+	zyxel,emg1702-t10a-a1|\
 	asus,rt-ac57u|\
 	atp-52b|\
 	awm002-evb-4M|\
@@ -240,12 +243,24 @@ ramips_setup_interfaces()
 	rt-n14u|\
 	skylab,skw92a|\
 	tplink,c20-v4|\
+	tplink,c20-v5|\
+	tplink,c20-v5w|\
 	tplink,c50-v3|\
 	tplink,c50-v4|\
 	tplink,tl-mr3420-v5|\
 	tplink,tl-wr842n-v5|\
 	tl-wr840n-v4|\
 	tl-wr840n-v5|\
+	tl-wr840n-v5preset|\
+	tl-wr840n-v6|\
+	tl-wr840n-v6preset|\
+	tl-wr840n-v62|\
+	tl-wr845n-v3|\
+	tl-wr845n-v4|\
+	tl-wr849n-v4|\
+	tl-wr849n-v5|\
+	tl-wr849n-v6|\
+	tl-wr849n-v62|\
 	tl-wr841n-v13|\
 	u7628-01-128M-16M|\
 	ubnt-erx|\
@@ -572,6 +587,13 @@ ramips_setup_macs()
 	dlink,dwr-922-e2|\
 	lava,lr-25g001)
 		wan_mac=$(jboot_config_read -m -i $(find_mtd_part "config") -o 0xE000)
+		lan_mac=$(macaddr_add "$wan_mac" 1)
+		;;
+	dlink,dir-819-a1|\
+	zyxel,emg1702-t10a-a1)
+		offset=$(strings -t x "$(find_mtd_part u-boot)" | grep llconfig | head -n 1 | awk '{ print "0x"$1 }')
+		offset=$((offset+53))
+		wan_mac=$(mtd_get_mac_binary u-boot $offset)
 		lan_mac=$(macaddr_add "$wan_mac" 1)
 		;;
 	e1700)

@@ -48,6 +48,20 @@ do_checksumming_disable() {
 			dd conv=notrunc if=$rootfs_mtd skip=$offset of=$firmware_mtd bs=1 count=64 2>/dev/null
 		fi
 	;;
+	itlb-ncloud-v1)
+		local firmware_mtd=$(find_mtd_part firmware)
+		local uimage_name=$(dd if=$firmware_mtd skip=32 bs=1 count=18 2>/dev/null)
+		if [ "$uimage_name" = "UIMAGE fake header" ]; then
+			echo "Board is using uImage fake header, replacing uImage header with real one..."
+			local firmware_len=$(grep \"firmware\" /proc/mtd | awk -F' ' '{print "0x"$2}')
+			local firmware_erase=$(grep \"firmware\" /proc/mtd | awk -F' ' '{print "0x"$3}')
+			local offset=$(echo "$firmware_len $firmware_erase" | awk -F' ' '{printf "%i",$1-$2}')
+			local signature=$(dd if=$firmware_mtd skip=$offset bs=1 count=4 2>/dev/null | hexdump -v -n 4 -e '1/1 "%02x"')
+			if [ "$signature" = "27051956" ]; then
+				dd conv=notrunc if=$firmware_mtd skip=$offset of=$firmware_mtd bs=1 count=64 2>/dev/null
+			fi
+		fi
+	;;	
 	esac
 
 	return 0

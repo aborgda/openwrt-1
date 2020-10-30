@@ -20,15 +20,6 @@
 		bootargs = "console=ttyS0,115200";
 	};
 
-	pinctrl {
-		state_default: pinctrl0 {
-			gpio {
-				ralink,group = "i2c", "uartf", "wled", "ephy", "spi refclk";
-				ralink,function = "gpio";
-			};
-		};
-	};
-
 	leds {
 		compatible = "gpio-leds";
 
@@ -40,8 +31,6 @@
 		usb {
 			label = "c2-v1:green:usb";
 			gpios = <&gpio0 11 GPIO_ACTIVE_LOW>;
-			trigger-sources = <&ohci_port1>, <&ehci_port1>;
-			linux,default-trigger = "usbport";
 		};
 
 		led_wps: wps {
@@ -57,7 +46,6 @@
 		wlan {
 			label = "c2-v1:green:wlan";
 			gpios = <&gpio3 0 GPIO_ACTIVE_LOW>;
-			linux,default-trigger = "phy1tpt";
 		};
 	};
 
@@ -137,6 +125,15 @@
 	};
 };
 
+&pinctrl {
+	state_default: pinctrl0 {
+		gpio {
+			ralink,group = "i2c", "uartf", "wled", "ephy", "spi refclk";
+			ralink,function = "gpio";
+		};
+	};
+};
+
 &ethernet {
 	status = "okay";
 	mtd-mac-address = <&rom 0xf100>;
@@ -173,11 +170,11 @@
 };
 
 &ehci {
-	status = "okay";
+	status = "disabled";
 };
 
 &ohci {
-	status = "okay";
+	status = "disabled";
 };
 
 &pcie {

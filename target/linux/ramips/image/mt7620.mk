@@ -35,6 +35,10 @@ define Build/elx-header
   mv $@.new $@
 endef
 
+define Build/mkuimage_fake_header
+  $(STAGING_DIR_HOST)/bin/mkuimage_fake_header $(1) $(2) $@
+endef
+
 define Device/ai-br100
   DTS := AI-BR100
   IMAGE_SIZE := 7936k
@@ -83,6 +87,7 @@ define Device/Archer
   KERNEL := $(KERNEL_DTB)
   KERNEL_INITRAMFS := $(KERNEL_DTB)
   IMAGE/factory.bin := tplink-v2-image -e
+  IMAGE/tftp-recovery.bin := pad-extra 128k | $$(IMAGE/factory.bin)
   IMAGE/sysupgrade.bin := tplink-v2-image -s -e | append-metadata
 endef
 
@@ -216,6 +221,7 @@ define Device/dlink_dwr-116-a1
   DLINK_ROM_ID := DLK6E3803001
   DLINK_FAMILY_MEMBER := 0x6E38
   DLINK_FIRMWARE_SIZE := 0x7E0000
+  SUPPORTED_DEVICES += dl-dwr116-a3
 endef
 TARGET_DEVICES += dlink_dwr-116-a1
 
@@ -281,6 +287,38 @@ define Device/e1700
   DEVICE_TITLE := Linksys E1700
 endef
 TARGET_DEVICES += e1700
+
+define Device/dlink_dir-819-a1
+  DTS := DIR-819-A1
+  IMAGE_SIZE := 6720k
+  BLOCKSIZE := 4k
+  KERNEL := $(KERNEL_DTB)
+  DEVICE_TITLE := D-Link DIR-819 A1
+  IMAGES += factory.bin
+  IMAGE/factory.bin :=  append-kernel | pad-to 1900544 | \
+    append-rootfs | pad-rootfs | tbs -g CA -m DIR819 -p DIR-819
+  IMAGE/sysupgrade.bin := append-kernel | pad-to 1900544 | \
+    append-rootfs | pad-rootfs | append-metadata
+  DEVICE_PACKAGES := kmod-mt76x0e
+  SUPPORTED_DEVICES += dir-819-a1
+endef
+TARGET_DEVICES += dlink_dir-819-a1
+
+define Device/zyxel_emg1702-t10a-a1
+  DTS := EMG1702-T10A-A1
+  IMAGE_SIZE := 6720k
+  BLOCKSIZE := 4k
+  KERNEL := $(KERNEL_DTB)
+  DEVICE_TITLE := ZyXEL EMG1702-T10A A1
+  IMAGES += factory.bin
+  IMAGE/factory.bin :=  append-kernel | pad-to 1904640 | \
+    append-rootfs | pad-rootfs | tbs -k 0x1D1000 -g PR -m Sitecom -p EMG1702-T10A
+  IMAGE/sysupgrade.bin := append-kernel | pad-to 1904640 | \
+    append-rootfs | pad-rootfs | append-metadata
+  DEVICE_PACKAGES := kmod-mt76x0e
+  SUPPORTED_DEVICES += emg1702-t10a-a1
+endef
+TARGET_DEVICES += zyxel_emg1702-t10a-a1
 
 define Device/ex2700
   NETGEAR_HW_ID := 29764623+4+0+32+2x2+0
@@ -483,6 +521,15 @@ define Device/mlwg2
 endef
 TARGET_DEVICES += mlwg2
 
+define Device/itlb-ncloud-v1
+  DTS := ITLB-NCLOUD
+  DEVICE_TITLE := Intelbras NCLOUD 
+  IMAGES += factory.bin
+  IMAGE/factory.bin := $$(IMAGE/sysupgrade.bin) | mkuimage_fake_header $$$$(IMAGE_SIZE) 4096 | \
+    check-size $$$$(IMAGE_SIZE) 
+endef
+TARGET_DEVICES += itlb-ncloud-v1
+
 define Device/mt7620a
   DTS := MT7620a
   DEVICE_TITLE := MediaTek MT7620a EVB
@@ -644,9 +691,10 @@ define Device/tplink_c5-v4
   TPLINK_HWID := 0x04DA857C
   TPLINK_HWREV := 0x0C000600
   TPLINK_HWREVADD := 0x04000000
-  IMAGES += factory.bin
+  IMAGES += tftp-recovery.bin
   DEVICE_TITLE := TP-Link Archer C5 v4
   DEVICE_PACKAGES := kmod-mt76x2 kmod-switch-rtl8367c
+  SUPPORTED_DEVICES += archer-c5-v4
 endef
 TARGET_DEVICES += tplink_c5-v4
 

@@ -35,6 +35,8 @@
 #define IH_TYPE_KERNEL		2	/* OS Kernel Image		*/
 #define IH_TYPE_FILESYSTEM	7	/* Filesystem Image		*/
 
+#define UIMAGE_FAKE_HEADER "UIMAGE fake header"
+
 /*
  * Legacy format image header,
  * all data in network byte order (aka natural aka bigendian).
@@ -75,6 +77,32 @@ read_uimage_header(struct mtd_info *mtd, size_t offset, u_char *buf,
 	return 0;
 }
 
+static ssize_t uimage_verify_default(u_char *buf, size_t len)
+{
+	struct uimage_header *header = (struct uimage_header *)buf;
+
+	/* default sanity checks */
+	if (be32_to_cpu(header->ih_magic) != IH_MAGIC) {
+		pr_debug("invalid uImage magic: %08x\n",
+			 be32_to_cpu(header->ih_magic));
+		return -EINVAL;
+	}
+
+	if (header->ih_os != IH_OS_LINUX) {
+		pr_debug("invalid uImage OS: %08x\n",
+			 be32_to_cpu(header->ih_os));
+		return -EINVAL;
+	}
+
+	if (header->ih_type != IH_TYPE_KERNEL) {
+		pr_debug("invalid uImage type: %08x\n",
+			 be32_to_cpu(header->ih_type));
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
 /**
  * __mtdsplit_parse_uimage - scan partition and create kernel + rootfs parts
  *
@@ -84,7 +112,8 @@ read_uimage_header(struct mtd_info *mtd, size_t offset, u_char *buf,
 static int __mtdsplit_parse_uimage(struct mtd_info *master,
 				   const struct mtd_partition **pparts,
 				   struct mtd_part_parser_data *data,
-				   ssize_t (*find_header)(u_char *buf, size_t len))
+				   ssize_t (*find_header)(u_char *buf, size_t len),
+				   int fake)
 {
 	struct mtd_partition *parts;
 	u_char *buf;
@@ -127,7 +156,37 @@ static int __mtdsplit_parse_uimage(struct mtd_info *master,
 		}
 		header = (struct uimage_header *)(buf + ret);
 
+		if(fake == 1) {
+			if (memcmp(header->ih_name, UIMAGE_FAKE_HEADER, sizeof(UIMAGE_FAKE_HEADER)) != 0) {
+				pr_debug("no valid uImage FAKE found in \"%s\" at offset %llx\n",
+					 master->name, (unsigned long long) offset);
+				continue;
+			}
+		} else {
+			if (memcmp(header->ih_name, UIMAGE_FAKE_HEADER, sizeof(UIMAGE_FAKE_HEADER)) == 0) {
+				pr_debug("no valid uImage found in \"%s\" at offset %llx\n",
+					 master->name, (unsigned long long) offset);
+				continue;
+			}
+		}
+
+		if(fake == 1) {
+			// Get real header from last block
+			ret = read_uimage_header(master, master->size - master->erasesize, buf, sizeof(*header));
+			if (ret)
+				continue;
+
+			ret = uimage_verify_default(buf, sizeof(*header));
+			if (ret < 0) {
+				pr_debug("no valid Real uImage found in \"%s\" at offset %llx\n",
+					 master->name, (unsigned long long) offset);
+				continue;
+			}
+			header = (struct uimage_header *)buf;
+		}
+
 		uimage_size = sizeof(*header) + be32_to_cpu(header->ih_size) + ret;
+
 		if ((offset + uimage_size) > master->size) {
 			pr_debug("uImage exceeds MTD device \"%s\"\n",
 				 master->name);
@@ -205,39 +264,13 @@ err_free_parts:
 	return ret;
 }
 
-static ssize_t uimage_verify_default(u_char *buf, size_t len)
-{
-	struct uimage_header *header = (struct uimage_header *)buf;
-
-	/* default sanity checks */
-	if (be32_to_cpu(header->ih_magic) != IH_MAGIC) {
-		pr_debug("invalid uImage magic: %08x\n",
-			 be32_to_cpu(header->ih_magic));
-		return -EINVAL;
-	}
-
-	if (header->ih_os != IH_OS_LINUX) {
-		pr_debug("invalid uImage OS: %08x\n",
-			 be32_to_cpu(header->ih_os));
-		return -EINVAL;
-	}
-
-	if (header->ih_type != IH_TYPE_KERNEL) {
-		pr_debug("invalid uImage type: %08x\n",
-			 be32_to_cpu(header->ih_type));
-		return -EINVAL;
-	}
-
-	return 0;
-}
-
 static int
 mtdsplit_uimage_parse_generic(struct mtd_info *master,
 			      const struct mtd_partition **pparts,
 			      struct mtd_part_parser_data *data)
 {
 	return __mtdsplit_parse_uimage(master, pparts, data,
-				      uimage_verify_default);
+				      uimage_verify_default, 0);
 }
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0)
@@ -304,7 +337,7 @@ mtdsplit_uimage_parse_netgear(struct mtd_info *master,
 			      struct mtd_part_parser_data *data)
 {
 	return __mtdsplit_parse_uimage(master, pparts, data,
-				      uimage_verify_wndr3700);
+				      uimage_verify_wndr3700, 0);
 }
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0)
@@ -356,7 +389,7 @@ mtdsplit_uimage_parse_edimax(struct mtd_info *master,
 			      struct mtd_part_parser_data *data)
 {
 	return __mtdsplit_parse_uimage(master, pparts, data,
-				       uimage_find_edimax);
+				       uimage_find_edimax, 0);
 }
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0)
@@ -377,12 +410,33 @@ static struct mtd_part_parser uimage_edimax_parser = {
 };
 
 /**************************************************
+ * Ralink Fake Header
+ **************************************************/
+
+static int
+mtdsplit_uimage_parse_fake(struct mtd_info *master,
+			      const struct mtd_partition **pparts,
+			      struct mtd_part_parser_data *data)
+{
+	return __mtdsplit_parse_uimage(master, pparts, data,
+				       uimage_verify_default, 1);
+}
+
+static struct mtd_part_parser uimage_fake_parser = {
+	.owner = THIS_MODULE,
+	.name = "uimage-fake-fw",
+	.parse_fn = mtdsplit_uimage_parse_fake,
+	.type = MTD_PARSER_TYPE_FIRMWARE,
+};
+
+/**************************************************
  * Init
  **************************************************/
 
 static int __init mtdsplit_uimage_init(void)
 {
 	register_mtd_parser(&uimage_generic_parser);
+	register_mtd_parser(&uimage_fake_parser);
 	register_mtd_parser(&uimage_netgear_parser);
 	register_mtd_parser(&uimage_edimax_parser);
 
