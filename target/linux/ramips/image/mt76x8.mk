@@ -260,7 +260,7 @@ TARGET_DEVICES += tl-wr840n-v5preset
 define Device/tl-wr840n-v6
   $(Device/tplink)
   DTS := TL-WR840NV6
-  IMAGE_SIZE := 3648k
+  IMAGE_SIZE := 3712k
   DEVICE_TITLE := TP-Link TL-WR840N v6
   TPLINK_FLASHLAYOUT := 4Mmtk
   TPLINK_HWID := 0x08400006
