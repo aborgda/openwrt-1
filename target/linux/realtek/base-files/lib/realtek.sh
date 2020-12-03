@@ -43,6 +43,9 @@ realtek_board_detect() {
 	*"W5-1200F V1")
 		name="w5-1200f-v1"
 		;;
+	"Maxprint AC1200G V1")
+		name="maxlink-ac1200g-v1"
+		;;
 	esac
 
 	# use generic board detect if no name is set
