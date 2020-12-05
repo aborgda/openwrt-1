@@ -43,8 +43,8 @@ realtek_board_detect() {
 	*"W5-1200F V1")
 		name="w5-1200f-v1"
 		;;
-	"Maxprint AC1200G V1")
-		name="maxlink-ac1200g-v1"
+	"Maxprint MAXLINKAC1200G V1")
+		name="maxlinkac1200g-v1"
 		;;
 	esac
 

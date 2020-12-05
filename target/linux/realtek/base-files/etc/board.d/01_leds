@@ -66,10 +66,10 @@ case $board in
 	ucidef_set_led_netdev "wifi1" "wifi1" "gwr1200ac:green:wlan_5g" "wlan1" "link"
 	ucidef_set_led_default "wps" "wps" "gwr1200ac:green:wps" "0"
 	;;
-  maxlink-ac1200g-v1)
-	ucidef_set_led_netdev "wifi0" "wifi0" "ac1200g:green:wlan_2g" "wlan0" "link"
-	ucidef_set_led_netdev "wifi1" "wifi1" "ac1200g:green:wlan_5g" "wlan1" "link"
-	ucidef_set_led_default "wps" "wps" "ac1200g:green:wps" "0"
+  maxlinkac1200g-v1)
+	ucidef_set_led_netdev "wifi0" "wifi0" "maxlinkac1200g:green:wlan_2g" "wlan0" "link"
+	ucidef_set_led_netdev "wifi1" "wifi1" "maxlinkac1200g:green:wlan_5g" "wlan1" "link"
+	ucidef_set_led_default "wps" "wps" "maxlinkac1200g:green:wps" "0"
 	;;
 esac
 

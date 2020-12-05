@@ -169,14 +169,14 @@ define Device/RE708
 endef
 TARGET_DEVICES += RE708
 
-define Device/MAXLINK-AC1200G-V1
+define Device/MAXLINKAC1200G-V1
   $(Device/RealtekDTS)
   BLOCKSIZE := 64k
-  DEVICE_DTS := MAXLINK-AC1200G
-  DEVICE_TITLE := Maxprint Maxlink AC1200G V1
-  SUPPORTED_DEVICES := maxlink-ac1200g-v1
+  DEVICE_DTS := MAXLINKAC1200G
+  DEVICE_TITLE := Maxprint MAXLINKAC1200G V1
+  SUPPORTED_DEVICES := maxlinkac1200g-v1
   IMAGE_SIZE := 7616k
-  DEV_PROFILE := MAXLINK-AC1200G
+  DEV_PROFILE := MAXLINKAC1200G
   CMDLINE := console=ttyS0,38400
   KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
   CVIMG_KERNEL_BURN_ADDR := 0x30000
@@ -185,7 +185,7 @@ define Device/MAXLINK-AC1200G-V1
   IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
 endef
-TARGET_DEVICES += MAXLINK-AC1200G-V1
+TARGET_DEVICES += MAXLINKAC1200G-V1
 
 define Device/GWR1200AC
   $(Device/RealtekDTS)
