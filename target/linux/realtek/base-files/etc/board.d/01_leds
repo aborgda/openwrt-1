@@ -47,8 +47,8 @@ case $board in
   w5-1200f-v1)
 	ucidef_set_led_switch "lan" "lan" "w51200f:green:lan" "switch0" "0x1e"
 	ucidef_set_led_netdev "wan" "wan" "w51200f:green:wan" "eth1" "link"
-	ucidef_set_led_netdev "multiwlan" "multiwlan" "w51200f:green:wlan" "wlan1" "link"
-	ucidef_set_led_default "wps" "wps" "w51200f:green:wps" "0"
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "w51200f:green:wlan2g" "wlan0" "link"
+	ucidef_set_led_netdev "wlan5g" "wlan5g" "w51200f:green:wlan5g" "wlan1" "link"
 	;;
   re708-v1)
 	ucidef_set_led_switch "wan" "wan" "rtl8367r:green:wan" "switch0" "0x10"

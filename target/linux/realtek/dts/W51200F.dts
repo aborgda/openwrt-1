@@ -45,15 +45,14 @@
 			gpios = <&gpio1 23 GPIO_ACTIVE_LOW>;
 		};
 
-		wps {
-			label = "w51200f:green:wps";
-			gpios = <&gpio1 24 GPIO_ACTIVE_LOW>;
+		wlan2g {
+			label = "w51200f:green:wlan2g";
+			gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
 		};
 
-
-		wlan {
-			label = "w51200f:green:wlan";
-			gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+		wlan5g {
+			label = "w51200f:green:wlan5g";
+			gpios = <&gpio1 24 GPIO_ACTIVE_LOW>;
 		};
 	};
 };
