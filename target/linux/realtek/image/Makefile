@@ -169,6 +169,24 @@ define Device/RE708
 endef
 TARGET_DEVICES += RE708
 
+define Device/MAXLINKAC1200G-V1
+  $(Device/RealtekDTS)
+  BLOCKSIZE := 64k
+  DEVICE_DTS := MAXLINKAC1200G
+  DEVICE_TITLE := Maxprint MAXLINKAC1200G V1
+  SUPPORTED_DEVICES := maxlinkac1200g-v1
+  IMAGE_SIZE := 7616k
+  DEV_PROFILE := MAXLINKAC1200G
+  CMDLINE := console=ttyS0,38400
+  KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
+  CVIMG_KERNEL_BURN_ADDR := 0x30000
+  CVIMG_LOADER_START_ADDR := 0x81000000
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
+endef
+TARGET_DEVICES += MAXLINKAC1200G-V1
+
 define Device/GWR1200AC
   $(Device/RealtekDTS)
   BLOCKSIZE := 64k
@@ -254,6 +272,24 @@ define Device/GF1200
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
 endef
 TARGET_DEVICES += GF1200
+
+define Device/W51200F
+  $(Device/RealtekDTS)
+  BLOCKSIZE := 64k
+  DEVICE_DTS := W51200F
+  DEVICE_TITLE := Intelbras W5-1200F V1
+  SUPPORTED_DEVICES := w51200fv1
+  IMAGE_SIZE := 7872k
+  DEV_PROFILE := W51200F
+  CMDLINE := console=ttyS0,115200
+  KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
+  CVIMG_KERNEL_BURN_ADDR := 0x30000
+  CVIMG_LOADER_START_ADDR := 0x80A00000
+  IMAGES := factory.bin sysupgrade.bin
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
+  IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
+endef
+TARGET_DEVICES += W51200F
 endif
 
 ifeq ($(SUBTARGET),rtl8196e)

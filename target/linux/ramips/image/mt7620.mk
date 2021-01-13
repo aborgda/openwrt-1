@@ -698,6 +698,20 @@ define Device/tplink_c5-v4
 endef
 TARGET_DEVICES += tplink_c5-v4
 
+define Device/tplink_ec220-g5-v2
+  $(Device/Archer)
+  DTS := EC220-G5-V2
+  TPLINK_FLASHLAYOUT := 8Mmtk
+  TPLINK_HWID := 0x04DA857C
+  TPLINK_HWREV := 0x0C000600
+  TPLINK_HWREVADD := 0x02000000
+  IMAGES += tftp-recovery.bin
+  DEVICE_TITLE := TP-Link EC220-G5 v2
+  DEVICE_PACKAGES := kmod-mt76x2 kmod-switch-rtl8367c
+  SUPPORTED_DEVICES += ec220-g5-v2
+endef
+TARGET_DEVICES += tplink_ec220-g5-v2
+
 define Device/tplink_c20-v1
   $(Device/Archer)
   DTS := ArcherC20v1
