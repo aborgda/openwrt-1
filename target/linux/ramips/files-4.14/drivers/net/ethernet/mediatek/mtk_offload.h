@@ -33,6 +33,7 @@
 #define mtk_eth					fe_priv
 #define MTK_GDMA_FWD_CFG(x)			(0x500 + (x * 0x1000))
 #define mtk_m32					fe_m32
+#define MTK_7620_GDMA_FWD_CFG	0xd00
 
 static inline u32
 mtk_r32(struct mtk_eth *eth, u32 reg)
@@ -95,6 +96,14 @@ mtk_w32(struct mtk_eth *eth, u32 val, u32 reg)
 #define   MTK_PPE_BND_AGE1_TCP_DLTA_MASK	0xffff
 #define   MTK_PPE_BND_AGE1_TCP_DLTA		5
 
+/* for MT7620 */
+#define MTK_REG_PPE_FP_BMAP_0	0xe48
+#define MTK_REG_PPE_FP_BMAP_1	0xe4C
+#define MTK_REG_PPE_FP_BMAP_2	0xe50
+#define MTK_REG_PPE_FP_BMAP_3	0xe54
+#define MTK_REG_PPE_FP_BMAP_4	0xe58
+
+/* for MT7621 */
 #define MTK_REG_PPE_DFT_CPORT			0xe48
 
 #define MTK_REG_PPE_TB_CFG			0xe1c
