@@ -104,8 +104,19 @@ static void mt7620_hw_init(struct mt7620_gsw *gsw, int mdio_mode)
 			(0x1f << 24) | (0xc << 16),
 			GSW_REG_GPC1);
 
+		mtk_switch_w32(gsw, 0x0800000c, 0x701c); // enlarge FE2SW_IPG
+
+		mtk_switch_w32(gsw, 0x00e00000, 0x2704);	// P7 has matrix mode (P7|P6|P5)
+		mtk_switch_w32(gsw, 0x00e00000, 0x2604);	// P6 has matrix mode (P7|P6|P5)
+		mtk_switch_w32(gsw, 0x00600000, 0x2504);	// P5 has matrix mode (P6|P5)
+		mtk_switch_w32(gsw, 0x810080c0, 0x2710);	// P7 is transparent port, disable PVID insert, admit all frames
+		mtk_switch_w32(gsw, 0x810080c0, 0x2610);	// P6 is transparent port, disable PVID insert, admit all frames
+		mtk_switch_w32(gsw, 0x810080c0, 0x2510);	// P5 is transparent port, disable PVID insert, admit all frames
+		mtk_switch_w32(gsw, 0x000fff10, 0x260c);	// disable P6 mac learning
+		mtk_switch_w32(gsw, 0x000fff10, 0x250c);	// disable P5 mac learning
+
 		/* set MT7530 central align */
-		val = mt7530_mdio_r32(gsw, 0x7830);
+/*		val = mt7530_mdio_r32(gsw, 0x7830);
 		val &= ~BIT(0);
 		val |= BIT(1);
 		mt7530_mdio_w32(gsw, 0x7830, val);
@@ -115,6 +126,7 @@ static void mt7620_hw_init(struct mt7620_gsw *gsw, int mdio_mode)
 		mt7530_mdio_w32(gsw, 0x7a40, val);
 
 		mt7530_mdio_w32(gsw, 0x7a78, 0x855);
+*/
 	} else {
 		/* global page 4 */
 		_mt7620_mii_write(gsw, 1, 31, 0x4000);
