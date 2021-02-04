@@ -104,6 +104,9 @@ static void mt7620_hw_init(struct mt7620_gsw *gsw, int mdio_mode)
 			(0x1f << 24) | (0xc << 16),
 			GSW_REG_GPC1);
 
+		/* set MDIO clock to 4.167 MHz, disable PHY auto-polling */
+		mtk_switch_w32(gsw, 0x43000504, ESW_PHY_POLLING);
+
 		mtk_switch_w32(gsw, 0x0800000c, 0x701c); // enlarge FE2SW_IPG
 
 		mtk_switch_w32(gsw, 0x00e00000, 0x2704);	// P7 has matrix mode (P7|P6|P5)
@@ -177,46 +180,46 @@ static void mt7620_hw_init(struct mt7620_gsw *gsw, int mdio_mode)
 			val |= BIT(9)|BIT(12)|BIT(13);
 			_mt7620_mii_write(gsw, i, 0, val);
 		}
-	}
 
-	/* global page 0 */
-	_mt7620_mii_write(gsw, 1, 31, 0x8000);
-	_mt7620_mii_write(gsw, 0, 30, 0xa000);
-	_mt7620_mii_write(gsw, 1, 30, 0xa000);
-	_mt7620_mii_write(gsw, 2, 30, 0xa000);
-	_mt7620_mii_write(gsw, 3, 30, 0xa000);
-	if (gsw->port4 == PORT4_EPHY)
-		_mt7620_mii_write(gsw, 4, 30, 0xa000);
+		/* global page 0 */
+		_mt7620_mii_write(gsw, 1, 31, 0x8000);
+		_mt7620_mii_write(gsw, 0, 30, 0xa000);
+		_mt7620_mii_write(gsw, 1, 30, 0xa000);
+		_mt7620_mii_write(gsw, 2, 30, 0xa000);
+		_mt7620_mii_write(gsw, 3, 30, 0xa000);
+		if (gsw->port4 == PORT4_EPHY)
+			_mt7620_mii_write(gsw, 4, 30, 0xa000);
 
-	_mt7620_mii_write(gsw, 0, 4, 0x05e1);
-	_mt7620_mii_write(gsw, 1, 4, 0x05e1);
-	_mt7620_mii_write(gsw, 2, 4, 0x05e1);
-	_mt7620_mii_write(gsw, 3, 4, 0x05e1);
-	if (gsw->port4 == PORT4_EPHY)
-		_mt7620_mii_write(gsw, 4, 4, 0x05e1);
+		_mt7620_mii_write(gsw, 0, 4, 0x05e1);
+		_mt7620_mii_write(gsw, 1, 4, 0x05e1);
+		_mt7620_mii_write(gsw, 2, 4, 0x05e1);
+		_mt7620_mii_write(gsw, 3, 4, 0x05e1);
+		if (gsw->port4 == PORT4_EPHY)
+			_mt7620_mii_write(gsw, 4, 4, 0x05e1);
 
-	/* global page 2 */
-	_mt7620_mii_write(gsw, 1, 31, 0xa000);
-	_mt7620_mii_write(gsw, 0, 16, 0x1111);
-	_mt7620_mii_write(gsw, 1, 16, 0x1010);
-	_mt7620_mii_write(gsw, 2, 16, 0x1515);
-	_mt7620_mii_write(gsw, 3, 16, 0x0f0f);
-	if (gsw->port4 == PORT4_EPHY)
-		_mt7620_mii_write(gsw, 4, 16, 0x1313);
+		/* global page 2 */
+		_mt7620_mii_write(gsw, 1, 31, 0xa000);
+		_mt7620_mii_write(gsw, 0, 16, 0x1111);
+		_mt7620_mii_write(gsw, 1, 16, 0x1010);
+		_mt7620_mii_write(gsw, 2, 16, 0x1515);
+		_mt7620_mii_write(gsw, 3, 16, 0x0f0f);
+		if (gsw->port4 == PORT4_EPHY)
+			_mt7620_mii_write(gsw, 4, 16, 0x1313);
 
-	/* setup port 4 */
-	if (gsw->port4 == PORT4_EPHY) {
-		u32 val = rt_sysc_r32(SYSC_REG_CFG1);
+		/* setup port 4 */
+		if (gsw->port4 == PORT4_EPHY) {
+			u32 val = rt_sysc_r32(SYSC_REG_CFG1);
 
-		val |= 3 << 14;
-		rt_sysc_w32(val, SYSC_REG_CFG1);
-		pr_info("gsw: setting port4 to ephy mode\n");
-	} else if (!mdio_mode) {
-		u32 val = rt_sysc_r32(SYSC_REG_CFG1);
+			val |= 3 << 14;
+			rt_sysc_w32(val, SYSC_REG_CFG1);
+			pr_info("gsw: setting port4 to ephy mode\n");
+		} else {
+			u32 val = rt_sysc_r32(SYSC_REG_CFG1);
 
-		val &= ~(3 << 14);
-		rt_sysc_w32(val, SYSC_REG_CFG1);
-		pr_info("gsw: setting port4 to gmac mode\n");
+			val &= ~(3 << 14);
+			rt_sysc_w32(val, SYSC_REG_CFG1);
+			pr_info("gsw: setting port4 to gmac mode\n");
+		}
 	}
 
 	/* CPU Port6 Force Link 1G, FC ON */

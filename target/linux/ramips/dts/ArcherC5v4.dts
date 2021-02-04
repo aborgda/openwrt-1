@@ -161,15 +161,11 @@
 		status = "okay";
 		mediatek,fixed-link = <1000 1 1 1>;
 		phy-mode = "rgmii";
-		phy-handle = <&phy5>;
 	};
 
 	mdio0: mdio-bus {
 		status = "okay";
-		phy5: ethernet-phy@5 {
-			reg = <5>;
-			phy-mode = "rgmii";
-		};
+		mediatek,mdio-mode = <1>;
 	};
 };
 
