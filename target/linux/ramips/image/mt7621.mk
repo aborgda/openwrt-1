@@ -432,6 +432,21 @@ define Device/mtc_wr1201
 endef
 TARGET_DEVICES += mtc_wr1201
 
+define Device/archer-c6-v3
+  DTS := ArcherC6v3
+  DEVICE_TITLE := TP-LINK Archer C6 v3
+  TPLINK_BOARD_ID := ARCHER-A6-V3
+  TPLINK_HWID := 0x0
+  TPLINK_HWREV := 0
+  TPLINK_HEADER_VERSION := 1
+  IMAGE_SIZE := 15744k
+  KERNEL := $(KERNEL_DTB) | uImage lzma 
+  IMAGES += factory.bin
+  IMAGE/sysupgrade.bin := append-rootfs | tplink-safeloader sysupgrade | append-metadata | check-size $$$$(IMAGE_SIZE)
+  IMAGE/factory.bin := append-rootfs | tplink-safeloader factory
+endef
+TARGET_DEVICES += archer-c6-v3
+
 define Device/re350-v1
   DTS := RE350
   DEVICE_TITLE := TP-LINK RE350 v1

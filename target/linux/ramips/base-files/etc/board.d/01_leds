@@ -352,6 +352,10 @@ tplink,ec220-g5-v2)
 	ucidef_set_led_wlan "wlan2g" "wlan2g" "$boardname:green:wlan2g" "phy1tpt"
 	ucidef_set_led_wlan "wlan5g" "wlan5g" "$boardname:green:wlan5g" "phy0tpt"
 	;;
+tplink,c6-v3)
+	ucidef_set_led_switch "lan" "lan" "green:lan" "switch0" "0x1e"
+	ucidef_set_led_switch "wan" "wan" "green:wan" "switch0" "0x01"
+	;;
 tplink,c20-v1)
 	ucidef_set_led_switch "lan" "lan" "$boardname:blue:lan" "switch0" "0x1e"
 	ucidef_set_led_switch "wan" "wan" "$boardname:blue:wan" "switch0" "0x01"
