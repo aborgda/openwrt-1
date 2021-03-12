@@ -1,0 +1,24 @@
+diff --git a/readline/rltty.c b/readline/rltty.c
+index d237b1c..5074e1f 100644
+--- a/readline/rltty.c
++++ b/readline/rltty.c
+@@ -37,7 +37,7 @@
+ 
+ #include "rldefs.h"
+ 
+-#if defined (GWINSZ_IN_SYS_IOCTL)
++#if defined (GWINSZ_IN_SYS_IOCTL) || defined (__DARWIN_C_LEVEL)
+ #  include <sys/ioctl.h>
+ #endif /* GWINSZ_IN_SYS_IOCTL */
+
+--- a/readline/terminal.c
++++ b/readline/terminal.c
+@@ -51,7 +51,7 @@
+ /* System-specific feature definitions and include files. */
+ #include "rldefs.h"
+ 
+-#if defined (GWINSZ_IN_SYS_IOCTL) && !defined (TIOCGWINSZ)
++#if (defined (GWINSZ_IN_SYS_IOCTL) || defined (__DARWIN_C_LEVEL)) && !defined (TIOCGWINSZ)
+ #  include <sys/ioctl.h>
+ #endif /* GWINSZ_IN_SYS_IOCTL && !TIOCGWINSZ */
+ 
