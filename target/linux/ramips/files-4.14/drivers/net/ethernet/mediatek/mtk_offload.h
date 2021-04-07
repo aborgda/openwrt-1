@@ -33,6 +33,7 @@
 #define mtk_eth					fe_priv
 #define MTK_GDMA_FWD_CFG(x)			(0x500 + (x * 0x1000))
 #define mtk_m32					fe_m32
+#define MTK_7620_GDMA_FWD_CFG	0xd00
 
 static inline u32
 mtk_r32(struct mtk_eth *eth, u32 reg)
@@ -95,6 +96,14 @@ mtk_w32(struct mtk_eth *eth, u32 val, u32 reg)
 #define   MTK_PPE_BND_AGE1_TCP_DLTA_MASK	0xffff
 #define   MTK_PPE_BND_AGE1_TCP_DLTA		5
 
+/* for MT7620 */
+#define MTK_REG_PPE_FP_BMAP_0	0xe48
+#define MTK_REG_PPE_FP_BMAP_1	0xe4C
+#define MTK_REG_PPE_FP_BMAP_2	0xe50
+#define MTK_REG_PPE_FP_BMAP_3	0xe54
+#define MTK_REG_PPE_FP_BMAP_4	0xe58
+
+/* for MT7621 */
 #define MTK_REG_PPE_DFT_CPORT			0xe48
 
 #define MTK_REG_PPE_TB_CFG			0xe1c
@@ -138,11 +147,11 @@ struct mtk_foe_bind_info_blk {
 	u32 ka:1;		/* keep alive */
 	u32 vlan_layer:3;
 	u32 psn:1;		/* egress packet has PPPoE session */
-#ifdef CONFIG_RALINK
+#if defined(CONFIG_NET_MEDIATEK_MT7621)
 	u32 vpm:2;		/* 0:ethertype remark, 1:0x8100(CR default) */
 #else
-	u32 vpm:1;		/* 0:ethertype remark, 1:0x8100(CR default) */
-	u32 ps:1;		/* packet sampling */
+	u32 dvp:1;		/* inform switch of keeping VPRI */
+	u32 drm:1;		/* inform switch of keeping DSCP(IPv4) or TC(IPv6) */
 #endif
 	u32 cah:1;		/* cacheable flag */
 	u32 rmt:1;		/* remove tunnel ip header (6rd/dslite only) */
@@ -154,6 +163,13 @@ struct mtk_foe_bind_info_blk {
 } __attribute__ ((packed));
 
 struct mtk_foe_info_blk2 {
+#if defined (CONFIG_NET_MEDIATEK_MT7620)
+	u32 fpidx:4;	/* force port index */
+	u32 fp:1;		/* force new user priority */
+	u32 up:3;		/* new user priority */
+	u32 fdq:4;		/* force DRAM queue (for CAR case) */
+#else
+	/* MT7621 */
 	u32 qid:4;		/* QID in Qos Port */
 	u32 fqos:1;		/* force to PSE QoS port */
 	u32 dp:3;		/* force to PSE port x 
@@ -162,6 +178,7 @@ struct mtk_foe_info_blk2 {
 	u32 pcpl:1;		/* OSBN */
 	u32 mlen:1;		/* 0:post 1:pre packet length in meter */
 	u32 alen:1;		/* 0:post 1:pre packet length in accounting */
+#endif
 	u32 port_mg:6;		/* port meter group */
 	u32 port_ag:6;		/* port account group */
 	u32 dscp:8;		/* DSCP value */

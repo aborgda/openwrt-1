@@ -11,6 +11,7 @@
  */
 
 #include "mtk_offload.h"
+#include "gsw_mt7620.h"
 
 #define INVALID	0
 #define UNBIND	1
@@ -50,16 +51,22 @@ mtk_foe_prepare_v4(struct mtk_foe_entry *entry,
 	if (tuple->l4proto == IPPROTO_UDP)
 		entry->ipv4_hnapt.bfib1.udp = 1;
 
-	entry->ipv4_hnapt.etype = htons(ETH_P_IP);
+	entry->ipv4_hnapt.etype = ETH_P_IP;
 	entry->ipv4_hnapt.bfib1.pkt_type = IPV4_HNAPT;
-	entry->ipv4_hnapt.iblk2.fqos = 0;
 	entry->ipv4_hnapt.bfib1.ttl = 1;
 	entry->ipv4_hnapt.bfib1.cah = 1;
 	entry->ipv4_hnapt.bfib1.ka = 1;
+
+#if defined(CONFIG_NET_MEDIATEK_MT7620)
+	/* 6: force to CPU, 8: no force port */
+	// Force to P5, must review for switch
+	entry->ipv4_hnapt.iblk2.fpidx = 5;
+#else
+	/* MT7621 */
+	entry->ipv4_hnapt.iblk2.fqos = 0;
 	entry->ipv4_hnapt.iblk2.mcast = is_mcast;
 	entry->ipv4_hnapt.iblk2.dscp = 0;
-	entry->ipv4_hnapt.iblk2.port_mg = 0x3f;
-	entry->ipv4_hnapt.iblk2.port_ag = 0x1f;
+
 #ifdef CONFIG_NET_MEDIATEK_HW_QOS
 	entry->ipv4_hnapt.iblk2.qid = 1;
 	entry->ipv4_hnapt.iblk2.fqos = 1;
@@ -71,6 +78,10 @@ mtk_foe_prepare_v4(struct mtk_foe_entry *entry,
 #else
 	entry->ipv4_hnapt.iblk2.dp = (dest->dev->name[3] - '0') + 1;
 #endif
+#endif
+
+	entry->ipv4_hnapt.iblk2.port_mg = 0x3f;
+	entry->ipv4_hnapt.iblk2.port_ag = 0x1f;
 
 	entry->ipv4_hnapt.sip = ntohl(tuple->src_v4.s_addr);
 	entry->ipv4_hnapt.dip = ntohl(tuple->dst_v4.s_addr);
@@ -86,20 +97,28 @@ mtk_foe_prepare_v4(struct mtk_foe_entry *entry,
 
 	if (dest->flags & FLOW_OFFLOAD_PATH_PPPOE) {
 		entry->bfib1.psn = 1;
-		entry->ipv4_hnapt.etype = htons(ETH_P_PPP_SES);
+		entry->ipv4_hnapt.etype = ETH_P_PPP_SES;
 		entry->ipv4_hnapt.pppoe_id = dest->pppoe_sid;
 	}
 
 	if (dest->flags & FLOW_OFFLOAD_PATH_VLAN) {
 		entry->ipv4_hnapt.vlan1 = dest->vlan_id;
 		entry->bfib1.vlan_layer = 1;
+		entry->ipv4_hnapt.etype = ETH_P_8021Q;
 
 		switch (dest->vlan_proto) {
 		case htons(ETH_P_8021Q):
+#if defined(CONFIG_NET_MEDIATEK_MT7621)
 			entry->ipv4_hnapt.bfib1.vpm = 1;
+#else
+			entry->ipv4_hnapt.bfib1.dvp = 1;
+			entry->ipv4_hnapt.bfib1.drm = 1;
+#endif
 			break;
 		case htons(ETH_P_8021AD):
+#if defined(CONFIG_NET_MEDIATEK_MT7621)
 			entry->ipv4_hnapt.bfib1.vpm = 2;
+#endif
 			break;
 		default:
 			return -EINVAL;
@@ -184,12 +203,12 @@ int mtk_flow_offload(struct mtk_eth *eth,
 	if (!mtk_check_entry_available(eth, ohash)){       
 		if (!mtk_check_entry_available(eth, ohash + 1))
 			return -EINVAL;
-                ohash += 1;
-        }
-        if (!mtk_check_entry_available(eth, rhash)){
+		ohash += 1;
+	}
+	if (!mtk_check_entry_available(eth, rhash)){
 		if (!mtk_check_entry_available(eth, rhash + 1))
-                        return -EINVAL;
-                rhash += 1;
+			return -EINVAL;
+		rhash += 1;
 	}
 
 	mtk_foe_set_mac(&orig, dest->eth_src, dest->eth_dest);
@@ -303,7 +322,9 @@ static int mtk_init_foe_table(struct mtk_eth *eth)
 
 static int mtk_ppe_start(struct mtk_eth *eth)
 {
-	int ret;
+	int ret, i;
+	u32 data;
+	struct mt7620_gsw *gsw = (struct mt7620_gsw *)eth->soc->swpriv;
 
 	ret = mtk_init_foe_table(eth);
 	if (ret)
@@ -373,6 +394,44 @@ static int mtk_ppe_start(struct mtk_eth *eth)
 	mtk_w32(eth, MTK_PPE_NTU_KA | 0x3fff, MTK_REG_PPE_BIND_LMT_1);
 	mtk_m32(eth, MTK_PPE_BNDR_RATE_MASK, 1, MTK_REG_PPE_BNDR);
 
+
+#if defined(CONFIG_NET_MEDIATEK_MT7620)
+
+	mtk_w32(eth, 0x00020001, MTK_REG_PPE_FP_BMAP_0);
+	mtk_w32(eth, 0x00080004, MTK_REG_PPE_FP_BMAP_1);
+	mtk_w32(eth, 0x00200010, MTK_REG_PPE_FP_BMAP_2);
+	mtk_w32(eth, 0x00800040, MTK_REG_PPE_FP_BMAP_3);
+	mtk_w32(eth, 0x003F0000, MTK_REG_PPE_FP_BMAP_4);
+
+	/* PPE Forward Control Register: PPE_PORT=Port7 */
+	/* Select P7 as PPE port (PPE_EN=1) */
+	mtk_switch_w32(gsw, mtk_switch_r32(gsw, 0x04) | 0xf, 0x04);
+
+	/* TO_PPE Forwarding Register (exclude broadcast) */
+	data = BIT(0)|BIT(4)|BIT(5);
+	for (i = 0; i <= 5; i++) {
+		mtk_switch_w32(gsw, data, 0x2030+(i*0x100));
+	}
+
+	/* PPE Port7 link up, 1Gbps, and Full duplex  */
+	mtk_switch_w32(gsw, 0x5e33b, GSW_REG_PORT_PMCR(7));
+
+	/* Disable SA Learning */
+	mtk_switch_w32(gsw, mtk_switch_r32(gsw, 0x270c) | BIT(4), 0x270c);
+
+	/* Turn On UDP Control */
+//	if (mt7620_get_eco() >= 5) {
+	data = mtk_r32(eth, 0xf80);
+	data &= ~(0x1 << 30);
+	mtk_w32(eth, data, 0xf80);
+//	}
+
+	/* GDM2 U/B/M/O frames forward to PPE */
+	data = mtk_r32(eth, MTK_7620_GDMA_FWD_CFG);
+	data &= ~0x7777;
+	mtk_w32(eth, data, MTK_7620_GDMA_FWD_CFG);
+#else 
+	/* MT7621 */
 	/* enable the PPE */
 	mtk_m32(eth, 0, MTK_PPE_GLO_CFG_EN, MTK_REG_PPE_GLO_CFG);
 
@@ -384,12 +443,13 @@ static int mtk_ppe_start(struct mtk_eth *eth)
 	mtk_w32(eth, 0x55555555, MTK_REG_PPE_DFT_CPORT);
 #endif
 
-	/* allow packets with TTL=0 */
-	mtk_m32(eth, MTK_PPE_GLO_CFG_TTL0_DROP, 0, MTK_REG_PPE_GLO_CFG);
-
 	/* send all traffic from gmac to the ppe */
 	mtk_m32(eth, 0xffff, 0x4444, MTK_GDMA_FWD_CFG(0));
 	mtk_m32(eth, 0xffff, 0x4444, MTK_GDMA_FWD_CFG(1));
+#endif 
+
+	/* allow packets with TTL=0 */
+	mtk_m32(eth, MTK_PPE_GLO_CFG_TTL0_DROP, 0, MTK_REG_PPE_GLO_CFG);
 
 	dev_info(eth->dev, "PPE started\n");
 
@@ -427,12 +487,34 @@ static int mtk_ppe_busy_wait(struct mtk_eth *eth)
 
 static int mtk_ppe_stop(struct mtk_eth *eth)
 {
-	u32 r1 = 0, r2 = 0;
+	//u32 r1 = 0, r2 = 0;
+	u32 data;
 	int i;
+	struct mt7620_gsw *gsw = (struct mt7620_gsw *)eth->soc->swpriv;
 
+#if defined(CONFIG_NET_MEDIATEK_MT7620)
+	data = mtk_r32(eth, MTK_7620_GDMA_FWD_CFG);
+	/* GDM2 U/B/M/O frames discard */
+	data &=  ~0x7777;
+	data |=  0x7777;
+	mtk_w32(eth, data, MTK_7620_GDMA_FWD_CFG);
+
+	/* Disable P7 as PPE port (PPE_EN=0) */
+	mtk_switch_w32(gsw, mtk_switch_r32(gsw, 0x04) & 0xfff7, 0x04);
+
+	/* TO_PPE Forwarding Register */
+	for (i = 0; i <= 5; i++) {
+		mtk_switch_w32(gsw, 0, 0x2030+(i*0x100));
+	}
+
+	/* PPE Port7 link down  */
+	mtk_switch_w32(gsw, 0x5e330, GSW_REG_PORT_PMCR(7));
+
+#else
 	/* discard all traffic while we disable the PPE */
 	mtk_m32(eth, 0xffff, 0x7777, MTK_GDMA_FWD_CFG(0));
 	mtk_m32(eth, 0xffff, 0x7777, MTK_GDMA_FWD_CFG(1));
+#endif
 
 	if (mtk_ppe_busy_wait(eth))
 		return -ETIMEDOUT;
@@ -446,8 +528,10 @@ static int mtk_ppe_stop(struct mtk_eth *eth)
 	mtk_m32(eth, MTK_PPE_CAH_CTRL_X_MODE | MTK_PPE_CAH_CTRL_EN, 0,
 		MTK_REG_PPE_CAH_CTRL);
 
+#if defined(CONFIG_NET_MEDIATEK_MT7621)
 	/* flush cache has to be ahead of hnat diable --*/
 	mtk_m32(eth, MTK_PPE_GLO_CFG_EN, 0, MTK_REG_PPE_GLO_CFG);
+#endif
 
 	/* disable FOE */
 	mtk_m32(eth,
@@ -462,7 +546,7 @@ static int mtk_ppe_stop(struct mtk_eth *eth)
 		MTK_PPE_TB_CFG_TCP_AGE | MTK_PPE_TB_CFG_UNBD_AGE |
 		MTK_PPE_TB_CFG_NTU_AGE, MTK_REG_PPE_TB_CFG);
 
-	r1 = mtk_r32(eth, 0x100);
+/*	r1 = mtk_r32(eth, 0x100);
 	r2 = mtk_r32(eth, 0x10c);
 
 	dev_info(eth->dev, "0x100 = 0x%x, 0x10c = 0x%x\n", r1, r2);
@@ -472,7 +556,7 @@ static int mtk_ppe_stop(struct mtk_eth *eth)
 		dev_info(eth->dev, "reset pse\n");
 		mtk_w32(eth, 0x1, 0x4);
 	}
-
+*/
 	/* set the foe entry base address to 0 */
 	mtk_w32(eth, 0, MTK_REG_PPE_TB_BASE);
 
@@ -480,12 +564,14 @@ static int mtk_ppe_stop(struct mtk_eth *eth)
 		return -ETIMEDOUT;
 
 	/* send all traffic back to the DMA engine */
+#if defined(CONFIG_NET_MEDIATEK_MT7621)
 #ifdef CONFIG_RALINK
 	mtk_m32(eth, 0xffff, 0x0, MTK_GDMA_FWD_CFG(0));
 	mtk_m32(eth, 0xffff, 0x0, MTK_GDMA_FWD_CFG(1));
 #else
 	mtk_m32(eth, 0xffff, 0x5555, MTK_GDMA_FWD_CFG(0));
 	mtk_m32(eth, 0xffff, 0x5555, MTK_GDMA_FWD_CFG(1));
+#endif
 #endif
 	return 0;
 }

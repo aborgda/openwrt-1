@@ -32,6 +32,7 @@
 #define MT7620A_RESET_FE	BIT(21)
 #define MT7621_RESET_FE		BIT(6)
 #define MT7620A_RESET_ESW	BIT(23)
+#define MT7620A_RESET_PPE	BIT(31)
 #define MT7620_L4_VALID		BIT(23)
 #define MT7621_L4_VALID		BIT(24)
 
@@ -248,7 +249,7 @@ static void mt7620_port_init(struct fe_priv *priv, struct device_node *np)
 
 static void mt7620_fe_reset(void)
 {
-	fe_reset(MT7620A_RESET_FE | MT7620A_RESET_ESW);
+	fe_reset(MT7620A_RESET_FE | MT7620A_RESET_ESW | MT7620A_RESET_PPE);
 }
 
 static void mt7620_rxcsum_config(bool enable)
@@ -289,6 +290,8 @@ static int mt7620_fwd_config(struct fe_priv *priv)
 
 static void mt7620_tx_dma(struct fe_tx_dma *txd)
 {
+	/* force forward to P5. Need modify for switch */
+	txd->txd4 = 0x20 << 20;
 }
 
 static void mt7620_init_data(struct fe_soc_data *data,
