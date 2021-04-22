@@ -291,7 +291,8 @@ static int mt7620_fwd_config(struct fe_priv *priv)
 static void mt7620_tx_dma(struct fe_tx_dma *txd)
 {
 	/* force forward to P5. Need modify for switch */
-	txd->txd4 = 0x20 << 20;
+	//txd->txd4 = 0x20 << 20;
+	//txd->txd4 = 0x80 << 20;
 }
 
 static void mt7620_init_data(struct fe_soc_data *data,

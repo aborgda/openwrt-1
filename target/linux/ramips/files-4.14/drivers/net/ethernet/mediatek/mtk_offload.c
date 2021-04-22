@@ -13,6 +13,8 @@
 #include "mtk_offload.h"
 #include "gsw_mt7620.h"
 
+#define __HW_DEBUG__
+
 #define INVALID	0
 #define UNBIND	1
 #define BIND	2
@@ -59,8 +61,20 @@ mtk_foe_prepare_v4(struct mtk_foe_entry *entry,
 
 #if defined(CONFIG_NET_MEDIATEK_MT7620)
 	/* 6: force to CPU, 8: no force port */
-	// Force to P5, must review for switch
-	entry->ipv4_hnapt.iblk2.fpidx = 5;
+	/* send to port 5 if dest is eth0, bridge otherwise */
+	if(dest->dev->name[0] != 'e' ) {
+		printk("define as port CPU");
+		entry->ipv4_hnapt.act_dp = 1;
+		// for wifi, send to cpu
+		entry->ipv4_hnapt.iblk2.fpidx = 6;
+		if (is_mcast)
+			entry->ipv4_hnapt.iblk2.fpidx = 8;	// 8: no force port 
+	} else {
+		printk("define as port GIGA");
+		entry->ipv4_hnapt.act_dp = 0;
+		// Force to P5, must review for switch
+		entry->ipv4_hnapt.iblk2.fpidx = 5;
+	}
 #else
 	/* MT7621 */
 	entry->ipv4_hnapt.iblk2.fqos = 0;
@@ -172,6 +186,35 @@ int mtk_flow_offload(struct mtk_eth *eth,
 		.bfib1.time_stamp = time_stamp,
 		.bfib1.psn = 0,
 	};
+
+#ifdef __HW_DEBUG__
+	printk("OFFLOAD: %s -> %s\n", src->dev->name, dest->dev->name);
+	printk("FROM: %d.%d.%d.%d:%d -> %d.%d.%d.%d:%d)\n",
+		(otuple->src_v4.s_addr&0xFF), 
+		((otuple->src_v4.s_addr&0xFF00)>>8), 
+		((otuple->src_v4.s_addr&0xFF0000)>>16), 
+		((otuple->src_v4.s_addr&0xFF000000)>>24),
+		otuple->src_port,
+		(otuple->dst_v4.s_addr&0xFF), 
+		((otuple->dst_v4.s_addr&0xFF00)>>8), 
+		((otuple->dst_v4.s_addr&0xFF0000)>>16), 
+		((otuple->dst_v4.s_addr&0xFF000000)>>24),
+		otuple->dst_port);
+	printk("TO: (%d.%d.%d.%d:%d -> %d.%d.%d.%d:%d)\n",
+		(rtuple->src_v4.s_addr&0xFF), 
+		((rtuple->src_v4.s_addr&0xFF00)>>8), 
+		((rtuple->src_v4.s_addr&0xFF0000)>>16), 
+		((rtuple->src_v4.s_addr&0xFF000000)>>24),
+		rtuple->src_port,
+		(rtuple->dst_v4.s_addr&0xFF), 
+		((rtuple->dst_v4.s_addr&0xFF00)>>8), 
+		((rtuple->dst_v4.s_addr&0xFF0000)>>16), 
+		((rtuple->dst_v4.s_addr&0xFF000000)>>24),
+		rtuple->dst_port);
+#endif
+
+//	if (src->dev != dest->dev)
+//		return -EINVAL;
 
 	if (otuple->l4proto != IPPROTO_TCP && otuple->l4proto != IPPROTO_UDP)
 		return -EINVAL;

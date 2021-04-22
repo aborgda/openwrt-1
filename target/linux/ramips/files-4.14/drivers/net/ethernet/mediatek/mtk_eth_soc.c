@@ -27,6 +27,7 @@
 #include <linux/of_mdio.h>
 #include <linux/if_vlan.h>
 #include <linux/reset.h>
+#include <linux/ip.h>
 #include <linux/tcp.h>
 #include <linux/io.h>
 #include <linux/bug.h>
@@ -668,6 +669,14 @@ static int fe_tx_map_dma(struct sk_buff *skb, struct net_device *dev,
 	struct fe_tx_buf *tx_buf;
 	unsigned int nr_frags;
 	int i, j;
+
+/*
+	struct iphdr *ip_header = (struct iphdr *)skb_network_header(skb);
+	unsigned int src_ip = (unsigned int)ip_header->saddr;
+	unsigned int dest_ip = (unsigned int)ip_header->daddr;
+
+	printk("OUT packet info: src ip: %X dest ip: %X\n", src_ip, dest_ip);
+*/
 
 	/* init tx descriptor */
 	if (priv->soc->tx_dma)
@@ -1468,9 +1477,9 @@ fe_flow_offload(enum flow_offload_type type, struct flow_offload *flow,
 	struct fe_priv *priv;
 
 	if (src->dev != dest->dev)
-		return -EINVAL;
-
-	priv = netdev_priv(src->dev);
+		priv = netdev_priv(dest->dev);
+	else
+		priv = netdev_priv(src->dev);
 
 	return mtk_flow_offload(priv, type, flow, src, dest);
 }
