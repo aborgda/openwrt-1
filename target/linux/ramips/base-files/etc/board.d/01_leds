@@ -341,14 +341,14 @@ tplink,c2-v1)
 	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch1" "0x01"
 	;;
 tplink,c5-v4)
-	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch1" "0x0f"
-	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch1" "0x10"
+	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x0f"
+	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x10"
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan2g" "ra0"
 	ucidef_set_led_netdev "wlan5g" "wlan5g" "$boardname:green:wlan5g" "rai0"
 	;;
 tplink,ec220-g5-v2)
-	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch1" "0x7"
-	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch1" "0x8"
+	ucidef_set_led_switch "lan" "lan" "$boardname:green:lan" "switch0" "0x7"
+	ucidef_set_led_switch "wan" "wan" "$boardname:green:wan" "switch0" "0x8"
 	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wlan2g" "ra0"
 	ucidef_set_led_netdev "wlan5g" "wlan5g" "$boardname:green:wlan5g" "rai0"
 	;;
