@@ -280,11 +280,11 @@ ramips_setup_interfaces()
 			"1:lan" "2:lan" "0:wan" "6@eth0"
 		;;
 	tplink,c5-v4)
- 		ucidef_add_switch "switch1" \
+ 		ucidef_add_switch "switch0" \
  			"0:lan" "1:lan" "2:lan" "3:lan" "4:wan" "5@eth0"
  		;;
  	tplink,ec220-g5-v2)
- 		ucidef_add_switch "switch1" \
+ 		ucidef_add_switch "switch0" \
  			"0:lan" "1:lan" "2:lan" "3:wan" "5@eth0"
  		;;
 	c20i|\
