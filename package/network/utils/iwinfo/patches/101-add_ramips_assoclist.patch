@@ -1,0 +1,105 @@
+--- a/api/ramips.h
++++ b/api/ramips.h
+@@ -2,6 +2,44 @@
+ #ifndef _RAMIPS_H
+ #define _RAMIPS_H
+ 
++struct ramips_assoc_rate_entry {
++  uint32_t rate;
++  int8_t mcs;
++  uint8_t is_40mhz:1;
++  uint8_t is_short_gi:1;
++  uint8_t is_ht:1;
++  uint8_t is_vht:1;
++  uint8_t mhz;
++  uint8_t nss;
++};
+ 
++struct ramips_assoclist_entry {
++  uint8_t mac[6];
++  int8_t signal;
++  int8_t signal_avg;
++  int8_t noise;
++  uint32_t inactive;
++  uint32_t connected_time;
++  uint32_t rx_packets;
++  uint32_t tx_packets;
++  uint64_t rx_drop_misc;
++  uint32_t rx_bytes;
++  uint32_t tx_bytes;
++  uint32_t tx_retries;
++  uint32_t tx_failed;
++  uint64_t t_offset;
++
++  struct ramips_assoc_rate_entry rx_rate;
++  struct ramips_assoc_rate_entry tx_rate;
++
++  uint8_t is_authorized:1;
++  uint8_t is_authenticated:1;
++  uint8_t is_preamble_short:1;
++  uint8_t is_wme:1;
++  uint8_t is_mfp:1;
++  uint8_t is_tdls:1;
++};
++
++#define RAMIPS_IOCTL_GET_MAC_TABLE					(SIOCIWFIRSTPRIV + 0x0F)
+ 
+ #endif
+--- a/iwinfo_ramips.c
++++ b/iwinfo_ramips.c
+@@ -108,7 +108,54 @@
+ 
+ static int ramips_get_assoclist(const char *ifname, char *buf, int *len)
+ {
+-	/* Stub */
++	uint8_t tmp[24*1024];
++	struct iwreq wrq;
++	struct ramips_assoclist_entry *re;
++	char *endbuf;
++	int numsta;
++	struct iwinfo_assoclist_entry e;
++
++	wrq.u.data.pointer = tmp;
++	wrq.u.data.flags   = 0;
++	wrq.u.data.length  = 24*1024;
++
++	if( ramips_ioctl(ifname, RAMIPS_IOCTL_GET_MAC_TABLE, &wrq) >= 0 ) {
++		endbuf = buf;
++		for(numsta=0; numsta<wrq.u.data.length; numsta+=sizeof(struct ramips_assoclist_entry)){
++			re = (struct ramips_assoclist_entry *)(tmp + numsta);
++			memset(&e, 0, sizeof(struct iwinfo_assoclist_entry));
++
++			memcpy(e.mac, re->mac, 6);
++			e.is_authorized = re->is_authorized;
++			e.is_authenticated = re->is_authenticated;
++			e.is_wme = re->is_wme;
++			e.tx_rate.is_short_gi = re->tx_rate.is_short_gi;
++			e.tx_rate.is_ht = re->tx_rate.is_ht;
++			e.tx_rate.is_vht = re->tx_rate.is_vht;
++			e.tx_rate.is_40mhz = re->tx_rate.is_40mhz;
++			e.tx_rate.mhz = re->tx_rate.mhz;
++			e.tx_rate.mcs = re->tx_rate.mcs;
++			e.tx_rate.rate = re->tx_rate.rate;
++
++			e.signal = re->signal;
++			e.signal_avg = re->signal_avg;
++			e.noise = re->noise;
++
++			e.inactive = re->inactive;
++			e.connected_time = re->connected_time;
++
++			e.tx_packets = re->tx_packets; 
++			e.rx_packets = re->rx_packets;
++			e.tx_bytes = re->tx_bytes;
++			e.rx_bytes = re->rx_bytes;
++
++			memcpy(endbuf, &e, sizeof(struct iwinfo_assoclist_entry));
++			endbuf += sizeof(struct iwinfo_assoclist_entry);
++		}
++		*len = endbuf-buf;
++		return 0;
++	}
++
+ 	return -1;
+ }
+ 
