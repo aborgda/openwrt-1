@@ -3,6 +3,17 @@
 
 #include "rt_mmap.h"
 
+#define RALINK_REG_GPIOMODE     (RALINK_SYSCTL_BASE + 0x60)
+#if defined (CONFIG_RALINK_MT7628)
+#define RALINK_REG_GPIOMODE2    (RALINK_SYSCTL_BASE + 0x64)
+#endif
+
+#if defined (CONFIG_RALINK_MT7620)
+#define RALINK_GPIOMODE_MDIO    0x180
+#define RALINK_GPIOMODE_GE1     0x200
+#define RALINK_GPIOMODE_GE2     0x400
+#endif
+
 /* Register Map Detail */
 #define REG_SYSCFG0			(RALINK_SYSCTL_BASE + 0x10)
 #define REG_SYSCFG1			(RALINK_SYSCTL_BASE + 0x14)

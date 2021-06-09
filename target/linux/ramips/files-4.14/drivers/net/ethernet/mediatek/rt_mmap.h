@@ -36,6 +36,24 @@
 #define sysRegRead(phys)		(*(volatile unsigned int *)PHYS_TO_K1(phys))
 #define sysRegWrite(phys, val)		((*(volatile unsigned int *)PHYS_TO_K1(phys)) = (val))
 
+#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_RALINK_MT7628)
+#define RALINK_IRQ0STAT         (RALINK_INTCL_BASE + 0x9C) //IRQ_STAT
+#define RALINK_IRQ1STAT         (RALINK_INTCL_BASE + 0xA0) //FIQ_STAT
+#define RALINK_INTTYPE          (RALINK_INTCL_BASE + 0x6C) //FIQ_SEL
+#define RALINK_INTRAW           (RALINK_INTCL_BASE + 0xA4) //INT_PURE
+#define RALINK_INTENA           (RALINK_INTCL_BASE + 0x80) //IRQ_MASK_SET
+#define RALINK_FIQENA           (RALINK_INTCL_BASE + 0x84) //FIQ_MASK_SET
+#define RALINK_INTDIS           (RALINK_INTCL_BASE + 0x78) //IRQ_MASK_CLR
+#define RALINK_FIQDIS           (RALINK_INTCL_BASE + 0x7C) //FIQ_MASK_CLR
+#else
+#define RALINK_IRQ0STAT         (RALINK_INTCL_BASE + 0x00)
+#define RALINK_IRQ1STAT         (RALINK_INTCL_BASE + 0x04)
+#define RALINK_INTTYPE          (RALINK_INTCL_BASE + 0x20)
+#define RALINK_INTRAW           (RALINK_INTCL_BASE + 0x30)
+#define RALINK_INTENA           (RALINK_INTCL_BASE + 0x34)
+#define RALINK_INTDIS           (RALINK_INTCL_BASE + 0x38)
+#endif
+
 #if defined (CONFIG_RALINK_RT3052)
 
 #define RALINK_SYSCTL_BASE		0xB0000000

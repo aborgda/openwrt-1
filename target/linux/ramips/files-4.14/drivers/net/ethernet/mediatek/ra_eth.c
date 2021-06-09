@@ -15,17 +15,6 @@
 #include "ra_eth_mt7621.h"
 #include "ra_gsw_mt7530.h"
 
-#define RALINK_REG_GPIOMODE		(RALINK_SYSCTL_BASE + 0x60)
-#if defined (CONFIG_RALINK_MT7628)
-#define RALINK_REG_GPIOMODE2	(RALINK_SYSCTL_BASE + 0x64)
-#endif
-
-#if defined (CONFIG_RALINK_MT7620)
-#define RALINK_GPIOMODE_MDIO	0x180
-#define RALINK_GPIOMODE_GE1		0x200
-#define RALINK_GPIOMODE_GE2		0x400
-#endif
-
 void fe_eth_reset(void)
 {
 	u32 val;

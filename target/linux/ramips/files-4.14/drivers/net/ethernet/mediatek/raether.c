@@ -1330,8 +1330,6 @@ static int __init
 ei_init(struct net_device *dev)
 {
 	END_DEVICE *ei_local = netdev_priv(dev);
-	int i;
-	struct sockaddr addr;
 	const char *mac_addr;
 
 	ei_local->active = 0;
@@ -1482,7 +1480,7 @@ ei_open(struct net_device *dev)
 	esw_irq_init();
 #if defined (CONFIG_RAETH_ESW) || defined (CONFIG_RALINK_MT7621)
 	/* request interrupt line for MT7620 ESW or MT7621 GSW */
-	err = request_irq(SURFBOARDINT_ESW, esw_interrupt, 0, "ralink_esw", dev);
+	err = request_irq((8 + 17), esw_interrupt, 0, "ralink_esw", dev);
 #elif defined (CONFIG_MT7530_INT_GPIO)
 	// todo, needed capture GPIO interrupt for external MT7530
 #endif
@@ -1554,7 +1552,7 @@ ei_close(struct net_device *dev)
 
 	free_irq(dev->irq, dev);
 #if defined (CONFIG_RAETH_ESW) || (defined (CONFIG_RALINK_MT7621) && defined (CONFIG_MT7530_GSW))
-	free_irq(SURFBOARDINT_ESW, dev);
+	free_irq((8 + 17), dev);
 #elif defined (CONFIG_MT7530_INT_GPIO)
 	// todo, needed capture GPIO interrupt for external MT7530
 #endif
@@ -1743,7 +1741,9 @@ static int raeth_init(struct platform_device *pdev)
 		return ret;
 	}
 
+#if defined (CONFIG_RALINK_MT7620)
 	fe_mdio_init(ei_local, pdev);
+#endif
 
 	dev_raether = dev;
 
@@ -1797,7 +1797,9 @@ static int raeth_exit(struct platform_device *pdev)
 
 	ei_local = netdev_priv(dev);
 
+#if defined (CONFIG_RALINK_MT7620)
 	fe_mdio_cleanup(ei_local);
+#endif
 
 #if defined (CONFIG_RAETH_ESW_CONTROL)
 	esw_ioctl_uninit();
@@ -1815,6 +1817,7 @@ static int raeth_exit(struct platform_device *pdev)
 
 const struct of_device_id of_fe_match[] = {
 	{ .compatible = "mediatek,mt7620-eth" },
+	{ .compatible = "ralink,rt5350-eth" },
 	{},
 };
 

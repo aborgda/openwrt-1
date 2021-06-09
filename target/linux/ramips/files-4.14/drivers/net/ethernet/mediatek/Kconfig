@@ -3,7 +3,12 @@ config  RAETH
 	---help---
 	  This driver supports Ralink gigabit ethernet family of adapters.
 
-config RALINK_MT7620
+config RALINK_MT7628
+	bool
+	default y
+	depends on RAETH
+
+config MT7628_ASIC
 	bool
 	default y
 	depends on RAETH
