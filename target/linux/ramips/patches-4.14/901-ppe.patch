@@ -4,15 +4,15 @@
  {
  	int len;
  
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +typedef struct {
 +	uint16_t MAGIC_TAG;
 +	uint32_t FOE_Entry:14;
-+#if defined (CONFIG_RALINK_MT7620)
++#if defined (CONFIG_NET_MEDIATEK_MT7620)
 +	uint32_t CRSN:5;
 +	uint32_t SPORT:3;
 +	uint32_t ALG:10;
-+#elif defined (CONFIG_RALINK_MT7621)
++#elif defined (CONFIG_NET_MEDIATEK_MT7621)
 +	uint32_t CRSN:5;
 +	uint32_t SPORT:4;
 +	uint32_t ALG:9;
@@ -33,7 +33,7 @@
  	ipv6_hdr(skb)->payload_len = htons(len);
  	IP6CB(skb)->nhoff = offsetof(struct ipv6hdr, nexthdr);
  
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +	if (skb_headroom(skb) >= 6) ((PdmaRxDescInfo4 *)((skb)->head))->CRSN=0x0D;
 +#endif
 +
@@ -46,7 +46,7 @@
  			goto err;
  		}
  
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +		memcpy(ns->head, skb->head, 6); // copy FoE Info
 +#endif
 +
@@ -60,7 +60,7 @@
  		fclones->skb2.fclone = SKB_FCLONE_CLONE;
  	}
 +
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +	*(uint32_t *)(skb->head) = 0UL;
 +#endif
 +
@@ -71,7 +71,7 @@
  	       skb_shinfo(skb),
  	       offsetof(struct skb_shared_info, frags[skb_shinfo(skb)->nr_frags]));
  
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +	memcpy(data, skb->head, 6); // copy FoE Info to headroom
 +#endif
 +
@@ -85,15 +85,15 @@
  	struct nf_conn *ct;
  	u_int32_t newmark;
  
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +typedef struct {
 +	uint16_t MAGIC_TAG;
 +	uint32_t FOE_Entry:14;
-+#if defined (CONFIG_RALINK_MT7620)
++#if defined (CONFIG_NET_MEDIATEK_MT7620)
 +	uint32_t CRSN:5;
 +	uint32_t SPORT:3;
 +	uint32_t ALG:10;
-+#elif defined (CONFIG_RALINK_MT7621)
++#elif defined (CONFIG_NET_MEDIATEK_MT7621)
 +	uint32_t CRSN:5;
 +	uint32_t SPORT:4;
 +	uint32_t ALG:9;
@@ -115,7 +115,7 @@
  	case XT_CONNMARK_SET:
  		newmark = (ct->mark & ~info->ctmask) ^ info->ctmark;
  		if (ct->mark != newmark) {
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +#if !defined(CONFIG_RA_HW_NAT_QDMA)
 +			if ((skb_headroom(skb) >= 6) && 
 +				!(((PdmaRxDescInfo4 *)((skb)->head))->ALG) && 
@@ -132,15 +132,15 @@
  mark_tg(struct sk_buff *skb, const struct xt_action_param *par)
  {
  	const struct xt_mark_tginfo2 *info = par->targinfo;
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +typedef struct {
 +	uint16_t MAGIC_TAG;
 +	uint32_t FOE_Entry:14;
-+#if defined (CONFIG_RALINK_MT7620)
++#if defined (CONFIG_NET_MEDIATEK_MT7620)
 +	uint32_t CRSN:5;
 +	uint32_t SPORT:3;
 +	uint32_t ALG:10;
-+#elif defined (CONFIG_RALINK_MT7621)
++#elif defined (CONFIG_NET_MEDIATEK_MT7621)
 +	uint32_t CRSN:5;
 +	uint32_t SPORT:4;
 +	uint32_t ALG:9;
@@ -170,7 +170,7 @@
  #include <net/netfilter/nf_nat_helper.h>
  #include <net/netns/hash.h>
  
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +extern int (*ra_sw_nat_hook_tx)(struct sk_buff *skb, int gmac_no);
 +#endif
 +
@@ -181,7 +181,7 @@
  seqcount_t nf_conntrack_generation __read_mostly;
  static unsigned int nf_conntrack_hash_rnd __read_mostly;
  
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +static inline bool is_local_svc(u8 protonm)
 +{
 +	/* Local gre/esp/ah/ip-ip/ipv6_in_ipv4 must be skip from hw/sw offload
@@ -205,18 +205,18 @@
  	unsigned int dataoff;
  	u_int8_t protonum;
  	int ret;
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +	struct nf_conn_help *help;
 +	int skip_offload = 0;
 +
 +typedef struct {
 +	uint16_t MAGIC_TAG;
 +	uint32_t FOE_Entry:14;
-+#if defined (CONFIG_RALINK_MT7620)
++#if defined (CONFIG_NET_MEDIATEK_MT7620)
 +	uint32_t CRSN:5;
 +	uint32_t SPORT:3;
 +	uint32_t ALG:10;
-+#elif defined (CONFIG_RALINK_MT7621)
++#elif defined (CONFIG_NET_MEDIATEK_MT7621)
 +	uint32_t CRSN:5;
 +	uint32_t SPORT:4;
 +	uint32_t ALG:9;
@@ -237,7 +237,7 @@
  		goto out;
  	}
  
-+#if IS_ENABLED(CONFIG_RA_HW_NAT)
++#if IS_ENABLED(CONFIG_NET_MEDIATEK_OFFLOAD)
 +	if (hooknum == NF_INET_LOCAL_OUT || ((PdmaRxDescInfo4 *)((skb)->head))->ALG)
 +		goto skip_alg_mark;
 +
