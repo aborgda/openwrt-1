@@ -8,13 +8,16 @@ board_config_update
 board=$(cat /tmp/sysinfo/board_name)
 
 case $board in
-	actionrf1200-v1|\
 	actionrg1200-v1)
 		ucidef_add_switch "switch0" \
 			"6@eth0" "0:lan" "1:lan" "2:lan" "3:wan"
 		;;
-	re708-v1|\
+	re708-v1)
+		ucidef_add_switch "switch0" \
+			"6@eth0" "0:lan" "1:lan" "2:lan" "3:lan" "4:wan"
+		;;
 	gf1200-v1|\
+	actionrf1200-v1|\
 	w5-1200f-v1|\
 	maxlinkac1200g-v1|\
 	gwr1200ac-v1|\
