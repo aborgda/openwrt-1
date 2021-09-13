@@ -163,8 +163,7 @@ dir-860l-b1)
 dlink,dir-819-a1|\
 zyxel,emg1702-t10a-a1)
 	ucidef_set_led_switch "wan" "wan" "tbs:green:wan" "switch0" "0x01"
-	ucidef_set_led_netdev "wlan2g" "wlan2g" "tbs:green:wlan2g" "wlan0"
-	ucidef_set_led_netdev "wlan5g" "wlan5g" "mt76-phy0" "wlan1"
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "tbs:green:wlan2g" "ra0"
 	;;
 ex2700|\
 wn3000rpv3)
@@ -312,7 +311,7 @@ tama,w06)
 	ucidef_set_led_wlan "wlan" "WLAN" "$boardname:green:wlan" "phy0tpt"
 	;;
 itlb-ncloud-v1)
-	set_wifi_led "$boardname:green:wifi"
+	ucidef_set_led_netdev "wlan2g" "wlan2g" "$boardname:green:wifi" "ra0"
 	set_usb_led "$boardname:green:usb"
 	;;
 tl-wr840n-v62|\
