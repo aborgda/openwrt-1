@@ -80,7 +80,7 @@
 		#size-cells = <1>;
 		compatible = "jedec,spi-nor";
 		reg = <0>;
-		spi-max-frequency = <41000000>;
+		spi-max-frequency = <29000000>;
 
 		partition@0 {
 			label = "boot";
