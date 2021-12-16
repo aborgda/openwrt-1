@@ -960,6 +960,9 @@ static inline void select_op(struct sheipa_spi *dws, uint32_t addr,
 	case WREN:
 		flash_write_enable(dws);
 		break;
+	case WRDI:
+		flash_write_disable(dws);
+		break;
 	case WRSR:
 		flash_set_status(dws, addr, cmd);
 		break;
