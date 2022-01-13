@@ -80,7 +80,8 @@ IWINFO_BACKENDS := \
 TARGET_CFLAGS += \
 	-I$(STAGING_DIR)/usr/include/libnl-tiny \
 	-I$(STAGING_DIR)/usr/include \
-	-D_GNU_SOURCE
+	-D_GNU_SOURCE \
+	$(if $(CONFIG_TARGET_ath79),-DWEXT_ATHEROS_SUPPORT)
 
 MAKE_FLAGS += \
 	FPIC="$(FPIC)" \

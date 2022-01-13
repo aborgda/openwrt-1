@@ -1,12 +1,9 @@
 --- a/iwinfo_wext.c	2021-12-22 19:58:31.220108040 -0300
-+++ b/iwinfo_wext.c	2022-01-04 11:48:57.941653109 -0300
-@@ -22,6 +22,107 @@
++++ b/iwinfo_wext.c	2022-01-04 13:54:25.801396874 -0300
+@@ -22,6 +22,104 @@
  #include "iwinfo.h"
  #include "iwinfo_wext.h"
  
-+#define WEXT_ATHEROS_SUPPORT
-+
-+
 +#ifdef WEXT_ATHEROS_SUPPORT
 +
 +// Copy-pasted from ieee80211.h
@@ -108,7 +105,7 @@
  static double wext_freq2float(const struct iw_freq *in)
  {
  	int		i;
-@@ -318,10 +419,166 @@
+@@ -318,10 +416,166 @@
  	return -1;
  }
  
