@@ -168,7 +168,7 @@ EOF
 
 hostapd_common_add_bss_config() {
 	config_add_string 'bssid:macaddr' 'ssid:string'
-	config_add_boolean wds wmm uapsd hidden utf8_ssid
+	config_add_boolean wds wmm uapsd hidden utf8_ssid anlix_ap
 
 	config_add_int maxassoc max_inactivity
 	config_add_boolean disassoc_low_ack isolate short_preamble
@@ -682,7 +682,7 @@ wpa_supplicant_prepare_interface() {
 
 	_wpa_supplicant_common "$1"
 
-	json_get_vars mode wds multi_ap
+	json_get_vars mode wds multi_ap anlix_ap
 
 	[ -n "$network_bridge" ] && {
 		fail=
@@ -691,7 +691,7 @@ wpa_supplicant_prepare_interface() {
 				fail=1
 			;;
 			sta)
-				[ "$wds" = 1 -o "$multi_ap" = 1 ] || fail=1
+				[ "$wds" = 1 -o "$multi_ap" = 1 -o "$anlix_ap" = 1 ] || fail=1
 			;;
 		esac
 

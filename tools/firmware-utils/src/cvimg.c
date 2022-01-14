@@ -41,6 +41,40 @@
 #define FAKE_ROOTFS_IDENT_SIZE	4
 #define FAKE_ROOTFS_SIZE_OFS	16
 
+// Intelbras new header
+#define INTBR_MAGIC_NUMBER 				0x56190527
+#define INTBR_UKNOWN_SIZE_1				28
+#define INTBR_FIRMWARE_TYPE				0x00000002
+#define INTBR_RG1200AC_PROD_ID			0x31000300
+#define INTBR_PADDING_SIZE 				14
+#define INTBR_NEW_FIRM_TEXT 			"NITBF"
+
+struct intbr_img_header {
+
+	// 0x27 0x05 0x19 0x56
+	uint32_t magic_number;
+
+	// Unkown data
+	unsigned char unknown_data_1[INTBR_UKNOWN_SIZE_1];
+
+	// Firmware type
+	uint32_t firmware_type;
+
+	// Product ID
+	uint32_t product_id;
+
+	// Unkown data 2
+	uint32_t unknown_data_2;
+
+	// 0x00 * 14 times
+	unsigned char padding[INTBR_PADDING_SIZE];
+
+	// New firmware identifier text
+	// Includes /n or /0
+	char firmware_id_text[sizeof(INTBR_NEW_FIRM_TEXT)]
+
+};
+
 struct img_header
 {
     unsigned char signature[SIGNATURE_LEN];
@@ -138,6 +172,7 @@ static uint32_t align_size = 0;
 static uint32_t append_fake_rootfs = 0;
 static uint32_t append_jffs2_marker = 0;
 static uint32_t insert_chksum_after_format = 0;
+static uint32_t insert_new_intelbras_header = 0;
 static uint32_t insert_chksum_sysupgrade_format = 0;
 static enum data_type sig_type = (enum data_type) -1;
 static enum cpu_type sig_cpu = (enum cpu_type) -1;
@@ -173,6 +208,7 @@ static void usage(int status)
 		"  -T              Insert a checksum considering a total image length 16 bytes shorter (Tenda bootloader)\n"
 		"  -f              append fake rootfs only, image header will not be created, requires -a specified for block size\n"
 		"  -j              append jffs2 end marker image only, conflicts with -f, requires -b to be specified for fw burn address and -a for block size\n"
+		"  -I              Add the new Intelbras header\n"
 		"  -h              show this screen\n"
 	);
 
@@ -316,6 +352,95 @@ static uint16_t calculate_checksum(const uint8_t *buf, int len)
 	}
 
 	return htons(~sum + 1);
+}
+
+static int image_append_intelbras_header(void)
+{
+	struct intbr_img_header header;
+	FILE *file;
+	char *aux_buffer;
+	int file_size, buffer_size;
+
+	// Set the new header
+	header.magic_number = INTBR_MAGIC_NUMBER;
+	memset(&header.unknown_data_1, 0x00, INTBR_UKNOWN_SIZE_1);
+	header.firmware_type = INTBR_FIRMWARE_TYPE;
+	header.product_id = INTBR_RG1200AC_PROD_ID;
+	header.unknown_data_2 = 0x00000000;
+	memset(&header.padding, 0x00, INTBR_PADDING_SIZE);
+	memcpy(&header.firmware_id_text, INTBR_NEW_FIRM_TEXT, sizeof(INTBR_NEW_FIRM_TEXT));
+	
+	// Open input file
+	file = fopen(ifname, "rb");
+	if (!file)
+	{
+		fprintf(stderr, "Error: unable to open payload file %s\n", ifname);
+		return -1;
+	}
+
+	fseek(file, 0, SEEK_END);
+	file_size = ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	if (!file_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: payload file %s is empty\n", ifname);
+		return -1;
+	}
+
+
+	// Allocate the buffer
+	buffer_size = sizeof(header) + file_size;
+
+	aux_buffer = (char *) calloc(buffer_size, 1);
+	if (!aux_buffer)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: unable to allocate memory\n");
+		return -1;
+	}
+	
+	// Write the new header in the buffer + the payload
+	memcpy(aux_buffer, &header, sizeof(header));
+
+	if (fread(aux_buffer + sizeof(header), 1, file_size, file) != file_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: failed to read payload file\n");
+		return -1;
+	}
+
+	fclose(file);
+	
+	// Open output file
+	file = fopen(ofname, "wb");
+	if (!file)
+	{
+		fprintf(stderr, "Error: unable to open output file %s\n", ofname);
+		return -1;
+	}
+
+	// Write to output
+	if (fwrite(aux_buffer, 1, buffer_size, file) != buffer_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: failed to write output file\n");
+		return -1;
+	}
+
+	fclose(file);
+
+	printf(
+		"New Intelbras header appended:\n"
+		"    Filename:\t\t\t%s\n"
+		"    Image size (oct.):\t\t%lu bytes\n",
+		ofname,
+		buffer_size
+	);
+
+
+	return 0;
 }
 
 static int image_append_fake_rootfs(void)
@@ -518,11 +643,12 @@ static int image_append_jffs2_marker(void)
 static int build_image(void)
 {
 	FILE *f;
-	char *buf;
+	char *buf, *aux_buffer;
 	int fsize, fsize_aligned, bufsize;
 	uint16_t chksum, chksum_after_format;
 	struct img_header hdr;
 	struct img_header hdr_after_format;
+	struct intbr_img_header intbr_header;
 
 	f = fopen(ifname, "rb");
 	if (!f)
@@ -560,12 +686,35 @@ static int build_image(void)
 
 	bufsize = size_aligned(fsize_aligned + sizeof (struct img_header) + sizeof (chksum), align_size);
 
+	// The new Intelbras header
+	if (insert_new_intelbras_header) {
+		// Set the new header
+		intbr_header.magic_number = INTBR_MAGIC_NUMBER;
+		memset(&intbr_header.unknown_data_1, 0x00, INTBR_UKNOWN_SIZE_1);
+		intbr_header.firmware_type = INTBR_FIRMWARE_TYPE;
+		intbr_header.product_id = INTBR_RG1200AC_PROD_ID;
+		intbr_header.unknown_data_2 = 0x00000000;
+		memset(&intbr_header.padding, 0x00, INTBR_PADDING_SIZE);
+		memcpy(&intbr_header.firmware_id_text, INTBR_NEW_FIRM_TEXT, sizeof(INTBR_NEW_FIRM_TEXT));
+
+		bufsize += sizeof(struct intbr_img_header);
+	}
+
 	buf = (char *) calloc(bufsize, 1);
 	if (!buf)
 	{
 		fclose(f);
 		fprintf(stderr, "Error: unable to allocate memory\n");
 		return -1;
+	}
+
+	// Append the new Intelbras header
+	if (insert_new_intelbras_header) {
+		memcpy(buf, &intbr_header, sizeof(struct  intbr_img_header));
+
+		// Move the pointer
+		aux_buffer = buf;
+		buf += sizeof(struct intbr_img_header);
 	}
 
 	if (fread(buf + sizeof (struct img_header), 1, fsize, f) != fsize)
@@ -605,6 +754,10 @@ static int build_image(void)
 		fprintf(stderr, "Error: unable to open output file %s\n", ofname);
 		return -1;
 	}
+
+	// Rewind the pointer
+	if (insert_new_intelbras_header)
+		buf = aux_buffer;
 
 	if (fwrite(buf, 1, bufsize, f) != bufsize)
 	{
@@ -648,7 +801,7 @@ int main(int argc, char *argv[])
 	{
 		int c;
 
-		c = getopt(argc, argv, "a:b:c:e:i:o:s:t:TSfhj");
+		c = getopt(argc, argv, "a:b:c:e:i:o:s:t:TSfhjI");
 		if (c == -1)
 			break;
 
@@ -708,6 +861,9 @@ int main(int argc, char *argv[])
 		case 'h':
 			usage(EXIT_SUCCESS);
 			break;
+		case 'I':
+			insert_new_intelbras_header = 1;
+			break;
 		default:
 			usage(EXIT_FAILURE);
 			break;
@@ -722,6 +878,8 @@ int main(int argc, char *argv[])
 		return image_append_fake_rootfs();
 	else if (append_jffs2_marker)
 		return image_append_jffs2_marker();
+	else if (insert_new_intelbras_header && !insert_chksum_sysupgrade_format)
+		return image_append_intelbras_header();
 	else
 		return build_image();
 }

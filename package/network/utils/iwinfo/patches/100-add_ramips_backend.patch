@@ -1,0 +1,314 @@
+--- a/Makefile
++++ b/Makefile
+@@ -25,6 +25,11 @@
+ 	IWINFO_LIB_OBJ += iwinfo_madwifi.o
+ endif
+ 
++ifneq ($(filter ramips,$(IWINFO_BACKENDS)),)
++	IWINFO_CFLAGS  += -DUSE_RAMIPS
++	IWINFO_LIB_OBJ += iwinfo_ramips.o
++endif
++
+ ifneq ($(filter nl80211,$(IWINFO_BACKENDS)),)
+ 	IWINFO_CFLAGS      += -DUSE_NL80211
+ 	IWINFO_CLI_LDFLAGS += -lnl-tiny
+--- a/api/ramips.h
++++ b/api/ramips.h
+@@ -0,0 +1,7 @@
++
++#ifndef _RAMIPS_H
++#define _RAMIPS_H
++
++
++
++#endif
+--- a/include/iwinfo.h
++++ b/include/iwinfo.h
+@@ -257,6 +257,7 @@
+ extern const struct iwinfo_ops madwifi_ops;
+ extern const struct iwinfo_ops nl80211_ops;
+ extern const struct iwinfo_ops wl_ops;
++extern const struct iwinfo_ops ramips_ops;
+ 
+ #include "iwinfo/utils.h"
+ 
+--- a/iwinfo_lib.c
++++ b/iwinfo_lib.c
+@@ -333,6 +333,9 @@
+ #ifdef USE_WL
+ 	&wl_ops,
+ #endif
++#ifdef USE_RAMIPS
++	&ramips_ops,
++#endif
+ 	&wext_ops,
+ };
+ 
+--- a/iwinfo_ramips.c
++++ b/iwinfo_ramips.c
+@@ -0,0 +1,265 @@
++/*
++ * iwinfo - Wireless Information Library - Ramips Extension Backend
++ *
++ *   Copyright (C) 2021 Gaspare Bruno <gaspare@anlix.io>
++ *
++ * The iwinfo library is free software: you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License version 2
++ * as published by the Free Software Foundation.
++ *
++ * The iwinfo library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ * See the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with the iwinfo library. If not, see http://www.gnu.org/licenses/.
++ *
++ * Parts of this code are derived from the Linux wireless tools, iwlib.c,
++ * iwlist.c and iwconfig.c in particular.
++ */
++
++#include "iwinfo_wext.h"
++#include "api/ramips.h"
++
++static inline int ramips_ioctl(const char *ifname, int cmd, struct iwreq *wrq)
++{
++	/* Same as wext */
++	if( !strncmp(ifname, "mon.", 4) )
++		strncpy(wrq->ifr_name, &ifname[4], IFNAMSIZ);
++	else
++		strncpy(wrq->ifr_name, ifname, IFNAMSIZ);
++
++	return iwinfo_ioctl(cmd, wrq);
++}
++
++
++static int ramips_probe(const char *ifname)
++{
++	struct iwreq wrq;
++
++	if(ramips_ioctl(ifname, SIOCGIWNAME, &wrq) >= 0) {
++		if(strcmp(wrq.u.name, "RTWIFI SoftAP") == 0)
++			return 1;
++	}
++
++	return 0;
++}
++
++static void ramips_close(void)
++{
++	/* Nop */
++}
++
++static int ramips_get_mode(const char *ifname, int *buf)
++{
++	return wext_ops.mode(ifname, buf);
++}
++
++static int ramips_get_ssid(const char *ifname, char *buf)
++{
++	return wext_ops.ssid(ifname, buf);
++}
++
++static int ramips_get_bssid(const char *ifname, char *buf)
++{
++	return wext_ops.bssid(ifname, buf);
++}
++
++static int ramips_get_bitrate(const char *ifname, int *buf)
++{
++	return wext_ops.bitrate(ifname, buf);
++}
++
++static int ramips_get_channel(const char *ifname, int *buf)
++{
++	return wext_ops.channel(ifname, buf);
++}
++
++static int ramips_get_frequency(const char *ifname, int *buf)
++{
++	return wext_ops.frequency(ifname, buf);
++}
++
++static int ramips_get_txpower(const char *ifname, int *buf)
++{
++	return wext_ops.txpower(ifname, buf);
++}
++
++static int ramips_get_signal(const char *ifname, int *buf)
++{
++	return wext_ops.signal(ifname, buf);
++}
++
++static int ramips_get_noise(const char *ifname, int *buf)
++{
++	return wext_ops.noise(ifname, buf);
++}
++
++static int ramips_get_quality(const char *ifname, int *buf)
++{
++	return wext_ops.quality(ifname, buf);
++}
++
++static int ramips_get_quality_max(const char *ifname, int *buf)
++{
++	return wext_ops.quality_max(ifname, buf);
++}
++
++static int ramips_get_assoclist(const char *ifname, char *buf, int *len)
++{
++	/* Stub */
++	return -1;
++}
++
++static int ramips_get_txpwrlist(const char *ifname, char *buf, int *len)
++{
++	return wext_ops.txpwrlist(ifname, buf, len);
++}
++
++static int ramips_get_freqlist(const char *ifname, char *buf, int *len)
++{
++	return wext_ops.freqlist(ifname, buf, len);
++}
++
++static int ramips_get_country(const char *ifname, char *buf)
++{
++	/* Stub */
++	sprintf(buf, "00");
++	return 0;
++}
++
++static int ramips_get_countrylist(const char *ifname, char *buf, int *len)
++{
++	/* Stub */
++	return -1;
++}
++
++static int ramips_get_hwmodelist(const char *ifname, int *buf)
++{
++	return wext_ops.hwmodelist(ifname, buf);
++}
++
++static int ramips_get_htmodelist(const char *ifname, int *buf)
++{
++	/* Stub */
++	return -1;
++}
++
++static int ramips_get_encryption(const char *ifname, char *buf)
++{
++	/* Stub */
++	return -1;
++}
++
++static int ramips_get_phyname(const char *ifname, char *buf)
++{
++	/* Stub */
++	strcpy(buf, ifname);
++	return 0;
++}
++
++static int ramips_get_mbssid_support(const char *ifname, int *buf)
++{
++	/* Stub */
++	return -1;
++}
++
++static char * ramips_sysfs_ifname_file(const char *ifname, const char *path)
++{
++	FILE *f;
++	static char buf[128];
++	char *rv = NULL;
++
++	snprintf(buf, sizeof(buf), "/sys/class/net/%s/%s", ifname, path);
++
++	if ((f = fopen(buf, "r")) != NULL)
++	{
++		memset(buf, 0, sizeof(buf));
++
++		if (fread(buf, 1, sizeof(buf), f))
++			rv = buf;
++
++		fclose(f);
++	}
++
++	return rv;
++}
++
++static int ramips_get_hardware_id(const char *ifname, char *buf)
++{
++	char *data;
++	struct iwinfo_hardware_id *id = (struct iwinfo_hardware_id *)buf;
++
++	memset(id, 0, sizeof(struct iwinfo_hardware_id));
++
++	data = ramips_sysfs_ifname_file(ifname, "device/vendor");
++	if (data)
++		id->vendor_id = strtoul(data, NULL, 16);
++
++	data = ramips_sysfs_ifname_file(ifname, "device/device");
++	if (data)
++		id->device_id = strtoul(data, NULL, 16);
++
++	data = ramips_sysfs_ifname_file(ifname, "device/subsystem_device");
++	if (data)
++		id->subsystem_device_id = strtoul(data, NULL, 16);
++
++	data = ramips_sysfs_ifname_file(ifname, "device/subsystem_vendor");
++	if (data)
++		id->subsystem_vendor_id = strtoul(data, NULL, 16);
++
++	return (id->vendor_id > 0 && id->device_id > 0) ? 0 : -1;
++}
++
++static int ramips_get_hardware_name(const char *ifname, char *buf)
++{
++	sprintf(buf, "RAMIPS");
++	return 0;
++}
++
++static int ramips_get_txpower_offset(const char *ifname, int *buf)
++{
++	/* Stub */
++	*buf = 0;
++	return -1;
++}
++
++static int ramips_get_frequency_offset(const char *ifname, int *buf)
++{
++	/* Stub */
++	*buf = 0;
++	return -1;
++}
++
++const struct iwinfo_ops ramips_ops = {
++	.name             = "ramips",
++	.probe            = ramips_probe,
++	.channel          = ramips_get_channel,
++	.frequency        = ramips_get_frequency,
++	.frequency_offset = ramips_get_frequency_offset,
++	.txpower          = ramips_get_txpower,
++	.txpower_offset   = ramips_get_txpower_offset,
++	.bitrate          = ramips_get_bitrate,
++	.signal           = ramips_get_signal,
++	.noise            = ramips_get_noise,
++	.quality          = ramips_get_quality,
++	.quality_max      = ramips_get_quality_max,
++	.mbssid_support   = ramips_get_mbssid_support,
++	.hwmodelist       = ramips_get_hwmodelist,
++	.htmodelist       = ramips_get_htmodelist,
++	.mode             = ramips_get_mode,
++	.ssid             = ramips_get_ssid,
++	.bssid            = ramips_get_bssid,
++	.country          = ramips_get_country,
++	.hardware_id      = ramips_get_hardware_id,
++	.hardware_name    = ramips_get_hardware_name,
++	.encryption       = ramips_get_encryption,
++	.phyname          = ramips_get_phyname,
++	.assoclist        = ramips_get_assoclist,
++	.txpwrlist        = ramips_get_txpwrlist,
++	.scanlist         = wext_get_scanlist,
++	.freqlist         = ramips_get_freqlist,
++	.countrylist      = ramips_get_countrylist,
++	.close            = ramips_close
++};

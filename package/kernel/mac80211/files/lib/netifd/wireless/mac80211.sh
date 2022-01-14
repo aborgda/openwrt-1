@@ -24,8 +24,9 @@ drv_mac80211_init_device_config() {
 	config_add_string path phy 'macaddr:macaddr'
 	config_add_string hwmode
 	config_add_string tx_burst
+	config_add_string distance
 	config_add_int beacon_int chanbw frag rts
-	config_add_int rxantenna txantenna antenna_gain txpower distance
+	config_add_int rxantenna txantenna antenna_gain txpower
 	config_add_boolean noscan ht_coex
 	config_add_array ht_capab
 	config_add_array channels
@@ -421,6 +422,7 @@ find_phy() {
 
 mac80211_check_ap() {
 	has_ap=1
+	apidx="$(($apidx + 1))"
 }
 
 mac80211_iw_interface_add() {
@@ -709,6 +711,14 @@ mac80211_interface_cleanup() {
 	done
 }
 
+realtek_interface_cleanup() {
+	local phy="$1"
+
+	for wdev in $(list_phy_interfaces "$phy"); do
+		ip link set dev "$wdev" down 2>/dev/null
+	done
+}
+
 mac80211_set_noscan() {
 	hostapd_noscan=1
 }
@@ -752,6 +762,7 @@ drv_mac80211_setup() {
 	no_ap=1
 	macidx=0
 	staidx=0
+	apidx=0
 
 	[ -n "$chanbw" ] && {
 		for file in /sys/kernel/debug/ieee80211/$phy/ath9k/chanbw /sys/kernel/debug/ieee80211/$phy/ath5k/bwmode; do
@@ -797,6 +808,14 @@ drv_mac80211_setup() {
 			return
 		}
 	}
+
+	if [ "$(lsmod | grep rtl8192cd)" ]; then
+		if [ $staidx -gt 0 ] || [ $apidx -gt 1  ]; then
+			#ANLIX: Realtek need to restart root ap when there is virtual ifs
+			for_each_interface "ap" mac80211_setup_vif
+			realtek_interface_cleanup $phy
+		fi
+	fi
 
 	for_each_interface "ap sta adhoc mesh monitor" mac80211_setup_vif
 

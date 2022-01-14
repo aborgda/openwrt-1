@@ -4,10 +4,7 @@ config NET_VENDOR_MEDIATEK
 	help
 	  This driver supports the ethernet mac inside the Mediatek and Ralink WiSoCs
 
-config NET_MEDIATEK_SOC
-	def_tristate NET_VENDOR_MEDIATEK
-
-if NET_MEDIATEK_SOC
+if NET_VENDOR_MEDIATEK
 choice
 	prompt "MAC type"
 
@@ -34,37 +31,7 @@ config NET_MEDIATEK_MT7621
 endchoice
 
 config NET_MEDIATEK_OFFLOAD
-	def_bool NET_MEDIATEK_SOC
-	depends on NET_MEDIATEK_MT7621
+	def_bool y
+	depends on NET_MEDIATEK_MT7621 || NET_MEDIATEK_MT7620
 
-config NET_MEDIATEK_HW_QOS
-	def_bool NET_MEDIATEK_SOC
-	depends on NET_MEDIATEK_MT7623
-
-config NET_MEDIATEK_MDIO
-	def_bool NET_MEDIATEK_SOC
-	depends on (NET_MEDIATEK_RT2880 || NET_MEDIATEK_RT3883 || NET_MEDIATEK_MT7620 || NET_MEDIATEK_MT7621)
-	select PHYLIB
-
-config NET_MEDIATEK_MDIO_RT2880
-	def_bool NET_MEDIATEK_SOC
-	depends on (NET_MEDIATEK_RT2880 || NET_MEDIATEK_RT3883)
-	select NET_MEDIATEK_MDIO
-
-config NET_MEDIATEK_MDIO_MT7620
-	def_bool NET_MEDIATEK_SOC
-	depends on (NET_MEDIATEK_MT7620 || NET_MEDIATEK_MT7621)
-	select NET_MEDIATEK_MDIO
-
-config NET_MEDIATEK_ESW_RT3050
-	def_tristate NET_MEDIATEK_SOC
-	depends on NET_MEDIATEK_RT3050
-
-config NET_MEDIATEK_GSW_MT7620
-	def_tristate NET_MEDIATEK_SOC
-	depends on NET_MEDIATEK_MT7620
-
-config NET_MEDIATEK_GSW_MT7621
-	def_tristate NET_MEDIATEK_SOC
-	depends on NET_MEDIATEK_MT7621
 endif
