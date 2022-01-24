@@ -78,13 +78,13 @@ IWINFO_BACKENDS := \
 	$(if $(CONFIG_PACKAGE_kmod-brcm-wl-mini),wl) \
 	$(if $(CONFIG_PACKAGE_kmod-brcm-wl-mimo),wl) \
 	$(if $(CONFIG_TARGET_ramips),ramips) \
-	$(if $(CONFIG_PACKAGE_kmod-cfg80211),nl80211)
+	$(if $(CONFIG_PACKAGE_kmod-cfg80211),nl80211) \
+	$(if $(CONFIG_TARGET_ath79),ath)
 
 TARGET_CFLAGS += \
 	-I$(STAGING_DIR)/usr/include/libnl-tiny \
 	-I$(STAGING_DIR)/usr/include \
-	-D_GNU_SOURCE \
-	$(if $(CONFIG_TARGET_ath79),-DWEXT_ATHEROS_SUPPORT)
+	-D_GNU_SOURCE
 
 MAKE_FLAGS += \
 	FPIC="$(FPIC)" \
