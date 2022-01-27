@@ -176,7 +176,7 @@ diff -Nuar temp_old/iwinfo_ath.c temp_new/iwinfo_ath.c
 +{
 +	struct iwreq wrq;
 +
-+	if(iwath_ioctl(ifname, SIOCGIWNAME, &wrq) >= 0)
++	if((iwath_ioctl(ifname, SIOCGIWNAME, &wrq) >= 0) && strncmp(wrq.u.name,"IEEE 802.11",10)==0 )
 +		return 1;
 +
 +	return 0;
@@ -542,16 +542,16 @@ diff -Nuar temp_old/iwinfo_ath.c temp_new/iwinfo_ath.c
 +		memcpy( iwinfo_entry->mac , ieee80211_entry->isi_macaddr , 6 );
 +
 +
-+		iwinfo_entry->signal 			= ieee80211_entry->isi_txpower;
++		iwinfo_entry->signal 			= -ieee80211_entry->isi_rssi;
 +		//iwinfo_entry->signal_avg		=;
-+		//iwinfo_entry->noise				=;
++		iwinfo_entry->noise				= -95;
 +		iwinfo_entry->inactive 			= ieee80211_entry->isi_inact;
 +		iwinfo_entry->connected_time	= ieee80211_entry->isi_tr069_assoc_time.tv_sec * 1000;
 +		iwinfo_entry->rx_packets		= ieee80211_entry->isi_txseqs[0];
 +		iwinfo_entry->tx_packets		= ieee80211_entry->isi_rxseqs[0];
 +		// iwinfo_entry->rx_drop_misc		=;
 +		
-+		// iwinfo_entry->rx_rate.rate 		= ;
++		iwinfo_entry->rx_rate.rate 		= ieee80211_entry->isi_rxratekbps;
 +		// iwinfo_entry->rx_rate.mcs 		= ;
 +		// iwinfo_entry->rx_rate.is_40mhz 	= ;
 +		// iwinfo_entry->rx_rate.is_short_gi = ;
@@ -562,7 +562,7 @@ diff -Nuar temp_old/iwinfo_ath.c temp_new/iwinfo_ath.c
 +
 +		int stamode = ieee80211_entry->isi_stamode;
 +
-+		iwinfo_entry->tx_rate.rate 		= 1000*(ieee80211_entry->isi_rates[ieee80211_entry->isi_txrate] & IEEE80211_RATE_VAL)/2;
++		iwinfo_entry->tx_rate.rate 		= ieee80211_entry->isi_txratekbps;
 +		iwinfo_entry->tx_rate.mcs 		= ieee80211_entry->isi_tx_rate_mcs;
 +		iwinfo_entry->tx_rate.is_40mhz 	= ieee80211_entry->isi_chwidth==IEEE80211_CWM_WIDTH40;
 +		//iwinfo_entry->tx_rate.is_short_gi = ;
