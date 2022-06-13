@@ -20,6 +20,8 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <errno.h>
+#include <zlib.h>
+#include <time.h>
 
 #include <sys/stat.h>
 #include <arpa/inet.h>
@@ -234,6 +236,7 @@ static const char jffs2_marker[] = {0xde, 0xad, 0xc0, 0xde};
 static char *progname;
 static char *ifname;
 static char *ofname;
+static char *model;
 static const char *sig = NULL;
 static uint32_t start_addr = 0;
 static uint32_t burn_addr = 0;
@@ -241,6 +244,7 @@ static uint32_t align_size = 0;
 static uint32_t append_fake_rootfs = 0;
 static uint32_t append_jffs2_marker = 0;
 static uint32_t insert_chksum_after_format = 0;
+static uint32_t insert_intelbras_header = 0;
 static uint32_t insert_new_intelbras_header = 0;
 static uint32_t insert_uimage_header = 0;
 static uint32_t insert_chksum_sysupgrade_format = 0;
@@ -278,6 +282,7 @@ static void usage(int status)
 		"  -T              Insert a checksum considering a total image length 16 bytes shorter (Tenda bootloader)\n"
 		"  -f              append fake rootfs only, image header will not be created, requires -a specified for block size\n"
 		"  -j              append jffs2 end marker image only, conflicts with -f, requires -b to be specified for fw burn address and -a for block size\n"
+		"  -g              Add the Intelbras header for W5 1200F V1 or GF 1200"
 		"  -I              Add the new Intelbras header\n"
 		"  -h              show this screen\n"
 	);
@@ -538,10 +543,137 @@ static int image_append_uimage_header()
 	return 0;
 }
 
+// Function extracted from GF 1200 1.10.6 headerless firmware
+short calculate_intelbras_checksum(char* firmware, unsigned int firmware_size, short checksum_start) {
+	unsigned short firmware_checksum;
+	int firmware_offset;
+	short checksum = checksum_start;
+
+	for (firmware_offset = 0; firmware_offset < (int)firmware_size / 2 << 1; firmware_offset = firmware_offset + 2) {
+		checksum = (*(unsigned short *)(firmware + firmware_offset) >> 8 |
+					*(unsigned short *)(firmware + firmware_offset) << 8) + checksum;
+	}
+
+	if ((firmware_size & 1) != 0) {
+		firmware_checksum = (*(char *)(firmware + (firmware_size - 1)));
+		checksum = (firmware_checksum >> 8 | firmware_checksum << 8) + checksum;
+	}
+
+	return checksum;
+} 
 
 static int image_append_intelbras_header(void)
 {
 	struct intbr_img_header header;
+	FILE *file;
+	char *aux_buffer;
+	int file_size, buffer_size;
+	short checksum = 0;
+
+	// Open input file
+	file = fopen(ifname, "rb");
+	if (!file)
+	{
+		fprintf(stderr, "Error: unable to open payload file %s\n", ifname);
+		return -1;
+	}
+
+
+	// Get file size
+	fseek(file, 0, SEEK_END);
+	file_size = ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	if (!file_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: payload file %s is empty\n", ifname);
+		return -1;
+	}
+
+
+	// Set the header
+	memset(&header, 0x00, sizeof(header));
+	memcpy(&header.magic_text, INTBR_FIRM_TEXT, INTBR_FIRM_TEXT_SIZE);
+	header.firmware_type = INTBR_FIRMWARE_TYPE;
+	memcpy(&header.firmware_version, INTBR_FIRMWARE_VERSION, sizeof(INTBR_FIRMWARE_VERSION));
+
+
+	// GF 1200
+	if (!memcmp(model, INTBR_GF1200_MODEL, sizeof(INTBR_GF1200_MODEL)))
+		memcpy(&header.firmware_model, INTBR_GF1200_MODEL, sizeof(INTBR_GF1200_MODEL));
+
+	// W5 1200F V1
+	else if (!memcmp(model, INTBR_W51200F_MODEL, sizeof(INTBR_W51200F_MODEL)))
+		memcpy(&header.firmware_model, INTBR_W51200F_MODEL, sizeof(INTBR_W51200F_MODEL));
+
+	// Invalid model name
+	else {
+		fclose(file);
+		fprintf(stderr, "Error: unknown model: %s\n", model);
+		return -1;
+	}
+
+	// Allocate the buffer
+	buffer_size = sizeof(header) + file_size;
+	
+	aux_buffer = (char *) calloc(buffer_size, 1);
+	if (!aux_buffer)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: unable to allocate memory\n");
+		return -1;
+	}
+	
+	// Write the header in the buffer + the payload
+	memcpy(aux_buffer, &header, sizeof(header));
+	if (fread(aux_buffer + sizeof(header), 1, file_size, file) != file_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: failed to read payload file\n");
+		return -1;
+	}
+
+	fclose(file);
+
+	// Get the checksum of the payload
+	checksum = calculate_intelbras_checksum(&aux_buffer[sizeof(header)], file_size, 0);
+	// Assign the checksum to the header in the buffer
+	aux_buffer[59] = (checksum >> 8) & 0xff;
+	aux_buffer[58] = checksum & 0xff;
+	
+	// Open output file
+	file = fopen(ofname, "wb");
+	if (!file)
+	{
+		fprintf(stderr, "Error: unable to open output file %s\n", ofname);
+		return -1;
+	}
+
+	// Write to output
+	if (fwrite(aux_buffer, 1, buffer_size, file) != buffer_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: failed to write output file\n");
+		return -1;
+	}
+
+	fclose(file);
+
+	printf(
+		"Intelbras header appended:\n"
+		"    Filename:\t\t\t%s\n"
+		"    Image size (oct.):\t\t%d bytes\n",
+		ofname,
+		buffer_size
+	);
+	
+	return 0;
+}
+
+static int image_append_new_intelbras_header(void)
+{
+	struct new_intbr_img_header header;
 	FILE *file;
 	char *aux_buffer;
 	int file_size, buffer_size;
@@ -985,7 +1117,7 @@ int main(int argc, char *argv[])
 	{
 		int c;
 
-		c = getopt(argc, argv, "a:b:c:e:i:o:s:t:TSfhjI");
+		c = getopt(argc, argv, "a:b:c:e:i:o:s:t:g:TSfhjIu");
 		if (c == -1)
 			break;
 
@@ -1045,6 +1177,10 @@ int main(int argc, char *argv[])
 		case 'h':
 			usage(EXIT_SUCCESS);
 			break;
+		case 'g':
+			model = optarg;
+			insert_intelbras_header = 1;
+			break;
 		case 'I':
 			insert_new_intelbras_header = 1;
 			break;
@@ -1067,8 +1203,10 @@ int main(int argc, char *argv[])
 		return image_append_jffs2_marker();
 	else if (insert_uimage_header)
 		return image_append_uimage_header();
-	else if (insert_new_intelbras_header && !insert_chksum_sysupgrade_format)
+	else if (insert_intelbras_header) 
 		return image_append_intelbras_header();
+	else if (insert_new_intelbras_header && !insert_chksum_sysupgrade_format)
+		return image_append_new_intelbras_header();
 	else
 		return build_image();
 }
