@@ -41,21 +41,90 @@
 #define FAKE_ROOTFS_IDENT_SIZE	4
 #define FAKE_ROOTFS_SIZE_OFS	16
 
-// Intelbras new header
-#define INTBR_MAGIC_NUMBER 				0x56190527
-#define INTBR_UKNOWN_SIZE_1				28
-#define INTBR_FIRMWARE_TYPE				0x00000002
-#define INTBR_RG1200AC_PROD_ID			0x31000300
-#define INTBR_PADDING_SIZE 				14
-#define INTBR_NEW_FIRM_TEXT 			"NITBF"
+// UImage
+#define UIMAGE_MAGIC    			0x27051956			// UImage Magic Number
+#define UIMAGE_EMPTY_SIZE    		16					// UImage Empty Length
+#define UIMAGE_LOAD_ADDRESS			0x80000000
+#define UIMAGE_ENTRY_ADDRESS		0x80457170			// UImage entry point address for AC1200RF
+#define UIMAGE_OPERATING_SYSTEM		0x05
+#define UIMAGE_CPU_ARCHITECTURE		0x05
+#define UIMAGE_IMAGE_TYPE			0x02
+#define UIMAGE_COMPRESSION_TYPE		0x03
+#define UIMAGE_UNKNOWN_1			0x02000000
+#define UIMAGE_BURN_ADDRESS			0x00030027
 
+// Intelbras header
+#define INTBR_FIRM_TEXT 					"itbs"
+#define INTBR_FIRM_TEXT_SIZE 				4
+#define INTBR_FIRMWARE_TYPE					0x0001
+#define INTBR_FIRMWARE_VERSION				"1.21.9"		// Might not be needed
+#define INTBR_FIRMWARE_VERSION_SIZE			32
+#define INTBR_GF1200_MODEL					"GF1200"
+#define INTBR_W51200F_MODEL					"W5-1200F"
+#define INTBR_FIRMWARE_MODEL_SIZE			20
+
+// Intelbras new header
+#define NEW_INTBR_MAGIC_NUMBER 				0x56190527
+#define NEW_INTBR_UKNOWN_SIZE_1				28
+#define NEW_INTBR_FIRMWARE_TYPE				0x00000002
+#define NEW_INTBR_RG1200AC_PROD_ID			0x31000300
+#define NEW_INTBR_PADDING_SIZE 				14
+#define NEW_INTBR_FIRM_TEXT 				"NITBF"
+
+
+
+// Models: AC1200RF
+struct modified_uimage_header {
+	uint32_t    magic_number;					/* Image Header Magic Number    */
+	uint32_t    header_crc;						/* Image Header CRC Checksum    */
+	uint32_t    timestamp;						/* Image Creation Timestamp     */
+	uint32_t    data_size;						/* Image Data Size              */
+	uint32_t    load_addr;						/* Data     Load  Address       */
+	uint32_t    entry_addr;						/* Entry Point Address          */
+	uint32_t    data_crc;						/* Image Data CRC Checksum      */
+	uint8_t     os;								/* Operating System             */
+	uint8_t     arch;							/* CPU architecture             */
+	uint8_t     image_type;						/* Image Type                   */
+	uint8_t     compression_type;				/* Compression Type             */
+	uint32_t    unknown1;						/* Unknown 1                    */
+	uint32_t    burn_addres;					/* Firmware burn address        */
+	uint32_t    firmware_size;					/* Payload + Header Size        */
+	uint8_t 	empty[UIMAGE_EMPTY_SIZE];		/* Zeroed portion of the header */
+	uint32_t    fs_offset;         				/* Offset of the file system
+													partition from the start of
+													the header                  */
+};
+
+
+// Models: GF 1200, W5 1200F V1
 struct intbr_img_header {
+
+	// itbs
+	unsigned char magic_text[INTBR_FIRM_TEXT_SIZE];
+
+	// Firmware type = 0x01 0x00
+	uint16_t firmware_type;
+
+	// Firmware version
+	unsigned char firmware_version[INTBR_FIRMWARE_VERSION_SIZE];
+
+	// Model
+	unsigned char firmware_model[INTBR_FIRMWARE_MODEL_SIZE];
+
+	// Checksum
+	uint16_t firmware_checksum;
+
+};
+
+
+// Models: RG 1200 AC
+struct new_intbr_img_header {
 
 	// 0x27 0x05 0x19 0x56
 	uint32_t magic_number;
 
 	// Unkown data
-	unsigned char unknown_data_1[INTBR_UKNOWN_SIZE_1];
+	unsigned char unknown_data_1[NEW_INTBR_UKNOWN_SIZE_1];
 
 	// Firmware type
 	uint32_t firmware_type;
@@ -67,11 +136,11 @@ struct intbr_img_header {
 	uint32_t unknown_data_2;
 
 	// 0x00 * 14 times
-	unsigned char padding[INTBR_PADDING_SIZE];
+	unsigned char padding[NEW_INTBR_PADDING_SIZE];
 
 	// New firmware identifier text
 	// Includes /n or /0
-	char firmware_id_text[sizeof(INTBR_NEW_FIRM_TEXT)]
+	char firmware_id_text[sizeof(NEW_INTBR_FIRM_TEXT)];
 
 };
 
@@ -362,13 +431,13 @@ static int image_append_intelbras_header(void)
 	int file_size, buffer_size;
 
 	// Set the new header
-	header.magic_number = INTBR_MAGIC_NUMBER;
-	memset(&header.unknown_data_1, 0x00, INTBR_UKNOWN_SIZE_1);
-	header.firmware_type = INTBR_FIRMWARE_TYPE;
-	header.product_id = INTBR_RG1200AC_PROD_ID;
+	header.magic_number = NEW_INTBR_MAGIC_NUMBER;
+	memset(&header.unknown_data_1, 0x00, NEW_INTBR_UKNOWN_SIZE_1);
+	header.firmware_type = NEW_INTBR_FIRMWARE_TYPE;
+	header.product_id = NEW_INTBR_RG1200AC_PROD_ID;
 	header.unknown_data_2 = 0x00000000;
-	memset(&header.padding, 0x00, INTBR_PADDING_SIZE);
-	memcpy(&header.firmware_id_text, INTBR_NEW_FIRM_TEXT, sizeof(INTBR_NEW_FIRM_TEXT));
+	memset(&header.padding, 0x00, NEW_INTBR_PADDING_SIZE);
+	memcpy(&header.firmware_id_text, NEW_INTBR_FIRM_TEXT, sizeof(NEW_INTBR_FIRM_TEXT));
 	
 	// Open input file
 	file = fopen(ifname, "rb");
@@ -648,7 +717,7 @@ static int build_image(void)
 	uint16_t chksum, chksum_after_format;
 	struct img_header hdr;
 	struct img_header hdr_after_format;
-	struct intbr_img_header intbr_header;
+	struct new_intbr_img_header intbr_header;
 
 	f = fopen(ifname, "rb");
 	if (!f)
@@ -689,15 +758,15 @@ static int build_image(void)
 	// The new Intelbras header
 	if (insert_new_intelbras_header) {
 		// Set the new header
-		intbr_header.magic_number = INTBR_MAGIC_NUMBER;
-		memset(&intbr_header.unknown_data_1, 0x00, INTBR_UKNOWN_SIZE_1);
-		intbr_header.firmware_type = INTBR_FIRMWARE_TYPE;
-		intbr_header.product_id = INTBR_RG1200AC_PROD_ID;
+		intbr_header.magic_number = NEW_INTBR_MAGIC_NUMBER;
+		memset(&intbr_header.unknown_data_1, 0x00, NEW_INTBR_UKNOWN_SIZE_1);
+		intbr_header.firmware_type = NEW_INTBR_FIRMWARE_TYPE;
+		intbr_header.product_id = NEW_INTBR_RG1200AC_PROD_ID;
 		intbr_header.unknown_data_2 = 0x00000000;
-		memset(&intbr_header.padding, 0x00, INTBR_PADDING_SIZE);
-		memcpy(&intbr_header.firmware_id_text, INTBR_NEW_FIRM_TEXT, sizeof(INTBR_NEW_FIRM_TEXT));
+		memset(&intbr_header.padding, 0x00, NEW_INTBR_PADDING_SIZE);
+		memcpy(&intbr_header.firmware_id_text, NEW_INTBR_FIRM_TEXT, sizeof(NEW_INTBR_FIRM_TEXT));
 
-		bufsize += sizeof(struct intbr_img_header);
+		bufsize += sizeof(struct new_intbr_img_header);
 	}
 
 	buf = (char *) calloc(bufsize, 1);
@@ -710,11 +779,10 @@ static int build_image(void)
 
 	// Append the new Intelbras header
 	if (insert_new_intelbras_header) {
-		memcpy(buf, &intbr_header, sizeof(struct  intbr_img_header));
-
+		memcpy(buf, &intbr_header, sizeof(struct  new_intbr_img_header));
 		// Move the pointer
 		aux_buffer = buf;
-		buf += sizeof(struct intbr_img_header);
+		buf += sizeof(struct new_intbr_img_header);
 	}
 
 	if (fread(buf + sizeof (struct img_header), 1, fsize, f) != fsize)
