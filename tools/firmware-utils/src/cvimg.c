@@ -242,6 +242,7 @@ static uint32_t append_fake_rootfs = 0;
 static uint32_t append_jffs2_marker = 0;
 static uint32_t insert_chksum_after_format = 0;
 static uint32_t insert_new_intelbras_header = 0;
+static uint32_t insert_uimage_header = 0;
 static uint32_t insert_chksum_sysupgrade_format = 0;
 static enum data_type sig_type = (enum data_type) -1;
 static enum cpu_type sig_cpu = (enum cpu_type) -1;
@@ -422,6 +423,121 @@ static uint16_t calculate_checksum(const uint8_t *buf, int len)
 
 	return htons(~sum + 1);
 }
+
+/*
+ * Write the uImage header
+ */
+static int image_append_uimage_header()
+{
+	struct modified_uimage_header header;
+	FILE *file;
+	char *aux_buffer;
+	int file_size, buffer_size, crc;
+	short checksum = 0;
+
+	// Open input file
+	file = fopen(ifname, "rb");
+	if (!file)
+	{
+		fprintf(stderr, "Error: unable to open payload file %s\n", ifname);
+		return -1;
+	}
+
+
+	// Get file size
+	fseek(file, 0, SEEK_END);
+	file_size = ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	if (!file_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: payload file %s is empty\n", ifname);
+		return -1;
+	}
+
+
+	// Set the header
+	memset(&header, 0x00, sizeof(header));
+	header.magic_number 	= htonl(UIMAGE_MAGIC);
+	header.timestamp 		= htonl(time(NULL));
+	header.data_size 		= htonl(file_size);
+	header.load_addr 		= htonl(UIMAGE_LOAD_ADDRESS);
+	header.entry_addr 		= htonl(UIMAGE_ENTRY_ADDRESS);
+	header.os 				= UIMAGE_OPERATING_SYSTEM;
+	header.arch 			= UIMAGE_CPU_ARCHITECTURE;
+	header.image_type 		= UIMAGE_IMAGE_TYPE;
+	header.compression_type = UIMAGE_COMPRESSION_TYPE;
+	header.unknown1			= htonl(UIMAGE_UNKNOWN_1);
+	header.burn_addres		= htonl(UIMAGE_BURN_ADDRESS);
+	header.firmware_size	= htonl(sizeof(header) + file_size);
+
+
+	// Allocate the buffer
+	buffer_size = sizeof(header) + file_size;
+	
+	aux_buffer = (char *) calloc(buffer_size, 1);
+	if (!aux_buffer)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: unable to allocate memory\n");
+		return -1;
+	}
+	
+	// Write the payload
+	if (fread(aux_buffer + sizeof(header), 1, file_size, file) != file_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: failed to read payload file\n");
+		return -1;
+	}
+
+	fclose(file);
+
+
+	// Calculate Payload checksum
+	crc = crc32(0L, Z_NULL, 0);
+	crc = crc32(crc, &aux_buffer[sizeof(header)], file_size);
+	header.data_crc = htonl(crc);
+
+	// Calculate header checksum
+	crc = crc32(0L, Z_NULL, 0);
+	crc = crc32(crc, (void *) &header, sizeof(header));
+	header.header_crc = htonl(crc);
+
+	// Write the header
+	memcpy(aux_buffer, (const unsigned char *) &header, sizeof(header));
+
+	
+	// Open output file
+	file = fopen(ofname, "wb");
+	if (!file)
+	{
+		fprintf(stderr, "Error: unable to open output file %s\n", ofname);
+		return -1;
+	}
+
+	// Write to output
+	if (fwrite(aux_buffer, 1, buffer_size, file) != buffer_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: failed to write output file\n");
+		return -1;
+	}
+
+	fclose(file);
+
+	printf(
+		"UImage header appended:\n"
+		"    Filename:\t\t\t%s\n"
+		"    Image size (oct.):\t\t%d bytes\n",
+		ofname,
+		buffer_size
+	);
+	
+	return 0;
+}
+
 
 static int image_append_intelbras_header(void)
 {
@@ -932,6 +1048,9 @@ int main(int argc, char *argv[])
 		case 'I':
 			insert_new_intelbras_header = 1;
 			break;
+		case 'u':
+			insert_uimage_header = 1;
+			break;
 		default:
 			usage(EXIT_FAILURE);
 			break;
@@ -946,6 +1065,8 @@ int main(int argc, char *argv[])
 		return image_append_fake_rootfs();
 	else if (append_jffs2_marker)
 		return image_append_jffs2_marker();
+	else if (insert_uimage_header)
+		return image_append_uimage_header();
 	else if (insert_new_intelbras_header && !insert_chksum_sysupgrade_format)
 		return image_append_intelbras_header();
 	else
