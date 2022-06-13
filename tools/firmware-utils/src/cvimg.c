@@ -751,7 +751,7 @@ static int image_append_new_intelbras_header(void)
 	printf(
 		"New Intelbras header appended:\n"
 		"    Filename:\t\t\t%s\n"
-		"    Image size (oct.):\t\t%lu bytes\n",
+		"    Image size (oct.):\t\t%d bytes\n",
 		ofname,
 		buffer_size
 	);
@@ -848,8 +848,8 @@ static int image_append_fake_rootfs(void)
 		"Fake rootfs appended:\n"
 		"    Filename:\t\t\t%s\n"
 		"    Fake rootfs offset:\t\t0x%08x\n"
-		"    Fake rootfs size (oct.):\t%lu bytes\n"
-		"    Image size (oct.):\t\t%lu bytes\n"
+		"    Fake rootfs size (oct.):\t%d bytes\n"
+		"    Image size (oct.):\t\t%d bytes\n"
 		"    Fake rootfs Checksum:\t%04x\n",
 		ofname,
 		fsize_aligned,
