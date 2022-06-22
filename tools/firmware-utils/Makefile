@@ -89,7 +89,7 @@ define Host/Compile
 	$(call cc,nec-enc, -Wall --std=gnu99)
 	$(call cc,tbs)
 	$(call cc,mkuimage_fake_header, -Wall -lz)
-	$(call cc,cvimg)
+	$(call cc,cvimg, -lz)
 endef
 
 define Host/Install
