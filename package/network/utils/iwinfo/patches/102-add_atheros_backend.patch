@@ -542,7 +542,7 @@ diff -Nuar temp_old/iwinfo_ath.c temp_new/iwinfo_ath.c
 +		memcpy( iwinfo_entry->mac , ieee80211_entry->isi_macaddr , 6 );
 +
 +
-+		iwinfo_entry->signal 			= -ieee80211_entry->isi_rssi;
++		iwinfo_entry->signal 			= ieee80211_entry->isi_rssi - 77;
 +		//iwinfo_entry->signal_avg		=;
 +		iwinfo_entry->noise				= -95;
 +		iwinfo_entry->inactive 			= ieee80211_entry->isi_inact;
