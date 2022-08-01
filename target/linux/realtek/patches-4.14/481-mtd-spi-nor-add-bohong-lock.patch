@@ -1,0 +1,16 @@
+--- a/drivers/mtd/spi-nor/spi-nor.c	2022-07-29 16:10:09.510885460 -0300
++++ a/drivers/mtd/spi-nor/spi-nor.c	2022-07-29 16:03:38.981172713 -0300
+@@ -952,6 +952,13 @@
+
+ 	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
+
++	/* BOHONG */
++	{ 
++		"bh25q64",    INFO(0x684017, 0, 64 * 1024,  128, 
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | 
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
++
+ 	/* EON -- en25xxx */
+ 	{ "en25f32",    INFO(0x1c3116, 0, 64 * 1024,   64, SECT_4K) },
+ 	{ "en25p32",    INFO(0x1c2016, 0, 64 * 1024,   64, 0) }, 
