@@ -148,12 +148,13 @@
 			reg = <0x18070000 0x64>;
 		};
 
-		wmac: wmac@18100000 {
-			compatible = "qca,qca9560-wmac";
-			reg = <0x18100000 0x10000>;
+		wmac: wifi@b8100000 {
+			compatible = "qca,wifi-ar956x","qca,qca9560-wmac";
+			reg = <0xb8100000 0x20000>;
 
 			interrupt-parent = <&cpuintc>;
 			interrupts = <2>;
+			interrupt-names = "legacy";
 
 			status = "disabled";
 		};

@@ -231,8 +231,9 @@ define Device/ACTIONRG1200
   KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
   CVIMG_KERNEL_BURN_ADDR := 0x30000
   CVIMG_LOADER_START_ADDR := 0x80A00000
-  IMAGES := factory.bin sysupgrade.bin
-  IMAGE/factory.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -T
+  IMAGES := factory.bin tftp-recovery.bin sysupgrade.bin
+  IMAGE/tftp-recovery.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -T
+  IMAGE/factory.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -SI
   IMAGE/sysupgrade.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -S
 endef
 TARGET_DEVICES += ACTIONRG1200
@@ -249,8 +250,9 @@ define Device/ACTIONRF1200
   KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
   CVIMG_KERNEL_BURN_ADDR := 0x30000
   CVIMG_LOADER_START_ADDR := 0x80A00000
-  IMAGES := factory.bin sysupgrade.bin
-  IMAGE/factory.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -T
+  IMAGES := factory.bin sysupgrade.bin tftp-recovery.bin
+  IMAGE/factory.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -S | cvimg-kernel -u
+  IMAGE/tftp-recovery.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -T
   IMAGE/sysupgrade.bin = append-kernel | pad-offset 64k 16 | append-rootfs | pad-rootfs -x 16 | cvimg-kernel -S
 endef
 TARGET_DEVICES += ACTIONRF1200
@@ -267,8 +269,11 @@ define Device/GF1200
   KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
   CVIMG_KERNEL_BURN_ADDR := 0x30000
   CVIMG_LOADER_START_ADDR := 0x80A00000
-  IMAGES := factory.bin sysupgrade.bin
-  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
+  CVIMG_ROOTFS_START_ADDR := 0x0F0000
+  CVIMG_ROOTFS_BURN_ADDR := 0x260000
+  IMAGES := factory.bin sysupgrade.bin tftp-recovery.bin
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | cvimg-kernel | append-cvimg-rootfs | cvimg-kernel -g "GF1200"
+  IMAGE/tftp-recovery.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
 endef
 TARGET_DEVICES += GF1200
@@ -285,8 +290,11 @@ define Device/W51200F
   KERNEL := kernel-bin | append-dtb | lzma | loader-cmdline-compile
   CVIMG_KERNEL_BURN_ADDR := 0x30000
   CVIMG_LOADER_START_ADDR := 0x80A00000
-  IMAGES := factory.bin sysupgrade.bin
-  IMAGE/factory.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
+  CVIMG_ROOTFS_START_ADDR := 0x0F0000
+  CVIMG_ROOTFS_BURN_ADDR := 0x260000
+  IMAGES := factory.bin sysupgrade.bin tftp-recovery.bin
+  IMAGE/factory.bin = append-kernel | append-fake-rootfs | cvimg-kernel | append-cvimg-rootfs | cvimg-kernel -g "W5-1200F"
+  IMAGE/tftp-recovery.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | cvimg-pad-rootfs
   IMAGE/sysupgrade.bin = append-kernel | append-fake-rootfs | append-rootfs | cvimg-kernel | pad-rootfs
 endef
 TARGET_DEVICES += W51200F

@@ -417,14 +417,6 @@ static void flash_wait_busy(struct sheipa_spi *dev)
 }
 
 /*
- * this function is used to chip erase.
- */
-static void flash_chip_erase(struct sheipa_spi *dev, uint8_t cmd)
-{
-	flash_tx_cmd(dev, cmd);
-}
-
-/*
  * this function is used to sector erase 4kBi.
  */
 static void flash_be_4k_erase(struct sheipa_spi *dev, uint32_t addr,
@@ -464,16 +456,6 @@ static void flash_se_erase(struct sheipa_spi *dev, uint32_t addr, uint8_t cmd)
 	spi_flash_map->ssienr = 1;
 	spi_flash_wait_busy(dev);
 	flash_wait_busy(dev);
-}
-
-static void flash_write_disable(struct sheipa_spi *dev)
-{
-	flash_tx_cmd(dev, WRDI);
-}
-
-static void flash_write_enable(struct sheipa_spi *dev)
-{
-	flash_tx_cmd(dev, WREN);
 }
 
 static void flash_read_id(struct sheipa_spi *dev, uint8_t cmd)
@@ -717,7 +699,7 @@ static void flash_init(struct sheipa_spi *dev)
 	/* init addr length 3 byte */
 	spi_flash_map->addr_length = 3;
 	/* using to init write signal */
-	flash_write_disable(dev);
+	flash_tx_cmd(dev, WRDI); // Flash write disable
 }
 
 /* auto mode initial setting */
@@ -879,18 +861,6 @@ static void set_addr_length(struct sheipa_spi *dev)
 				      | 0x00000000);
 }
 
-/* Enable 4 byte address mode */
-static void flash_en4b(struct sheipa_spi *dev, uint8_t cmd)
-{
-	flash_tx_cmd(dev, cmd);
-}
-
-/* Exit 4 byte address mode */
-static void flash_ex4b(struct sheipa_spi *dev, uint8_t cmd)
-{
-	flash_tx_cmd(dev, cmd);
-}
-
 /* Enable chip select */
 static void enable_cs_write(struct sheipa_spi *dev)
 {
@@ -951,6 +921,7 @@ static inline void select_op(struct sheipa_spi *dws, uint32_t addr,
 			     uint32_t dummy, enum flash_mode_type flash_mode,
 			     uint32_t type, uint8_t cmd)
 {
+
 	mode = 0;
 	switch (cmd) {
 	case PP:
@@ -958,7 +929,12 @@ static inline void select_op(struct sheipa_spi *dws, uint32_t addr,
 		flash_write(dws, addr, DATA_WORD, cmd);
 		break;
 	case WREN:
-		flash_write_enable(dws);
+		/* flash write enable */
+		flash_tx_cmd(dws, WREN);
+		break;
+	case WRDI:
+		/* flash write disable */
+		flash_tx_cmd(dws, WRDI);
 		break;
 	case WRSR:
 		flash_set_status(dws, addr, cmd);
@@ -978,7 +954,8 @@ static inline void select_op(struct sheipa_spi *dws, uint32_t addr,
 		flash_fastread(dws, addr, DATA_WORD, dummy, cmd);
 		break;
 	case CE:
-		flash_chip_erase(dws, cmd);
+		/* chip erase. */
+		flash_tx_cmd(dws, cmd);
 		break;
 	case BE_4K:
 		flash_be_4k_erase(dws, addr, cmd);
@@ -994,13 +971,15 @@ static inline void select_op(struct sheipa_spi *dws, uint32_t addr,
 		/* supprot for address 4 byte mdoe */
 	case EN4B:
 	case BRWR:		/* for Spansion */
-		flash_en4b(dws, cmd);
+		/* Enable 4 byte address mode */
+		flash_tx_cmd(dws, cmd);
 		enable_addr_4byte_mode = 1;
 		set_addr_length(dws);
 		set_auto_addr_length(dws);
 		break;
 	case EX4B:
-		flash_ex4b(dws, cmd);
+		/* Exit 4 byte address mode */
+		flash_tx_cmd(dws, cmd);
 		enable_addr_4byte_mode = 0;
 		break;
 	default:
@@ -1103,7 +1082,7 @@ static inline void do_spi_send(struct sheipa_spi *dws, const u8 *buf,
 			/* addr = base addr + offset */
 			addr = addr + FIFO_HALF_SIZE;
 			while (t > 0) {
-				flash_write_enable(dws);
+				flash_tx_cmd(dws, WREN); // flash write enable
 				select_op(dws, addr, dummy, flash_mode, type,
 					  cmd);
 				cnt = FIFO_HALF_SIZE / 4;
@@ -1118,7 +1097,7 @@ static inline void do_spi_send(struct sheipa_spi *dws, const u8 *buf,
 			}
 			tmp = len % FIFO_HALF_SIZE;
 			if (tmp > 0) {
-				flash_write_enable(dws);
+				flash_tx_cmd(dws, WREN); // flash write enable
 				select_op(dws, addr, dummy, flash_mode, type,
 					  cmd);
 				cnt = tmp / 4;

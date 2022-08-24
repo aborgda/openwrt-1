@@ -152,26 +152,8 @@
 
 	mdio0: mdio-bus {
 		status = "okay";
-		phy0: ethernet-phy@0 {
-		        reg = <0>;
-		        phy-mode = "rgmii";
-		};
-
-		phy1: ethernet-phy@1 {
-		        reg = <1>;
-		        phy-mode = "rgmii";
-		};
-
-		phy2: ethernet-phy@2 {
-		        reg = <2>;
-		        phy-mode = "rgmii";
-		};
-
-		phy3: ethernet-phy@3 {
-		        reg = <3>;
-		        phy-mode = "rgmii";
-		};
-    };
+		mediatek,mdio-mode = <1>;
+	};
 };
 
 &wmac {

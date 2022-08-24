@@ -48,6 +48,10 @@
 			label = "tl-wr845n-v4:green:wlan";
 			gpios = <&gpio1 12 GPIO_ACTIVE_LOW>;
 		};
+		lan {
+			label = "tl-wr845n-v4:green:lan";
+			gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
+		};
 	};
 };
 
