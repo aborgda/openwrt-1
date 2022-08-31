@@ -28,7 +28,6 @@ $(eval $(call TestHostCommand,proper-umask, \
 
 $(eval $(call SetupHostCommand,gcc, \
 	Please install the GNU C Compiler (gcc) 4.8 or later, \
-	gcc --version | grep clang-1100, \
 	$(CC) -dumpversion | grep -E '^(4\.[8-9]|[5-9]\.?)', \
 	gcc -dumpversion | grep -E '^(4\.[8-9]|[5-9]\.?)', \
 	gcc48 --version | grep gcc, \
@@ -48,7 +47,6 @@ $(eval $(call TestHostCommand,working-gcc, \
 
 $(eval $(call SetupHostCommand,g++, \
 	Please install the GNU C++ Compiler (g++) 4.8 or later, \
-	g++ --version | grep clang-1100, \
 	$(CXX) -dumpversion | grep -E '^(4\.[8-9]|[5-9]\.?)', \
 	g++ -dumpversion | grep -E '^(4\.[8-9]|[5-9]\.?)', \
 	g++48 --version | grep g++, \
