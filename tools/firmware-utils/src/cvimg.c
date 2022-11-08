@@ -26,6 +26,8 @@
 #include <sys/stat.h>
 #include <arpa/inet.h>
 
+#include "intelbras_footer.h"
+
 #define ARRAY_SIZE(a) (sizeof (a) / sizeof (a[0]))
 
 #define SIGNATURE_LEN		4
@@ -247,6 +249,7 @@ static uint32_t insert_chksum_after_format = 0;
 static uint32_t insert_intelbras_header = 0;
 static uint32_t insert_new_intelbras_header = 0;
 static uint32_t insert_uimage_header = 0;
+static uint32_t insert_intelbras_footer = 0;
 static uint32_t insert_chksum_sysupgrade_format = 0;
 static enum data_type sig_type = (enum data_type) -1;
 static enum cpu_type sig_cpu = (enum cpu_type) -1;
@@ -760,6 +763,88 @@ static int image_append_new_intelbras_header(void)
 	return 0;
 }
 
+
+static int image_append_intelbras_footer(void)
+{
+	FILE *file;
+	char *aux_buffer;
+	int file_size, buffer_size;
+
+
+	// Open input file
+	file = fopen(ifname, "rb");
+	if (!file)
+	{
+		fprintf(stderr, "Error: unable to open payload file %s\n", ifname);
+		return -1;
+	}
+
+	fseek(file, 0, SEEK_END);
+	file_size = ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	if (!file_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: payload file %s is empty\n", ifname);
+		return -1;
+	}
+	
+
+	// Allocate the buffer
+	buffer_size = sizeof(intelbras_footer) + file_size + (16 - (file_size % 16));
+
+	aux_buffer = (char *) calloc(buffer_size, 1);
+	if (!aux_buffer)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: unable to allocate memory\n");
+		return -1;
+	}
+
+
+	// Write the image file
+	if (fread(aux_buffer, 1, file_size, file) != file_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: failed to read payload file\n");
+		return -1;
+	}
+
+	fclose(file);
+
+	// Write the footer, make the sure the footer is aligned
+	memcpy(aux_buffer + file_size + (16 - (file_size % 16)), &intelbras_footer, sizeof(intelbras_footer));
+	
+	// Open output file
+	file = fopen(ofname, "wb");
+	if (!file)
+	{
+		fprintf(stderr, "Error: unable to open output file %s\n", ofname);
+		return -1;
+	}
+
+	// Write to output
+	if (fwrite(aux_buffer, 1, buffer_size, file) != buffer_size)
+	{
+		fclose(file);
+		fprintf(stderr, "Error: failed to write output file\n");
+		return -1;
+	}
+
+	fclose(file);
+
+	printf(
+		"Intelbras footer appended:\n"
+		"    Filename:\t\t\t%s\n"
+		"    Image size (oct.):\t\t%d bytes\n",
+		ofname,
+		buffer_size
+	);
+	return 0;
+}
+
+
 static int image_append_fake_rootfs(void)
 {
 	FILE *f;
@@ -1117,7 +1202,7 @@ int main(int argc, char *argv[])
 	{
 		int c;
 
-		c = getopt(argc, argv, "a:b:c:e:i:o:s:t:g:TSfhjIu");
+		c = getopt(argc, argv, "a:b:c:e:i:o:s:t:g:TSfhjIuz");
 		if (c == -1)
 			break;
 
@@ -1187,6 +1272,9 @@ int main(int argc, char *argv[])
 		case 'u':
 			insert_uimage_header = 1;
 			break;
+		case 'z':
+			insert_intelbras_footer = 1;
+			break;
 		default:
 			usage(EXIT_FAILURE);
 			break;
@@ -1207,6 +1295,8 @@ int main(int argc, char *argv[])
 		return image_append_intelbras_header();
 	else if (insert_new_intelbras_header && !insert_chksum_sysupgrade_format)
 		return image_append_new_intelbras_header();
+	else if (insert_intelbras_footer)
+		return image_append_intelbras_footer();
 	else
 		return build_image();
 }
