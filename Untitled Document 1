@@ -1,0 +1,68 @@
+git clone https://github.com/freifunk-berlin/firmware.git
+
+sudo apt install build-essential flex gawk gettext git libncurses5-dev \
+libssl-dev libxml-perl python3 quilt time unzip wget zlib1g-dev
+
+./scripts/feeds update -a 
+ ./scripts/feeds install -a
+ 
+ make menuconfig
+ 
+ wget https://downloads.openwrt.org/releases/22.03.0/targets/ramips/mt7621/config.buildinfo -O .config
+ 
+ wget https://downloads.openwrt.org/releases/18.06.0/targets/ramips/mt7621/config.seed -O .config
+ 
+ wget https://downloads.openwrt.org/releases/21.02.1/targets/ath79/generic/config.buildinfo -O .config
+ 
+ make defconfig
+ 
+ git clone https://git.openwrt.org/openwrt/openwrt.git
+ 
+ 
+ sudo apt update
+sudo apt install build-essential clang flex bison g++ gawk gcc-multilib g++-multilib \
+gettext git libncurses-dev libssl-dev python3-distutils rsync unzip zlib1g-dev \
+file wget
+
+
+make image PROFILE=WL500GP PACKAGES="luci luci-i18n-chinese luci-proto-ipv6 luci-sgi-uhttpd" FILES=files/
+
+
+sudo apt install unzip libtool-bin ccache curl cmake gperf gawk flex bison nano xxd \
+      fakeroot kmod cpio git python3-docutils gettext automake autopoint \
+      texinfo build-essential help2man pkg-config zlib1g-dev libgmp3-dev \
+      libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget libc-dev-bin
+      
+      
+      
+ ./extract-firmware.sh firmware.bin
+      
+      
+      ./build-firmware.sh [-nopad] [-min]
+      
+      sudo apt-get install git build-essential zlib1g-dev liblzma-dev python3-magic autoconf python-is-python3
+      sudo apt install yui-compressor
+      
+      /////////////////////////////////////
+      
+      define Build/loader-common
+  rm -rf $@.src
+  $(MAKE) -C lzma-loader \
+     PKG_BUILD_DIR="$@.src" \
+     TARGET_DIR="$(dir $@)" LOADER_NAME="$(notdir $@)" \
+     BOARD="$(DEV_PROFILE)" \
+     SUBTARGET="$(SUBTARGET)" \
+     LZMA_TEXT_START=0x81000000 LOADADDR=0x80000000 \
+     $(1) compile loader.bin
+  mv "$@.bin" "$@"
+  rm -rf $@.src
+  ////////////////////////////
+  
+  make image
+  
+  image  info  clean
+  
+  make image PROFILE=adslr_g7
+  ///////////////////////////////////
+
+
